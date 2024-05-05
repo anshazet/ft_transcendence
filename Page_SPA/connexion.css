@@ -1,0 +1,76 @@
+body, html {
+    height: 100%;
+}
+.container {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+form {
+    width: 300px;
+}
+
+/* Style pour le titre */
+h1 {
+    color: #007bff;
+    margin-left: 200px; /* Couleur du titre */
+}
+
+/* Style pour la barre de navigation */
+#main-nav {
+    width: 150px; /* Largeur de la barre de navigation */
+    background-color: #007bff; /* Couleur de fond */
+    padding: 15px; /* Espacement intérieur */
+}
+
+/* Style pour les liens dans la barre de navigation */
+#main-nav a {
+    display: block; /* Affichage en bloc */
+    color: #fff; /* Couleur du texte */
+    text-decoration: none; /* Pas de soulignement */
+    margin-bottom: 10px; /* Marge en bas */
+}
+
+/* Style pour le formulaire de connexion */
+#login-form {
+    width: 300px; /* Largeur du formulaire */
+    background-color: #fff; /* Couleur de fond */
+    padding: 20px; /* Espacement intérieur */
+    margin: 0 auto; /* Centrage horizontal */
+    border-radius: 5px; /* Coins arrondis */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Ombre portée */
+}
+
+/* Style pour les étiquettes des champs */
+label {
+    display: block; /* Affichage en bloc */
+    margin-bottom: 5px; /* Marge en bas */
+}
+
+/* Style pour les champs de saisie */
+input[type="text"],
+input[type="password"] {
+    width: 100%; /* Largeur */
+    padding: 8px; /* Espacement intérieur */
+    margin-bottom: 10px; /* Marge en bas */
+    border: 1px solid #ccc; /* Bordure */
+    border-radius: 3px; /* Coins arrondis */
+}
+
+/* Style pour le bouton de soumission */
+input[type="submit"] {
+    width: 100%; /* Largeur */
+    padding: 10px; /* Espacement intérieur */
+    background-color: #007bff; /* Couleur de fond */
+    color: #fff; /* Couleur du texte */
+    border: none; /* Pas de bordure */
+    border-radius: 3px; /* Coins arrondis */
+    cursor: pointer; /* Curseur pointer */
+}
+
+/* Style pour le bouton de soumission au survol */
+input[type="submit"]:hover {
+    background-color: #0056b3; /* Couleur de fond au survol */
+}
+

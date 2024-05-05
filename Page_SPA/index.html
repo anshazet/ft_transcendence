@@ -1,0 +1,45 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <title>Let's Pong - Accueil</title>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Let's Pong</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#tournoi">Mode Tournoi</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#classement">Classement</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="profile-container ms-auto">
+                <a class="nav-link btn btn-primary" href="#connexion">Mon Profil</a>
+            </div>
+        </div>
+    </nav>
+    <div id="main-page">
+        <div class="container mt-5">
+            <div id="main-content">
+                <div id="canvas-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="index.js"></script>
+    <script src="info.js"></script>
+    <script src="pong.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
