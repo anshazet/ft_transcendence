@@ -22,3 +22,14 @@ document.addEventListener('DOMContentLoaded', function() {
     showSection('pong');
 });
 
+document.addEventListener('DOMContentLoaded', function() {
+    const btnOpenInscription = document.getElementById('btn-open-inscription');
+    const sectionLogin = document.getElementById('ModalForm');
+    const sectionInscription = document.getElementById('ModalFormRegister');
+
+    btnOpenInscription.addEventListener('click', function() {
+        sectionLogin.style.display = 'none';
+        sectionInscription.style.display = 'block';
+
+    });
+});

@@ -25,7 +25,7 @@ document.getElementById('login-form').addEventListener('submit', function(event)
     const username = document.getElementById('login-username').value;
     const password = document.getElementById('login-password').value;
 
-    fetch('/login', {
+    fetch('/login/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -36,20 +36,39 @@ document.getElementById('login-form').addEventListener('submit', function(event)
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            const modal = document.getElementById('ModalForm');
-            const modalInstance = bootstrap.Modal.getInstance(modal);
-            modalInstance.hide();
+            $('#ModalForm').modal('hide');
             console.log(data.success);
         } else {
             console.error(data.error);
         }
     })
+    
     .catch(error => {
         console.error('Erreur lors de la requête:', error);
     });
 });
 
-
+function loadUserInfo() {
+    fetch('/api/user/info', {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken') 
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.username) {
+            // Si l'utilisateur est connecté, mettez à jour le contenu de la barre de navigation avec son pseudo
+            document.getElementById('user-info').innerText = data.username;
+        } else {
+            // Si l'utilisateur n'est pas connecté, affichez le bouton de connexion
+            document.getElementById('ModalForm').style.display = 'block';
+        }
+    })
+    .catch(error => {
+        console.error('Erreur lors du chargement des informations utilisateur:', error);
+    });
+}
 
 function getCookie(name) {
     let cookieValue = null;
