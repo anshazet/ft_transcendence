@@ -31,7 +31,7 @@ services:
   web:
     build: .
     container_name: django
-    entrypoint: ./django_docker/django-entrypoint.sh
+    entrypoint: ./project/django-entrypoint.sh
     volumes:
       - .:/code
     ports:
