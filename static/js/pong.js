@@ -1,37 +1,170 @@
 'use strict';
 
+import * as mat4 from "./esm/mat4.js";
+
 var canvas;
 var game;
 var anim;
+var gl;
+var shaderProgram;
+var programInfo;
 
+const is3D = false;
 const PLAYER_HEIGHT = 100;
 const PLAYER_WIDTH = 5;
 const MAX_SPEED = 12;
 
+const vsSource = `
+  attribute vec4 aVertexPosition;
+
+  uniform mat4 uModelViewMatrix;
+  uniform mat4 uProjectionMatrix;
+
+  void main() {
+    gl_Position = uProjectionMatrix * uModelViewMatrix * aVertexPosition;
+  }
+`;
+
+const fsSource = `
+  void main() {
+    gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+  }
+`;
+
+function initBuffers(gl){
+	const positionBuffer = gl.createBuffer();
+
+	gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+
+	const positions = [1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, -1.0];
+
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+
+	return {
+		position: positionBuffer,
+	};
+}
+
 function draw() {
-    var context = canvas.getContext('2d');
+	if (!is3D) {
+		var context = canvas.getContext('2d');
 
-    // Draw field
-    context.fillStyle = 'black';
-    context.fillRect(0, 0, canvas.width, canvas.height);
+		// Draw field
+		context.fillStyle = 'black';
+		context.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Draw middle line
-    context.strokeStyle = 'white';
-    context.beginPath();
-    context.moveTo(canvas.width / 2, 0);
-    context.lineTo(canvas.width / 2, canvas.height);
-    context.stroke();
+		// Draw middle line
+		context.strokeStyle = 'white';
+		context.beginPath();
+		context.moveTo(canvas.width / 2, 0);
+		context.lineTo(canvas.width / 2, canvas.height);
+		context.stroke();
 
-    // Draw players
-    context.fillStyle = 'white';
-    context.fillRect(0, game.player.y, PLAYER_WIDTH, PLAYER_HEIGHT);
-    context.fillRect(canvas.width - PLAYER_WIDTH, game.computer.y, PLAYER_WIDTH, PLAYER_HEIGHT);
+		// Draw players
+		context.fillStyle = 'white';
+		context.fillRect(0, game.player.y, PLAYER_WIDTH, PLAYER_HEIGHT);
+		context.fillRect(canvas.width - PLAYER_WIDTH, game.computer.y, PLAYER_WIDTH, PLAYER_HEIGHT);
 
-    // Draw ball
-    context.beginPath();
-    context.fillStyle = 'white';
-    context.arc(game.ball.x, game.ball.y, game.ball.r, 0, Math.PI * 2, false);
-    context.fill();
+		// Draw ball
+		context.beginPath();
+		context.fillStyle = 'white';
+		context.arc(game.ball.x, game.ball.y, game.ball.r, 0, Math.PI * 2, false);
+		context.fill();
+	} else {
+		const buffers = initBuffers(gl);
+		gl.clearColor(0.0, 0.0, 0.0, 1.0);
+		gl.clearDepth(1.0);
+		gl.enable(gl.DEPTH_TEST);
+		gl.depthFunc(gl.LEQUAL);
+
+		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+		const fieldOfView = (45 * Math.PI) / 180; // en radians
+		const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
+		const zNear = 0.1;
+		const zFar = 100.0;
+		const projectionMatrix = mat4.create();
+
+		mat4.perspective(projectionMatrix, fieldOfView, aspect, zNear, zFar);
+		const modelViewMatrix = mat4.create();
+		mat4.translate(
+			modelViewMatrix,
+			modelViewMatrix,
+			[-0.0, 0.0, -6.0],
+		);
+  		{
+			const numComponents = 2;
+			const type = gl.FLOAT;
+			const normalize = false;
+			const stride = 0;
+			const offset = 0;
+			gl.bindBuffer(gl.ARRAY_BUFFER, buffers.position);
+			gl.vertexAttribPointer(
+				programInfo.attribLocations.vertexPosition,
+				numComponents,
+				type,
+				normalize,
+				stride,
+				offset,
+			);
+			gl.enableVertexAttribArray(programInfo.attribLocations.vertexPosition);
+		}
+
+		gl.useProgram(programInfo.program);
+		gl.uniformMatrix4fv(
+    		programInfo.uniformLocations.projectionMatrix,
+    		false,
+    		projectionMatrix,
+		);
+		gl.uniformMatrix4fv(
+			programInfo.uniformLocations.modelViewMatrix,
+			false,
+			modelViewMatrix,
+		);
+
+		{
+			const offset = 0;
+			const vertexCount = 4;
+			gl.drawArrays(gl.TRIANGLE_STRIP, offset, vertexCount);
+		}
+	}
+}
+
+function initShaderProgram(gl, vsSource, fsSource) {
+	const vertexShader = loadShader(gl, gl.VERTEX_SHADER, vsSource);
+	const fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, fsSource);
+  
+	const shaderProgram = gl.createProgram();
+	gl.attachShader(shaderProgram, vertexShader);
+	gl.attachShader(shaderProgram, fragmentShader);
+	gl.linkProgram(shaderProgram);
+  
+	if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+	  alert(
+		"Impossible d'initialiser le programme shader : " +
+		  gl.getProgramInfoLog(shaderProgram),
+	  );
+	  return null;
+	}
+  
+	return shaderProgram;
+}
+
+function loadShader(gl, type, source) {
+	const shader = gl.createShader(type);
+	
+	gl.shaderSource(shader, source);
+	gl.compileShader(shader);	
+
+	if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+		alert(
+			"An error occurred compiling the shaders: " + gl.getShaderInfoLog(shader),
+		);
+		gl.deleteShader(shader);
+		return null;
+	}
+	
+	return shader;
 }
 
 function changeDirection(playerPosition) {
@@ -96,7 +229,6 @@ function ballMove() {
     } else if (game.ball.x < PLAYER_WIDTH) {
         collide(game.player);
     }
-
     game.ball.x += game.ball.speed.x;
     game.ball.y += game.ball.speed.y;
 }
@@ -138,7 +270,31 @@ function stop() {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    canvas = document.getElementById('canvas');
+    canvas = document.getElementById('jeu-pong');
+	if (is3D)
+	{
+		gl = canvas.getContext("webgl");
+
+		if (!gl) {
+			alert("Impossible d'initialiser WebGL. Votre navigateur ou votre machine peut ne pas le supporter.",);
+			return;
+		}
+		console.log("WebGL initialized.");
+		gl.clearColor(0.0, 0.0, 0.0, 1.0);
+		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+		shaderProgram = initShaderProgram(gl, vsSource, fsSource);
+		programInfo = {
+			program: shaderProgram,
+			attribLocations: {
+			  vertexPosition: gl.getAttribLocation(shaderProgram, "aVertexPosition"),
+			},
+			uniformLocations: {
+			  projectionMatrix: gl.getUniformLocation(shaderProgram, "uProjectionMatrix"),
+			  modelViewMatrix: gl.getUniformLocation(shaderProgram, "uModelViewMatrix"),
+			},
+		};
+	}
     console.log(canvas);
     if (canvas)
     {
