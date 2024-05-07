@@ -7,6 +7,11 @@ build:
 	sudo docker-compose -f $(COMPOSE_FILE) build
 	@echo "\n\ntranscendance is ready to be launched."
 
+update:
+	@docker cp ./static django:/static
+	@docker cp ./templates django:/templates
+	@docker cp ./pong django:/pong
+
 run:
 	sudo docker-compose -f $(COMPOSE_FILE) up -d
 	@echo "\n\ntranscendance is now running."
