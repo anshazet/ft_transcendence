@@ -8,7 +8,7 @@ services:
     volumes:
       - ./data/db:/var/lib/postgresql/data
     environment:
-      - DATABASE_HOST=127.0.0.1
+      - DATABASE_HOST=0.0.0.0
       - POSTGRES_DB=my_database
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=admin
@@ -31,7 +31,7 @@ services:
   web:
     build: .
     container_name: django
-    entrypoint: ./project/django-entrypoint.sh
+    entrypoint: ./pong/django-entrypoint.sh
     volumes:
       - .:/code
     ports:
