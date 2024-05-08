@@ -3,7 +3,7 @@ var shaderProgram;
 
 export function init_program_info(gl)
 {
-	programInfo = {
+	var programInfo = {
 		program: shaderProgram,
 		attribLocations: {
 			vertexPosition: gl.getAttribLocation(shaderProgram, 'aVertexPosition'),

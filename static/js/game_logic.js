@@ -1,6 +1,4 @@
-const PLAYER_HEIGHT = 100;
-const PLAYER_WIDTH = 5;
-const MAX_SPEED = 12;
+import * as engine from './engine.js';
 
 export function init_game() {
 	return {
@@ -34,8 +32,8 @@ export function draw(canvas, game) {
 
 	// Draw players
 	context.fillStyle = 'white';
-	context.fillRect(0, game.player.y, PLAYER_WIDTH, PLAYER_HEIGHT);
-	context.fillRect(canvas.width - PLAYER_WIDTH, game.computer.y, PLAYER_WIDTH, PLAYER_HEIGHT);
+	context.fillRect(0, game.player.y, engine.PLAYER_WIDTH, engine.PLAYER_HEIGHT);
+	context.fillRect(canvas.width - engine.PLAYER_WIDTH, game.computer.y, engine.PLAYER_WIDTH, engine.PLAYER_HEIGHT);
 
 	// Draw ball
 	context.beginPath();
@@ -45,8 +43,8 @@ export function draw(canvas, game) {
 }
 
 export function changeDirection(playerPosition, game) {
-    var impact = game.ball.y - playerPosition - PLAYER_HEIGHT / 2;
-    var ratio = 100 / (PLAYER_HEIGHT / 2);
+    var impact = game.ball.y - playerPosition - engine.PLAYER_HEIGHT / 2;
+    var ratio = 100 / (engine.PLAYER_HEIGHT / 2);
 
     // Get a value between 0 and 10
     game.ball.speed.y = Math.round(impact * ratio / 10);
@@ -58,24 +56,24 @@ export function playerMove(event, canvas, game) {
     var canvasLocation = canvas.getBoundingClientRect();
     var mouseLocation = event.clientY - canvasLocation.y;
 
-    if (mouseLocation < PLAYER_HEIGHT / 2) {
+    if (mouseLocation < engine.PLAYER_HEIGHT / 2) {
         game.player.y = 0;
-    } else if (mouseLocation > canvas.height - PLAYER_HEIGHT / 2) {
-        game.player.y = canvas.height - PLAYER_HEIGHT;
+    } else if (mouseLocation > canvas.height - engine.PLAYER_HEIGHT / 2) {
+        game.player.y = canvas.height - engine.PLAYER_HEIGHT;
     } else {
-        game.player.y = mouseLocation - PLAYER_HEIGHT / 2;
+        game.player.y = mouseLocation - engine.PLAYER_HEIGHT / 2;
     }
 	return game;
 }
 
 export function computerMove(game) {
-    game.computer.y += game.ball.speed.y * game.computer.speedRatio;
+    game.computer.y += game.ball.speed.y * game.computer.speedRatio * engine.FrameTime/20.0;
 	return game;
 }
 
 export function collide(player, game, canvas) {
     // The player does not hit the ball
-    if (game.ball.y < player.y || game.ball.y > player.y + PLAYER_HEIGHT) {
+    if (game.ball.y < player.y || game.ball.y > player.y + engine.PLAYER_HEIGHT) {
         game = reset(canvas);
 
         // Update score
@@ -92,7 +90,7 @@ export function collide(player, game, canvas) {
         game = changeDirection(player.y, game);
 
         // Increase speed if it has not reached max speed
-        if (Math.abs(game.ball.speed.x) < MAX_SPEED) {
+        if (Math.abs(game.ball.speed.x) < engine.MAX_SPEED) {
             game.ball.speed.x *= 1.2;
         }
     }
@@ -101,17 +99,20 @@ export function collide(player, game, canvas) {
 
 export function ballMove(canvas, game) {
     // Rebounds on top and bottom
-    if (game.ball.y > canvas.height || game.ball.y < 0) {
-        game.ball.speed.y *= -1;
-    }
+	if (game.ball.y > canvas.height && game.ball.speed.y > 0) {
+		game.ball.speed.y *= -1;
+	}
+	if (game.ball.y < 0 && game.ball.speed.y < 0) {
+		game.ball.speed.y *= -1;
+	}
 
-    if (game.ball.x > canvas.width - PLAYER_WIDTH) {
+    if (game.ball.x > canvas.width - engine.PLAYER_WIDTH) {
         game = collide(game.computer, game, canvas);
-    } else if (game.ball.x < PLAYER_WIDTH) {
+    } else if (game.ball.x < engine.PLAYER_WIDTH) {
         game = collide(game.player, game, canvas);
     }
-    game.ball.x += game.ball.speed.x;
-    game.ball.y += game.ball.speed.y;
+    game.ball.x += game.ball.speed.x * engine.FrameTime/20.0;
+    game.ball.y += game.ball.speed.y * engine.FrameTime/20.0;
 
 	return game;
 }
@@ -122,8 +123,8 @@ export function reset(canvas) {
 	game = init_game();
     game.ball.x = canvas.width / 2;
     game.ball.y = canvas.height / 2;
-    game.player.y = canvas.height / 2 - PLAYER_HEIGHT / 2;
-    game.computer.y = canvas.height / 2 - PLAYER_HEIGHT / 2;
+    game.player.y = canvas.height / 2 - engine.PLAYER_HEIGHT / 2;
+    game.computer.y = canvas.height / 2 - engine.PLAYER_HEIGHT / 2;
 
     // Reset speed
     game.ball.speed.x = 3;
