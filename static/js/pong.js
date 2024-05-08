@@ -10,7 +10,7 @@ var anim;
 var gl;
 var programInfo;
 
-const is3D = false;
+const is3D = true;
 
 const vsSource = `
   attribute vec4 aVertexPosition;
@@ -87,30 +87,3 @@ window.onload = (event) => {
     document.querySelector('#start-game').addEventListener('click', play);
     document.querySelector('#stop-game').addEventListener('click', stop);
 };
-
-// document.addEventListener('DOMContentLoaded', function () {
-//     canvas = document.getElementById('jeu-pong');
-
-// 	if (is3D)
-// 	{
-// 		gl = init_webgl(canvas, vsSource, fsSource);
-// 		programInfo = init_program_info(gl);
-// 	}
-
-//     console.log(canvas);
-//     if (canvas)
-//     {
-//         game = init_game();
-//     } else {
-//         console.error("Canvas element not found.");
-// };
-
-//     game = reset(canvas);
-
-//     // Mouse move event
-//     canvas.addEventListener('mousemove', playerMovement);
-
-//     document.querySelector('#start-game').addEventListener('click', play);
-//     document.querySelector('#stop-game').addEventListener('click', stop);
-
-// });

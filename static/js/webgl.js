@@ -32,7 +32,8 @@ export function init_webgl(canvas, vsSource, fsSource)
 	return gl;
 }
 
-export function draw_scene(gl, programInfo) {
+export function draw_scene(gl, programInfo)
+{
 	const buffers = initBuffers(gl);
 	gl.clearColor(0.0, 0.0, 0.0, 1.0);
 	gl.clearDepth(1.0);
@@ -54,7 +55,8 @@ export function draw_scene(gl, programInfo) {
 		modelViewMatrix,
 		[-0.0, 0.0, -6.0],
 	);
-	  {
+
+	{
 		const numComponents = 2;
 		const type = gl.FLOAT;
 		const normalize = false;
@@ -78,6 +80,7 @@ export function draw_scene(gl, programInfo) {
 		false,
 		projectionMatrix,
 	);
+
 	gl.uniformMatrix4fv(
 		programInfo.uniformLocations.modelViewMatrix,
 		false,
@@ -91,13 +94,13 @@ export function draw_scene(gl, programInfo) {
 	}
 }
 
-export function initBuffers(gl){
-	const positionBuffer = gl.createBuffer();
-
-	gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+export function initBuffers(gl)
+{
 
 	const positions = [1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, -1.0];
 
+	const positionBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
 
 	const colors = [
@@ -117,7 +120,8 @@ export function initBuffers(gl){
 	};
 }
 
-export function initShaderProgram(gl, vsSource, fsSource) {
+export function initShaderProgram(gl, vsSource, fsSource)
+{
 	const vertexShader = loadShader(gl, gl.VERTEX_SHADER, vsSource);
 	const fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, fsSource);
   
@@ -137,7 +141,8 @@ export function initShaderProgram(gl, vsSource, fsSource) {
 	return shaderProgram;
 }
 
-export function loadShader(gl, type, source) {
+export function loadShader(gl, type, source)
+{
 	const shader = gl.createShader(type);
 	
 	gl.shaderSource(shader, source);
