@@ -18,7 +18,7 @@
 }
 
 #section-home, #section-pong, #section-tournoi, #section-classement, #section-profil {
-    background-image: url('../images/backgroung.jpg');
+    background-image: url('../images/background.png');
 }
 
 
@@ -29,11 +29,38 @@
   color: #da0cd0;  */
 
 
-h1, h2, h3, h4, h5, h6 {
+h1 {
   font-family: 'Oswald', sans-serif;
   font-weight: 400;
   color: #0c84da;
   
+}
+
+h2 {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 400;
+  color: #0c84da;
+  
+}
+
+h3 {
+  font-family: 'Oswald', sans-serif;
+  font-size: 3.5em;  /* Large font size for visibility */
+  font-weight: 400;  /* Normal weight for better readability */
+  color: #0c84da;  /* Specific blue color */
+  text-shadow: 3px 3px 3px rgba(0,0,0,0.5);  /* Slight shadow for depth */
+  text-align: center;  /* Centers the text horizontally */
+  position: absolute;
+  top: 100px;  /* Distance from the top of the container */
+  left: 50%;  /* Center horizontally */
+  transform: translateX(-50%); /* Shift it left by half its width to truly center it */
+  margin-top: 0;  /* No need for margin-top as top is used for positioning */
+}
+
+h4 {
+  text-align: center;
+  padding-top: 5em;
+  color: rgb(197, 225, 236);
 }
 
 .navbar-dark .navbar-nav .nav-link.highlight:hover {
@@ -55,5 +82,58 @@ h1, h2, h3, h4, h5, h6 {
   width: 100%;
 }
 
+/* Custom Navbar Styles */
+.navbar.custom-navbar {
+  background-color: #000517 !important; /* Change to any color you like */
+  border-bottom: 1px solid #005fc4; /* Optional: adds a border under the navbar */
+}
 
-/* text-shadow: 3px 3px 5px rgba(0,0,0,0.5);*/
+.navbar-dark .navbar-nav .nav-link {
+  color: #41b8e0;
+}
+
+.navbar-dark .navbar-nav .nav-link:hover {
+  color: #e2e4d9; /* Lighter grey on hover for better interaction feedback */
+}
+
+/* Customizes the background of the modal */
+.modal-content {
+  background-color: #da0fd0; /* Dark background for the modal */
+  color: #fff; /* White text color */
+  border: 1px solid #6cfaf1; /* Adds a border with a custom color */
+}
+
+/* Customizes the form input fields */
+.modal-content .form-control {
+  background-color: transparent; /* Transparent background for input fields */
+  color: #fff; /* White text color for input */
+  border-color: #aaa; /* Custom color for the input borders */
+}
+
+/* Customizes buttons in the modal */
+.modal-content .btn {
+  background-color: #41b8e0; /* Custom button color */
+  color: #fff; /* White text for buttons */
+  border: none; /* No border for a cleaner look */
+}
+
+
+/* Changes on hover for buttons */
+.modal-content .btn:hover {
+  background-color: #961d80; /* Darker shade on hover */
+}
+
+/* Style for the close button */
+.btn-close {
+  color: #fff; /* Changes the color of the close button */
+}
+
+/* Custom styles for specific buttons like 'LOGIN' and 'Se connecter avec 42Auth' */
+#login-button, #btn-open-login-42, #btn-open-inscription {
+  background-color: #41b8e0; /* Blue background for better visibility */
+  color: #ffffff; /* White text */
+}
+
+#login-button:hover, #btn-open-login-42:hover, #btn-open-inscription:hover {
+  background-color: #1048a9; /* Darker bleu on hover */
+}
