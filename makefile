@@ -1,13 +1,18 @@
 NAME = transcendance
 COMPOSE_FILE = ./docker-compose.yml
 
-all: build run
+all: build start
 
 build:
 	sudo docker-compose -f $(COMPOSE_FILE) build
 	@echo "\n\ntranscendance is ready to be launched."
 
-run:
+update:
+	@docker cp ./static django:/static
+	@docker cp ./templates django:/templates
+	@docker cp ./pong django:/pong
+
+start:
 	sudo docker-compose -f $(COMPOSE_FILE) up -d
 	@echo "\n\ntranscendance is now running."
 
