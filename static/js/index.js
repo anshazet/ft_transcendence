@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
             showSection(targetId);
         });
     });
-    showSection('pong');
+    showSection('home');
 });
 
 document.addEventListener('DOMContentLoaded', function() {
