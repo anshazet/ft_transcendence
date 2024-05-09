@@ -81,7 +81,7 @@ DATABASES = {
         'USER': 'admin',
         'PASSWORD': 'admin',
         'HOST': 'db',  # C'est le nom du service PostgreSQL dans Docker Compose
-        'PORT': '',
+        'PORT': '5432',
     }
 }
 

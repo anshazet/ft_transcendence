@@ -19,6 +19,7 @@ document.getElementById('register-form').addEventListener('submit', function(eve
     });
 });
 
+
 document.getElementById('login-form').addEventListener('submit', function(event) {
     event.preventDefault();
 
@@ -38,6 +39,7 @@ document.getElementById('login-form').addEventListener('submit', function(event)
         if (data.success) {
             $('#ModalForm').modal('hide');
             console.log(data.success);
+            loadUserInfo();
         } else {
             console.error(data.error);
         }
@@ -48,27 +50,25 @@ document.getElementById('login-form').addEventListener('submit', function(event)
     });
 });
 
-function loadUserInfo() {
-    fetch('/api/user/info', {
-        method: 'GET',
+
+document.getElementById('logout-button').addEventListener('click', function(event) {
+    fetch('/logout/', {
+        method: 'POST',
         headers: {
-            'Authorization': 'Bearer ' + localStorage.getItem('accessToken') 
+            'X-CSRFToken': getCookie('csrftoken')
         }
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.username) {
-            // Si l'utilisateur est connecté, mettez à jour le contenu de la barre de navigation avec son pseudo
-            document.getElementById('user-info').innerText = data.username;
+    .then(response => {
+        if (response.ok) {
+            console.log('Déconnexion réussie');
         } else {
-            // Si l'utilisateur n'est pas connecté, affichez le bouton de connexion
-            document.getElementById('ModalForm').style.display = 'block';
+            console.error('Erreur lors de la déconnexion:', response.statusText);
         }
     })
     .catch(error => {
-        console.error('Erreur lors du chargement des informations utilisateur:', error);
+        console.error('Erreur lors de la requête de déconnexion:', error);
     });
-}
+});
 
 function getCookie(name) {
     let cookieValue = null;

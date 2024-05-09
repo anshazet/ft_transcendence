@@ -38,6 +38,8 @@
         <h1>Profil de {{ user.username }}</h1>
         <p>Nom d'utilisateur : {{ user.username }}</p>
         <p>Adresse e-mail : {{ user.email }}</p>
+        {% csrf_token %}
+        <button id="logout-button">Logout</button>
     </div>
 
     <div id="section-pong" class="page" style="display: none;">
@@ -63,35 +65,35 @@
 
     <div class="modal fade" id="ModalForm" tabindex="-1" aria-labelledby="ModalFormLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-            <div class="modal-body">
-                <button type="button" class="btn-close btn-close-white" id="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                <div class="myform bg-dark">
-                    <h1 class="text-center">Se connecter</h1>
-                    <form id="login-form">
-                        {% csrf_token %}
-                        {{ form.as_p }}
-                        <div class="mb-3 mt-4">
-                            <label for="InputUsername" class="form-label">Nom d'utilisateur</label>
-                            <input type="username" class="form-control" id="login-username" aria-describedby="emailHelp">
-                        </div>
-                        <div class="mb-3">
-                            <label for="InputPassword" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="login-password">
-                        </div>
-                        <button type="submit" class="btn btn-light mt-3" id="login-button">LOGIN</button>
-                        ou
-                        <button id="btn-open-login-42" type="button" class="btn btn-light mt-3">Se connecter avec 42Auth</button>
-                        <button id="btn-open-inscription" type="button" class="btn btn-light mt-3" data-bs-toggle="modal" data-bs-target="#ModalFormRegister">
-                            S'inscrire
-                        </button>
-                    </form>
+            <div class="modal-content">
+                <div class="modal-body">
+                    <button type="button" class="btn-close btn-close-white" id="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="myform bg-dark">
+                        <h1 class="text-center">Se connecter</h1>
+                        <form id="login-form" method="post">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <div class="mb-3 mt-4">
+                                <label for="login-username" class="form-label">Nom d'utilisateur</label>
+                                <input type="text" class="form-control" id="login-username" name="username" aria-describedby="emailHelp" autocomplete="username">
+                            </div>
+                            <div class="mb-3">
+                                <label for="login-password" class="form-label">Mot de passe</label>
+                                <input type="password" class="form-control" id="login-password" name="password" autocomplete="current-password">
+                            </div>
+                            <button type="submit" class="btn btn-light mt-3" id="login-button">Se connecter</button>
+                            ou
+                            <button id="btn-open-login-42" type="button" class="btn btn-light mt-3">Se connecter avec 42Auth</button>
+                            <button id="btn-open-inscription" type="button" class="btn btn-light mt-3" data-bs-toggle="modal" data-bs-target="#ModalFormRegister">
+                                S'inscrire
+                            </button>
+                        </form>                    
+                    </div>
                 </div>
             </div>
-          </div>
         </div>
     </div>
-
+    
     <div class="modal fade" id="ModalFormRegister" tabindex="-1" aria-labelledby="ModalFormLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -102,16 +104,16 @@
                         <form id="register-form" method="post">
                             {% csrf_token %}
                             <div class="mb-3 mt-4">
-                                <label for="email-register" class="form-label">Adresse mail</label>
+                                <label for="email-register" class="form-label">Adresse e-mail</label>
                                 <input type="email" class="form-control" id="email-register" name="email" aria-describedby="email">
                             </div>
                             <div class="mb-3 mt-4">
                                 <label for="username-register" class="form-label">Nom d'utilisateur</label>
-                                <input type="text" class="form-control" id="username-register" name="username" aria-describedby="username">
+                                <input type="text" class="form-control" id="username-register" name="username" aria-describedby="username" autocomplete="username">
                             </div>
                             <div class="mb-3 mt-4">
                                 <label for="password-register" class="form-label">Mot de passe</label>
-                                <input type="password" class="form-control" id="password-register" name="password" aria-describedby="password">
+                                <input type="password" class="form-control" id="password-register" name="password" aria-describedby="password" autocomplete="new-password">
                             </div>
                             <button type="submit" class="btn btn-primary">S'inscrire</button>
                             <div id="register-error" class="text-danger"></div> 
