@@ -20,6 +20,7 @@ document.getElementById('register-form').addEventListener('submit', function(eve
 });
 
 
+
 document.getElementById('login-form').addEventListener('submit', function(event) {
     event.preventDefault();
 
@@ -39,7 +40,6 @@ document.getElementById('login-form').addEventListener('submit', function(event)
         if (data.success) {
             $('#ModalForm').modal('hide');
             console.log(data.success);
-            loadUserInfo();
         } else {
             console.error(data.error);
         }
