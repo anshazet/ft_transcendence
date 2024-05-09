@@ -1,11 +1,11 @@
-from http.client import HTTPResponse
-from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.decorators import login_required
 from .forms import LoginForm
+from django.contrib.auth import logout
+from django.shortcuts import redirect
+from django.contrib.auth.decorators import login_required
 
 
 @csrf_exempt
@@ -24,8 +24,6 @@ def register_user(request):
         return JsonResponse({'error': 'Méthode non autorisée'}, status=405)
     
 
-from django.http import JsonResponse
-
 def login_user(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
@@ -42,3 +40,12 @@ def login_user(request):
             return JsonResponse({'success': False, 'error_message': 'Formulaire invalide.'})
     else:
         return JsonResponse({'success': False, 'error_message': 'Méthode de requête non autorisée.'})
+
+def logout_view(request):
+    if request.user.is_authenticated:
+        logout(request)
+    return redirect('login_user')
+
+@login_required
+def check_user_logged_in(request):
+    return JsonResponse({'logged_in': True})

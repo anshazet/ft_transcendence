@@ -76,10 +76,15 @@ WSGI_APPLICATION = 'pong.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'my_database',
+        'USER': 'admin',
+        'PASSWORD': 'admin',
+        'HOST': 'db',  # C'est le nom du service PostgreSQL dans Docker Compose
+        'PORT': '5432',
     }
 }
+
 
 
 # Password validation

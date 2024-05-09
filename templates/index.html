@@ -4,16 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"> -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
     <link rel="stylesheet" href="{% static 'css/index.css' %}">
     <title>Let's Pong - Accueil</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark custom-navbar">
+    <!-- <nav class="navbar navbar-expand-lg navbar-dark bg-dark custom-navbar">
         <div class="container-fluid" id="root">
             <a class="navbar-brand">Let's Pong</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,12 +42,34 @@
                 <a class="nav-link" href="#profil" onclick="showSection('profil')">Mon profil</a>
             </button>
         </div>
+    </nav> -->
+    <input type="hidden" id="userIsLoggedIn" value="{% if user.is_authenticated %}true{% else %}false{% endif %}">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark custom-navbar">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Let's Pong</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link highlight" href="#home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link highlight" href="#pong">Pong</a></li>
+                    <li class="nav-item"><a class="nav-link highlight" href="#tournoi">Mode Tournoi</a></li>
+                    <li class="nav-item"><a class="nav-link highlight" href="#classement">Classement</a></li>
+                </ul>
+            </div>
+            <button type="button" class="btn btn-dark" id="user-profile-button" data-bs-toggle="modal">
+                <a class="nav-link" href="#profil" onclick="showSection('profil')">Mon profil</a>
+            </button>
+        </div>
     </nav>
     
     <div id="section-profil" class="page" style="display: none;">
         <h1>Profil de {{ user.username }}</h1>
         <p>Nom d'utilisateur : {{ user.username }}</p>
         <p>Adresse e-mail : {{ user.email }}</p>
+        {% csrf_token %}
+        <button id="logout-button">Logout</button>
     </div>
 
     <div id="section-home" class="page" style="display: none;">
@@ -53,6 +77,19 @@
         <h4>Enjoy playing Pong or participate in our tournaments.</h4>
     </div>    
 
+
+    <!-- <div id="section-pong" class="page" style="display: none;">
+        <div class="game-controls">
+            <button id="start-game">Démarrer</button>
+            <button id="stop-game">Arrêter</button>
+        </div>
+        <canvas id="jeu-pong" width="640" height="480"></canvas>
+        <div class="scoreboard">
+            <p>Joueur 1: <em id="player-score">0</em></p>
+            <p>Joueur 2: <em id="computer-score">0</em></p>
+        </div>
+    </div> -->
+    
     <div id="section-pong" class="page" style="display: none;">
          <p>Joueur 1 : <em id="player-score">0</em> - Joueur 2 : <em id="computer-score">0</em></p>
         <ul>
@@ -78,35 +115,35 @@
 
     <div class="modal fade" id="ModalForm" tabindex="-1" aria-labelledby="ModalFormLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-            <div class="modal-body">
-                <button type="button" class="btn-close btn-close-white" id="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                <div class="myform bg-dark">
-                    <h1 class="text-center">Se connecter</h1>
-                    <form id="login-form">
-                        {% csrf_token %}
-                        {{ form.as_p }}
-                        <div class="mb-3 mt-4">
-                            <label for="InputUsername" class="form-label">Nom d'utilisateur</label>
-                            <input type="username" class="form-control" id="login-username" aria-describedby="emailHelp">
-                        </div>
-                        <div class="mb-3">
-                            <label for="InputPassword" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="login-password">
-                        </div>
-                        <button type="submit" class="btn btn-light mt-3" id="login-button">LOGIN</button>
-                        ou
-                        <button id="btn-open-login-42" type="button" class="btn btn-light mt-3">Se connecter avec 42Auth</button>
-                        <button id="btn-open-inscription" type="button" class="btn btn-light mt-3" data-bs-toggle="modal" data-bs-target="#ModalFormRegister">
-                            S'inscrire
-                        </button>
-                    </form>
+            <div class="modal-content">
+                <div class="modal-body">
+                    <button type="button" class="btn-close btn-close-white" id="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="myform bg-dark">
+                        <h1 class="text-center">Se connecter</h1>
+                        <form id="login-form" method="post">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <div class="mb-3 mt-4">
+                                <label for="login-username" class="form-label">Nom d'utilisateur</label>
+                                <input type="text" class="form-control" id="login-username" name="username" aria-describedby="emailHelp" autocomplete="username">
+                            </div>
+                            <div class="mb-3">
+                                <label for="login-password" class="form-label">Mot de passe</label>
+                                <input type="password" class="form-control" id="login-password" name="password" autocomplete="current-password">
+                            </div>
+                            <button type="submit" class="btn btn-light mt-3" id="login-button">Se connecter</button>
+                            ou
+                            <button id="btn-open-login-42" type="button" class="btn btn-light mt-3">Se connecter avec 42Auth</button>
+                            <button id="btn-open-inscription" type="button" class="btn btn-light mt-3" data-bs-toggle="modal" data-bs-target="#ModalFormRegister">
+                                S'inscrire
+                            </button>
+                        </form>                    
+                    </div>
                 </div>
             </div>
-          </div>
         </div>
     </div>
-
+    
     <div class="modal fade" id="ModalFormRegister" tabindex="-1" aria-labelledby="ModalFormLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -117,16 +154,16 @@
                         <form id="register-form" method="post">
                             {% csrf_token %}
                             <div class="mb-3 mt-4">
-                                <label for="email-register" class="form-label">Adresse mail</label>
+                                <label for="email-register" class="form-label">Adresse e-mail</label>
                                 <input type="email" class="form-control" id="email-register" name="email" aria-describedby="email">
                             </div>
                             <div class="mb-3 mt-4">
                                 <label for="username-register" class="form-label">Nom d'utilisateur</label>
-                                <input type="text" class="form-control" id="username-register" name="username" aria-describedby="username">
+                                <input type="text" class="form-control" id="username-register" name="username" aria-describedby="username" autocomplete="username">
                             </div>
                             <div class="mb-3 mt-4">
                                 <label for="password-register" class="form-label">Mot de passe</label>
-                                <input type="password" class="form-control" id="password-register" name="password" aria-describedby="password">
+                                <input type="password" class="form-control" id="password-register" name="password" aria-describedby="password" autocomplete="new-password">
                             </div>
                             <button type="submit" class="btn btn-primary">S'inscrire</button>
                             <div id="register-error" class="text-danger"></div> 
@@ -148,9 +185,10 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
     
     <script>
-        $(document).ready(function(){
+        var userIsLoggedIn = document.getElementById('userIsLoggedIn').value === 'true';
+        if (!userIsLoggedIn) {
             $('#ModalForm').modal('show');
-        });
+        } 
     </script>
 </body>
 </html>

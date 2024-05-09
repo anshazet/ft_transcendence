@@ -1,7 +1,25 @@
 .modal-content {
     width: 80%;
     margin: 0 auto;
+    border: 1px solid #2ad5ec; /* A form border */
   }
+  /* Customizes buttons in the modal */
+  .modal-content .btn {
+    background-color: #41b8e0; /* Custom button color */
+    border: none; /* No border for a cleaner look */
+  }
+
+  #login-button:hover, #btn-open-login-42:hover, #btn-open-inscription:hover {
+    background-color: #1048a9; /* Darker bleu on hover*/
+     color: #41b8e0; /*colour text link button */
+  }
+  
+/* Custom styles for specific buttons like 'LOGIN' and 'Se connecter avec 42Auth' */
+#login-button, #btn-open-login-42, #btn-open-inscription {
+  background-color: #41b8e0; /* Blue background for better visibility */
+  color: #1048a9; /* White text */
+}
+  
   .modal-body {
     padding: 0;
   }
@@ -17,7 +35,8 @@
   .myform {
     padding: 2em;
     max-width: 100%;
-    color: #fff;
+    background-color: #000f42 !important; /* colour background form */
+    color: #ffffff; /* colour text form */
     box-shadow: 0 4px 6px 0 rgba(22, 22, 26, 0.18);
   }
   @media (max-width: 576px) {
