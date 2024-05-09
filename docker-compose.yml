@@ -8,7 +8,6 @@ services:
     volumes:
       - ./data/db:/var/lib/postgresql/data
     environment:
-      - DATABASE_HOST=0.0.0.0
       - POSTGRES_DB=my_database
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=admin
@@ -37,7 +36,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - POSTGRES_NAME=my_database
+      - POSTGRES_DB=my_database
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=admin
     depends_on:
