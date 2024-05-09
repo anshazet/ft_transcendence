@@ -39,6 +39,7 @@ document.getElementById('login-form').addEventListener('submit', function(event)
     .then(data => {
         if (data.success) {
             $('#ModalForm').modal('hide');
+            window.location.reload();
             console.log(data.success);
         } else {
             console.error(data.error);
@@ -51,6 +52,7 @@ document.getElementById('login-form').addEventListener('submit', function(event)
 });
 
 
+
 document.getElementById('logout-button').addEventListener('click', function(event) {
     fetch('/logout/', {
         method: 'POST',
@@ -61,6 +63,7 @@ document.getElementById('logout-button').addEventListener('click', function(even
     .then(response => {
         if (response.ok) {
             console.log('Déconnexion réussie');
+            window.location.reload();
         } else {
             console.error('Erreur lors de la déconnexion:', response.statusText);
         }
@@ -69,6 +72,7 @@ document.getElementById('logout-button').addEventListener('click', function(even
         console.error('Erreur lors de la requête de déconnexion:', error);
     });
 });
+
 
 function getCookie(name) {
     let cookieValue = null;
