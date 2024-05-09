@@ -1,14 +1,24 @@
 let currentSection = null;
 
 function showSection(sectionId) {
+    console.log("Showing section:", sectionId);  // Check which section is being requested to show
     const current = document.getElementById('section-' + currentSection);
     const target = document.getElementById('section-' + sectionId);
     
+    // if (current) {
+    //     current.style.display = 'none';
+    // }
+    // target.style.display = 'block';
+    // currentSection = sectionId;
     if (current) {
         current.style.display = 'none';
     }
-    target.style.display = 'block';
-    currentSection = sectionId;
+    if (target) {
+        target.style.display = 'block';
+        currentSection = sectionId;
+    } else {
+        console.error('No section found for:', sectionId);
+    }
 }
 
 document.addEventListener('DOMContentLoaded', function() {
