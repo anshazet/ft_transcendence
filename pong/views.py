@@ -61,6 +61,7 @@ CLIENT_ID = 'u-s4t2ud-69c7a5257ffb84374c9f2c6a08736a4f080650b67ed9308ad6b3f31fb7
 CLIENT_SECRET = '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'
 REDIRECT_URI = 'http://localhost:8000/login42/'
 
+@csrf_exempt
 def login_42(request):
     code = request.GET.get('code')
     if code:
@@ -84,16 +85,14 @@ def login_42(request):
                         user_data = json.loads(user_response.read().decode('utf-8'))
                         username = user_data['login']
                         email = user_data['email']
-                        # Vérifier si l'utilisateur existe déjà
                         if User.objects.filter(username=username).exists():
-                            # Connectez l'utilisateur existant
                             user = User.objects.get(username=username)
                             user.backend = 'django.contrib.auth.backends.ModelBackend'
                             login(request, user)
                             return redirect('http://localhost:8000')
                         else:
-                            # Créer un nouvel utilisateur
                             User.objects.create_user(username=username, email=email)
+                            user = User.objects.get(username=username)
                             login(request, user)
                             return redirect('http://localhost:8000')
                     else:
