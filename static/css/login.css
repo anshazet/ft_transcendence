@@ -31,11 +31,13 @@
   h1 {
     font-size: 2.3em;
     font-weight: bold;
+    padding-top: 15px;
+    
   }
   .myform {
     padding: 2em;
     max-width: 100%;
-    background-color: #000f42 !important; /* colour background form */
+    background-color: #51858d !important; /* colour background form */
     color: #ffffff; /* colour text form */
     box-shadow: 0 4px 6px 0 rgba(22, 22, 26, 0.18);
   }
@@ -80,3 +82,60 @@
   p a:hover {
     color: #fff;
   }
+
+  /* Style profil */
+  .profile-info {
+    margin-top: 10px;
+    background-color: #51858d86;  /* Background */
+    border: 1px solid #85d7f3;  /* Slight border for the rectangle */
+    padding: 15px;
+    margin-left: 100px;  /* Left margin to push the box right */
+    margin-right: 300px;
+    width: auto; /* ???????? Adjust width as needed */
+    border-radius: 5px;
+    padding-left: 30px;
+}
+
+.profile-item {
+    margin-bottom: 20px; /* Space between items */
+    font-size: 16px; /* Larger font for readability */
+    color: #05178e; /* Darker text for contrast */
+    font-size: 1.5em;
+    
+  }
+  
+  .profile-label {
+    font-weight: bold; /* Make labels bold */
+    margin-right: 10px; /* Space between label and value */
+}
+
+#section-profil button {
+    background-color: #0c84da; /* Match other button styles */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    display: block; /* Ensure it's a block to fill width */
+    width: 100%; /* Full width */
+    margin-top: 20px; /* Space above the button */
+    margin-left: 100px;
+}
+
+#section-profil button:hover {
+    background-color: #0056b3; /* Darker on hover */
+}
+
+.page {
+  justify-content: flex-start; /* Aligns content to the start of the page horizontally */
+}
+
+.profile-item {
+  text-align: left; /* Aligns text to the left */
+}
+
+/* Optional: Adjust the overall alignment within the profile-info if needed */
+.profile-info {
+  align-items: flex-start; /* Aligns items to the start vertically within the container */
+}

@@ -58,58 +58,55 @@
                     <li class="nav-item"><a class="nav-link highlight" href="#classement">Classement</a></li>
                 </ul>
             </div>
-            <button type="button" class="btn btn-dark" id="user-profile-button" data-bs-toggle="modal">
+            <!-- <button type="button" class="btn btn-dark" id="user-profile-button" data-bs-toggle="modal">
                 <a class="nav-link" href="#profil" onclick="showSection('profil')">Mon profil</a>
-            </button>
+            </button> -->
+            <a href="#profil" class="btn btn-dark game-button" id="user-profile-button" onclick="showSection('profil')" role="button">Mon profil</a>
+            
         </div>
     </nav>
-    
-    <div id="section-profil" class="page" style="display: none;">
-        <h1>Profil de {{ user.username }}</h1>
-        <p>Nom d'utilisateur : {{ user.username }}</p>
-        <p>Adresse e-mail : {{ user.email }}</p>
-        {% csrf_token %}
-        <button id="logout-button">Logout</button>
-    </div>
 
+    <div id="section-profil" class="page" style="display: none;">
+        <h5>Profil de {{ user.username }}</h5>
+        <div class="profile-info">
+            <p class="profile-item"><span class="profile-label">Nom d'utilisateur:</span> {{ user.username }}</p>
+            <p class="profile-item"><span class="profile-label">Adresse e-mail:</span> {{ user.email }}</p>
+        </div>
+        {% csrf_token %}
+        <!-- <button id="logout-button">Logout</button> -->
+        <button id="logout-button" class="game-button">Logout</button>
+    </div>
+    
     <div id="section-home" class="page" style="display: none;">
         <h3>Welcome to Let's Pong!</h3>
         <h4>Enjoy playing Pong or participate in our tournaments.</h4>
     </div>    
-
-
-    <!-- <div id="section-pong" class="page" style="display: none;">
-        <div class="game-controls">
-            <button id="start-game">Démarrer</button>
-            <button id="stop-game">Arrêter</button>
-        </div>
-        <canvas id="jeu-pong" width="640" height="480"></canvas>
-        <div class="scoreboard">
-            <p>Joueur 1: <em id="player-score">0</em></p>
-            <p>Joueur 2: <em id="computer-score">0</em></p>
-        </div>
-    </div> -->
     
     <div id="section-pong" class="page" style="display: none;">
-         <p>Joueur 1 : <em id="player-score">0</em> - Joueur 2 : <em id="computer-score">0</em></p>
+        <p class="score-display">Joueur 1 : <em id="player-score">0</em> - Joueur 2 : <em id="computer-score">0</em></p>
         <ul>
             <li>
-                <button id="start-game">Démarrer</button>
+                <button id="start-game" class="game-button">Démarrer</button>
             </li>
             <li>
-                <button id="stop-game">Arrêter</button>
+                <button id="stop-game" class="game-button">Arrêter</button>
             </li>
         </ul>
         <canvas id="jeu-pong" width="640" height="480"></canvas>
     </div>
 
     <div id="section-tournoi" class="page" style="display: none;">
-        <h2>Welcome to tournoi Pong!</h2>
+        <h5>Welcome to tournoi Pong!</h5>
 
     </div>
 
     <div id="section-classement" class="page" style="display: none;">
-        <h2>Classement</h2>
+        <h5>Classement</h5>
+        <div class="profile-info">
+            <p class="profile-item"><span class="profile-label">Player 1</p>
+            <p class="profile-item"><span class="profile-label">Player 2</p>
+
+        </div>
 
     </div>
 
