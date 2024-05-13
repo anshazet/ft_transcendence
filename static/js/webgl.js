@@ -1,9 +1,11 @@
 import * as mat4 from "./esm/mat4.js";
 var shaderProgram;
+var gl;
+var programInfo;
 
 export function init_program_info(gl)
 {
-	var programInfo = {
+	programInfo = {
 		program: shaderProgram,
 		attribLocations: {
 			vertexPosition: gl.getAttribLocation(shaderProgram, 'aVertexPosition'),
@@ -14,12 +16,11 @@ export function init_program_info(gl)
 		  modelViewMatrix: gl.getUniformLocation(shaderProgram, "uModelViewMatrix"),
 		},
 	};
-	return programInfo;
 }
 
 export function init_webgl(canvas, vsSource, fsSource)
 {	
-	const gl = canvas.getContext("webgl");
+	gl = canvas.getContext("webgl");
 
 	if (!gl) {
 		alert("Impossible d'initialiser WebGL. Votre navigateur ou votre machine peut ne pas le supporter.",);
@@ -29,10 +30,10 @@ export function init_webgl(canvas, vsSource, fsSource)
 	gl.clearColor(0.0, 0.0, 0.0, 1.0);
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 	shaderProgram = initShaderProgram(gl, vsSource, fsSource);
-	return gl;
+	init_program_info(gl);
 }
 
-export function draw_scene(gl, programInfo)
+export function draw_scene()
 {
 	const buffers = initBuffers(gl);
 	gl.clearColor(0.0, 0.0, 0.0, 1.0);
@@ -72,6 +73,24 @@ export function draw_scene(gl, programInfo)
 			offset,
 		);
 		gl.enableVertexAttribArray(programInfo.attribLocations.vertexPosition);
+	}
+
+	{
+		const numComponents = 4;
+		const type = gl.FLOAT;
+		const normalize = false;
+		const stride = 0;
+		const offset = 0;
+		gl.bindBuffer(gl.ARRAY_BUFFER, buffers.color);
+		gl.vertexAttribPointer(
+			programInfo.attribLocations.vertexColor,
+			numComponents,
+			type,
+			normalize,
+			stride,
+			offset,
+		);
+		gl.enableVertexAttribArray(programInfo.attribLocations.vertexColor);
 	}
 
 	gl.useProgram(programInfo.program);

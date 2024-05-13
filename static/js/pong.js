@@ -7,8 +7,6 @@ import * as engine from "./engine.js";
 var canvas;
 var game;
 var anim;
-var gl;
-var programInfo;
 
 const is3D = true;
 
@@ -31,7 +29,7 @@ const fsSource = `
 
 function play() {
 	if (is3D)
-		draw_scene(gl, programInfo);
+		draw_scene();
 	else
 		draw(canvas, game);
 
@@ -54,7 +52,7 @@ function stop() {
 	document.querySelector('#player-score').textContent = game.player.score;
 
     if (is3D)
-		draw_scene(gl, programInfo);
+		draw_scene();
 	else
 		draw(canvas, game);
 }
@@ -68,8 +66,7 @@ window.onload = (event) => {
 
 	if (is3D)
 	{
-		gl = init_webgl(canvas, vsSource, fsSource);
-		programInfo = init_program_info(gl);
+		init_webgl(canvas, vsSource, fsSource);
 	}
 
     console.log(canvas);
