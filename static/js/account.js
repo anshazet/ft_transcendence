@@ -10,6 +10,7 @@ document.getElementById('register-form').addEventListener('submit', function(eve
     .then(data => {
         if (data.success) {
             console.log(data.success);
+            window.location.reload();
         } else {
             console.error(data.error);
         }
@@ -70,6 +71,28 @@ document.getElementById('logout-button').addEventListener('click', function(even
     })
     .catch(error => {
         console.error('Erreur lors de la requête de déconnexion:', error);
+    });
+});
+
+document.getElementById('unsubscribe-btn').addEventListener('click', function() {
+    fetch('/unsubscribe/', {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            document.cookie = "auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            localStorage.removeItem('auth_token');
+            console.log('Utilisateur désinscrit avec succès');
+        } else {
+            console.error('Erreur lors de la désinscription');
+        }
+    })
+    .catch(error => {
+        console.error('Erreur lors de la désinscription:', error);
     });
 });
 

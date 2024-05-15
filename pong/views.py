@@ -4,9 +4,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login
 from .forms import LoginForm
 from django.contrib.auth import logout
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
-
 
 @csrf_exempt
 def register_user(request):
@@ -101,3 +100,19 @@ def login_42(request):
                 return JsonResponse({'error': 'Impossible de récupérer le jeton d\'accès'}, status=500)
     else:
         return JsonResponse({'error': 'Code non fourni'}, status=400)
+    
+
+@login_required
+def avatar_views(request):
+    context = {
+        'username': request.user.username,
+        'avatar_url': request.user.utilisateur.avatar.url,
+    }
+    return render(request, 'mon_template.html', context)
+
+@login_required
+def unsubscribe(request):
+    if request.method == 'POST':
+        request.user.delete()
+        return redirect('http://localhost:8000')
+    return render(request, 'index.html')

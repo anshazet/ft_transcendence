@@ -15,34 +15,6 @@
 
 </head>
 <body>
-    <!-- <nav class="navbar navbar-expand-lg navbar-dark bg-dark custom-navbar">
-        <div class="container-fluid" id="root">
-            <a class="navbar-brand">Let's Pong</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link highlight" href="#home" onclick="showSection('home')">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link highlight" href="#pong" onclick="showSection('pong')">Pong</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link highlight" href="#tournoi" onclick="showSection('tournoi')">Mode Tournoi</a>
-                    </li>
-                    <li class="nav-item">
-                        
-                        <a class="nav-link highlight" href="#classement" onclick="showSection('classement')">Classement</a>
-                    </li>
-                </ul>
-            </div>
-            <button type="button" class="btn btn-dark" id="user-profile-button" data-bs-toggle="modal">
-                <a class="nav-link" href="#profil" onclick="showSection('profil')">Mon profil</a>
-            </button>
-        </div>
-    </nav> -->
     <input type="hidden" id="userIsLoggedIn" value="{% if user.is_authenticated %}true{% else %}false{% endif %}">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark custom-navbar">
         <div class="container-fluid">
@@ -52,15 +24,22 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link highlight" href="#home">Home</a></li>
-                    <li class="nav-item"><a class="nav-link highlight" href="#pong">Pong</a></li>
-                    <li class="nav-item"><a class="nav-link highlight" href="#tournoi">Mode Tournoi</a></li>
-                    <li class="nav-item"><a class="nav-link highlight" href="#classement">Classement</a></li>
+                    <li class="nav-item"><a class="nav-link highlight" onclick="showSection('home')" href="#home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link highlight" onclick="showSection('pong')" href="#pong">Pong</a></li>
+                    <li class="nav-item"><a class="nav-link highlight" onclick="showSection('tournoi')" href="#tournoi">Mode Tournoi</a></li>
+                    <li class="nav-item"><a class="nav-link highlight" onclick="showSection('classement')" href="#classement">Classement</a></li>
                 </ul>
             </div>
-            <button type="button" class="btn btn-dark" id="user-profile-button" data-bs-toggle="modal">
-                <a class="nav-link" href="#profil" onclick="showSection('profil')">Mon profil</a>
-            </button>
+            <li class="nav-item">
+                <a class="btn btn-dark nav-link" onclick="showSection('profil')" href="#profil">
+                    {% if request.user.is_authenticated %}
+                        <img src="{{ avatar_url }}" alt="{{ username }} Avatar" class="avatar">
+                        <span class="nav-link">{{ username }}</span>
+                    {% else %}
+                        <span class="nav-link">Mon profil</span>
+                    {% endif %}
+                </a>
+            </li>
         </div>
     </nav>
     
@@ -68,8 +47,14 @@
         <h1>Profil de {{ user.username }}</h1>
         <p>Nom d'utilisateur : {{ user.username }}</p>
         <p>Adresse e-mail : {{ user.email }}</p>
+        <form id="avatar-upload-form" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="file" name="avatar" id="avatar-input">
+            <button type="submit">Upload</button>
+        </form>
         {% csrf_token %}
         <button id="logout-button">Logout</button>
+        <button id="unsubscribe-btn">Se désinscrire</button>
     </div>
 
     <div id="section-home" class="page" style="display: none;">
