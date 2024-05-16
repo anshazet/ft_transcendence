@@ -31,10 +31,10 @@ body {
 h1 {
   font-family: 'Oswald', sans-serif;
   font-weight: 400;
-  color: #0c84da;
+  color: #0e6071;
 }
 
-/* medium bold title (classement...)  */
+/* medium bold title not used yet  */
 h2 {
   font-family: 'Oswald', sans-serif;
   font-weight: 400;
@@ -44,8 +44,8 @@ h2 {
 /* small bold title */
 h4 {
   text-align: center;
-  padding-top: 5em;
-  color: rgb(197, 225, 236);
+  padding-top: 10em;
+  color: #0e6071;
 }
 
 /* title welcome to let's pong */
@@ -57,10 +57,22 @@ h3 {
   text-shadow: 3px 3px 3px rgba(0,0,0,0.5);  /* Slight shadow for depth */
   text-align: center;  /* Centers the text horizontally */
   position: absolute;
-  top: 100px;  /* Distance from the top of the container */
+  top: 200px;  /* Distance from the top of the container */
   left: 50%;  /* Center horizontally */
   transform: translateX(-50%); /* Shift it left by half its width to truly center it */
   margin-top: 0;  /* No need for margin-top as top is used for positioning */
+}
+
+/* Title Profil de, Classement, Mode Turnoi */
+h5 {
+  font-family: 'Oswald', sans-serif;
+  font-size: 2.5em;
+  font-weight: 400;
+  color: #0e6071;
+  text-shadow: 3px 3px 3px rgba(0,0,0,0.5);
+  margin-left: 100px;
+  padding-top: 20px;
+  margin-bottom: 20px;
 }
 
 .centered-content {
@@ -74,18 +86,18 @@ h3 {
 
 /* navigation links colour */
 .navbar-dark .navbar-nav .nav-link.highlight:hover {
-  color: #0c84da;  /* Changes color */
+  color: #1048a9;  /* Changes color */
 }
 
 /* Navigation palette Styles */
 .navbar.custom-navbar {
-  background-color: #021700 !important; /* Change to any color you like */
-  border-bottom: 1px solid #005fc4; /* Optional: adds a border under the navbar */
+  background-color: #51858d !important; /* Change to any color you like */
+  border-bottom: 1px solid #85d7f3; /* Adds a border under the navbar */
 }
 
 /* Navigation palette link Styles */
 .navbar-dark .navbar-nav .nav-link {
-  color: #41b8e0;
+  color: #85d7f3;
 }
 
 
@@ -113,7 +125,7 @@ h3 {
   margin: 0 10px; /* Adds horizontal spacing between buttons */
 }
 
-/* Adjustments to center and style the canvas more effectively */
+/* Adjustments to center and style the canvas */
 #jeu-pong {
   margin-top: 20px; /* Adds some space above the canvas */
   border: 7px solid #ffffff; /* A white border for better visibility */
@@ -123,10 +135,11 @@ h3 {
   display: block; /* Ensures the canvas is a block element for proper margin handling */
   margin-left: auto;
   margin-right: auto;
+  border-radius: 5px;
 }
 
 /* Styling for game control buttons */
-#section-pong button {
+#section-pong, #section-profil button {
   padding: 10px 20px; /* Padding for better touch interaction */
   font-size: 16px; /* Increases font size for better readability */
   background-color: #0c84da; /* Primary button color */
@@ -139,6 +152,54 @@ h3 {
   /* margin: 10px; */
 }
 
-#section-pong button:hover {
+#section-pong, #section-profil button:hover {
   background-color: #0056b3;  /* Darker shade on hover */
 }
+
+#section-pong p {
+  font-size: 24px; /* Set the font size */
+  color: #ffffff; /* Change the text color */
+  font-weight: bold; /* Make the font bold */
+  margin-bottom: 1px; /* Add space below the paragraph */
+  text-align: center; /* Center the text */
+}
+
+.game-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #0c84da;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.game-button:hover {
+  background-color: #0056b3;
+}
+
+#user-profile-button {
+  max-width: 200px; /* Restricts the button width */
+  margin: auto; /* Centers the button horizontally */
+  display: block; /* Ensures the button is block-level for margin to take effect */
+  background-color: #007bff; /* Bootstrap primary blue instead of dark */
+  border-color: #007bff; /* Ensures the border color matches the background */
+}
+
+#user-profile-button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
+
+#user-profile-button:focus {
+  outline: 2px solid #0056b3; /* Blue outline */
+  outline-offset: 2px;
+}
+
+#user-profile-button:focus {
+  outline: 2px solid #0056b3; /* Blue outline */
+  outline-offset: 2px;
+}
+
