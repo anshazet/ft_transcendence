@@ -80,3 +80,9 @@
   p a:hover {
     color: #fff;
   }
+
+  .small-avatar {
+    width: 30px; /* Définissez la largeur souhaitée */
+    height: 30px; /* Définissez la hauteur souhaitée */
+    border-radius: 50%;
+}

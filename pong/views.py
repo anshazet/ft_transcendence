@@ -6,6 +6,8 @@ from .forms import LoginForm
 from django.contrib.auth import logout
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
+import os
+from django.conf import settings
 
 @csrf_exempt
 def register_user(request):
@@ -55,6 +57,7 @@ import urllib.request
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from django.http import JsonResponse
+from django.http import HttpResponseBadRequest,  HttpResponse
 
 CLIENT_ID = 'u-s4t2ud-69c7a5257ffb84374c9f2c6a08736a4f080650b67ed9308ad6b3f31fb7cd6ce5'
 CLIENT_SECRET = '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'
@@ -103,16 +106,55 @@ def login_42(request):
     
 
 @login_required
-def avatar_views(request):
+def profile_view(request):
+    user = request.user
     context = {
-        'username': request.user.username,
-        'avatar_url': request.user.utilisateur.avatar.url,
+        'user': user,
     }
-    return render(request, 'mon_template.html', context)
+    return render(request, 'index.html', context)
+
 
 @login_required
-def unsubscribe(request):
+def update_user_info(request):
     if request.method == 'POST':
-        request.user.delete()
-        return redirect('http://localhost:8000')
-    return render(request, 'index.html')
+        user = request.user
+        if 'username' in request.POST and request.POST['username']:
+            user.username = request.POST['username']
+        if 'email' in request.POST and request.POST['email']:
+            user.email = request.POST['email']
+        if 'password' in request.POST and request.POST['password']:
+            user.set_password(request.POST['password'])
+        user.save()
+
+        return JsonResponse({'success': True})
+    else:
+        return JsonResponse({'error': 'Méthode non autorisée'}, status=405)
+
+
+import shutil
+def deplacer_images():
+    chemin_media = '/code/media/avatar'
+    chemin_static_avatar = '/code/static/avatar'
+
+    fichiers = os.listdir(chemin_media)
+
+    for fichier in fichiers:
+        chemin_complet_source = os.path.join(chemin_media, fichier)
+        chemin_complet_destination = os.path.join(chemin_static_avatar, fichier)
+        shutil.move(chemin_complet_source, chemin_complet_destination)
+        print(f"Fichier {fichier} déplacé avec succès vers {chemin_static_avatar}")
+
+
+
+def upload_avatar(request):
+    if request.method == 'POST' and request.FILES.get('avatar'):
+        avatar = request.FILES['avatar']
+        username = request.user.username
+        avatar_path = os.path.join(settings.MEDIA_ROOT, 'avatar', f'{username}-avatar.png')
+        with open(avatar_path, 'wb') as f:
+            for chunk in avatar.chunks():
+                f.write(chunk)
+        deplacer_images()
+        return JsonResponse({'message': 'Avatar uploaded successfully.'})
+    else:
+        return JsonResponse({'error': 'No avatar uploaded.'}, status=400)

@@ -17,7 +17,7 @@ body {
   background-repeat: no-repeat;
 }
 
-#section-home, #section-pong, #section-tournoi, #section-classement, #section-profil {
+#section-home, #section-pong, #section-tournoi, #section-classement, #section-profil, #section-modif-profil {
     background-image: url('../images/background.png');
 }
 

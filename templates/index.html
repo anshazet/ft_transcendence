@@ -33,8 +33,8 @@
             <li class="nav-item">
                 <a class="btn btn-dark nav-link" onclick="showSection('profil')" href="#profil">
                     {% if request.user.is_authenticated %}
-                        <img src="{{ avatar_url }}" alt="{{ username }} Avatar" class="avatar">
-                        <span class="nav-link">{{ username }}</span>
+                        <img id="avatar-img" src="{% static 'avatar/' %}{{ user.username }}-avatar.png" class="avatar small-avatar">
+                        <span class="nav-link">{{ user.username }}</span>
                     {% else %}
                         <span class="nav-link">Mon profil</span>
                     {% endif %}
@@ -47,14 +47,37 @@
         <h1>Profil de {{ user.username }}</h1>
         <p>Nom d'utilisateur : {{ user.username }}</p>
         <p>Adresse e-mail : {{ user.email }}</p>
-        <form id="avatar-upload-form" method="post" enctype="multipart/form-data">
+        <img src="{% static 'avatar/' + user.username + '-avatar.png' %}" alt="Avatar">
+        <form id="avatar-upload-form" enctype="multipart/form-data">
             {% csrf_token %}
-            <input type="file" name="avatar" id="avatar-input">
+            <input type="file" name="avatar" accept="image/png">
             <button type="submit">Upload</button>
         </form>
+        <li class="nav-item"><a class="nav-link highlight" onclick="showSection('modif-profil')" href="#modif-profil">Changez ces informations</a></li>
         {% csrf_token %}
         <button id="logout-button">Logout</button>
         <button id="unsubscribe-btn">Se désinscrire</button>
+    </div>
+
+    <div id="section-modif-profil" class="page" style="display: none;">
+        <div id="update-user-form-container">
+            <h2>Modifier vos informations</h2>
+            <form id="update-user-form">
+                <div class="form-group">
+                    <label for="username">Nom d'utilisateur:</label>
+                    <input type="text" id="username" name="username">
+                </div>
+                <div class="form-group">
+                    <label for="email">Nouvel email:</label>
+                    <input type="email" id="email" name="email">
+                </div>
+                <div class="form-group">
+                    <label for="password">Nouveau mot de passe:</label>
+                    <input type="password" id="password" name="password">
+                </div>
+                <button type="submit">Mettre à jour</button>
+            </form>
+        </div>
     </div>
 
     <div id="section-home" class="page" style="display: none;">
@@ -149,7 +172,7 @@
     
 
     <script type="text/javascript" src="{% static 'js/index.js' %}" async></script>
-    <script type="module" src="{% static 'js/pong.js' %}" async></script>
+    <script type="text/javascript" src="{% static 'js/pong.js' %}" async></script>
     <script type="text/javascript" src="{% static 'js/account.js' %}" async></script>
     <script type="text/javascript" src="{% static 'js/42auth.js' %}" async></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
