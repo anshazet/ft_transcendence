@@ -1,7 +1,7 @@
 'use strict';
 
 import { ballMove, computerMove, playerMove, draw, reset, init_game } from "./game_logic.js";
-import { draw_scene, init_program_info, init_webgl } from "./webgl.js";
+import { draw_scene, init_webgl, initBuffers, loadTexture } from "./webgl.js";
 import * as engine from "./engine.js";
 
 var canvas;
@@ -11,19 +11,44 @@ var anim;
 const is3D = true;
 
 const vsSource = `
-  attribute vec4 aVertexPosition;
+attribute highp vec3 aVertexNormal;
+attribute highp vec3 aVertexPosition;
+attribute highp vec2 aTextureCoord;
 
-  uniform mat4 uModelViewMatrix;
-  uniform mat4 uProjectionMatrix;
+uniform highp mat4 uNormalMatrix;
+uniform highp mat4 uMVMatrix;
+uniform highp mat4 uPMatrix;
 
-  void main() {
-    gl_Position = uProjectionMatrix * uModelViewMatrix * aVertexPosition;
-  }
+varying highp vec2 vTextureCoord;
+varying highp vec3 vLighting;
+
+void main(void) {
+  gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+  vTextureCoord = aTextureCoord;
+
+  // Apply lighting effect
+
+  highp vec3 ambientLight = vec3(0.6, 0.6, 0.6);
+  highp vec3 directionalLightColor = vec3(0.5, 0.5, 0.75);
+  highp vec3 directionalVector = vec3(0.85, 0.8, 0.75);
+
+  highp vec4 transformedNormal = uNormalMatrix * vec4(aVertexNormal, 1.0);
+
+  highp float directional = max(dot(transformedNormal.xyz, directionalVector), 0.0);
+  vLighting = ambientLight + (directionalLightColor * directional);
+}
 `;
 
 const fsSource = `
-  void main() {
-    gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+varying highp vec2 vTextureCoord;
+  varying highp vec3 vLighting;
+
+  uniform sampler2D uSampler;
+
+  void main(void) {
+    mediump vec4 texelColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+
+    gl_FragColor = vec4(texelColor.rgb * vLighting, texelColor.a);
   }
 `;
 
