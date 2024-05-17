@@ -139,3 +139,9 @@
 .profile-info {
   align-items: flex-start; /* Aligns items to the start vertically within the container */
 }
+
+.avatar.small-avatar {
+  width: 30px;
+  height: 30px;
+  object-fit: cover;
+}
