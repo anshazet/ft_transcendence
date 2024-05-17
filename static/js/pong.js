@@ -1,116 +1,95 @@
-'use strict';
 
-import { ballMove, computerMove, playerMove, draw, reset, init_game } from "./game_logic.js";
-import { draw_scene, init_program_info, init_webgl } from "./webgl.js";
-import * as engine from "./engine.js";
 
-var canvas;
-var game;
-var anim;
-var gl;
-var programInfo;
+      var container = document.querySelector("#unity-container");
+      var canvas = document.querySelector("#unity-canvas");
+      var loadingBar = document.querySelector("#unity-loading-bar");
+      var progressBarFull = document.querySelector("#unity-progress-bar-full");
+      var fullscreenButton = document.querySelector("#unity-fullscreen-button");
+      var warningBanner = document.querySelector("#unity-warning");
 
-const is3D = false;
+      // Shows a temporary message banner/ribbon for a few seconds, or
+      // a permanent error message on top of the canvas if type=='error'.
+      // If type=='warning', a yellow highlight color is used.
+      // Modify or remove this function to customize the visually presented
+      // way that non-critical warnings and error messages are presented to the
+      // user.
+      function unityShowBanner(msg, type) {
+        function updateBannerVisibility() {
+          warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
+        }
+        var div = document.createElement('div');
+        div.innerHTML = msg;
+        warningBanner.appendChild(div);
+        if (type == 'error') div.style = 'background: red; padding: 10px;';
+        else {
+          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
+          setTimeout(function() {
+            warningBanner.removeChild(div);
+            updateBannerVisibility();
+          }, 5000);
+        }
+        updateBannerVisibility();
+      }
 
-const vsSource = `
-  attribute vec4 aVertexPosition;
+      var buildUrl = "static/Build";
+      var loaderUrl = buildUrl + "/Build.loader.js";
+      var config = {
+        dataUrl: buildUrl + "/Build.data.unityweb",
+        frameworkUrl: buildUrl + "/Build.framework.js.unityweb",
+        codeUrl: buildUrl + "/Build.wasm.unityweb",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "DefaultCompany",
+        productName: "Pong",
+        productVersion: "0.1",
+        showBanner: unityShowBanner,
+      };
 
-  uniform mat4 uModelViewMatrix;
-  uniform mat4 uProjectionMatrix;
+      // By default, Unity keeps WebGL canvas render target size matched with
+      // the DOM size of the canvas element (scaled by window.devicePixelRatio)
+      // Set this to false if you want to decouple this synchronization from
+      // happening inside the engine, and you would instead like to size up
+      // the canvas DOM size and WebGL render target sizes yourself.
+      // config.matchWebGLToCanvasSize = false;
 
-  void main() {
-    gl_Position = uProjectionMatrix * uModelViewMatrix * aVertexPosition;
-  }
-`;
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        // Mobile device style: fill the whole browser client area with the game canvas:
 
-const fsSource = `
-  void main() {
-    gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
-  }
-`;
+        var meta = document.createElement('meta');
+        meta.name = 'viewport';
+        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+        document.getElementsByTagName('head')[0].appendChild(meta);
+        container.className = "unity-mobile";
+        canvas.className = "unity-mobile";
 
-function play() {
-	if (is3D)
-		draw_scene(gl, programInfo);
-	else
-		draw(canvas, game);
+        // To lower canvas resolution on mobile devices to gain some
+        // performance, uncomment the following line:
+        // config.devicePixelRatio = 1;
 
-    game = computerMove(game);
-    game = ballMove(canvas, game);
 
-    anim = requestAnimationFrame(play);
-	engine.update();
-}
+      } else {
+        // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
 
-function stop() {
-    cancelAnimationFrame(anim);
+        canvas.style.width = "960px";
+        canvas.style.height = "600px";
+      }
 
-    game = reset(canvas);
+      loadingBar.style.display = "block";
 
-	game.computer.score = 0;
-	game.player.score = 0;
+      var script = document.createElement("script");
+      script.src = loaderUrl;
+      script.onload = () => {
+        createUnityInstance(canvas, config, (progress) => {
+          progressBarFull.style.width = 100 * progress + "%";
+              }).then((unityInstance) => {
+                loadingBar.style.display = "none";
+                fullscreenButton.onclick = () => {
+                  unityInstance.SetFullscreen(1);
+                };
+              }).catch((message) => {
+                alert(message);
+              });
+            };
 
-	document.querySelector('#computer-score').textContent = game.computer.score;
-	document.querySelector('#player-score').textContent = game.player.score;
+      document.body.appendChild(script);
 
-    if (is3D)
-		draw_scene(gl, programInfo);
-	else
-		draw(canvas, game);
-}
-
-function playerMovement(event) {
-	game = playerMove(event, canvas, game);
-}
-
-window.onload = (event) => {
-	canvas = document.getElementById('jeu-pong');
-
-	if (is3D)
-	{
-		gl = init_webgl(canvas, vsSource, fsSource);
-		programInfo = init_program_info(gl);
-	}
-
-    console.log(canvas);
-    if (canvas) {
-        game = init_game();
-    } else {
-        console.error("Canvas element not found.");
-	}
-
-	game = reset(canvas);
-
-    // Mouse move event
-    canvas.addEventListener('mousemove', playerMovement);
-
-    document.querySelector('#start-game').addEventListener('click', play);
-    document.querySelector('#stop-game').addEventListener('click', stop);
-};
-
-// document.addEventListener('DOMContentLoaded', function () {
-//     canvas = document.getElementById('jeu-pong');
-
-// 	if (is3D)
-// 	{
-// 		gl = init_webgl(canvas, vsSource, fsSource);
-// 		programInfo = init_program_info(gl);
-// 	}
-
-//     console.log(canvas);
-//     if (canvas)
-//     {
-//         game = init_game();
-//     } else {
-//         console.error("Canvas element not found.");
-// };
-
-//     game = reset(canvas);
-
-//     // Mouse move event
-//     canvas.addEventListener('mousemove', playerMovement);
-
-//     document.querySelector('#start-game').addEventListener('click', play);
-//     document.querySelector('#stop-game').addEventListener('click', stop);
-
-// });
+    
