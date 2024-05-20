@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"> -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
     <link rel="stylesheet" href="{% static 'css/index.css' %}">
@@ -16,34 +16,6 @@
 
 </head>
 <body>
-    <!-- <nav class="navbar navbar-expand-lg navbar-dark bg-dark custom-navbar">
-        <div class="container-fluid" id="root">
-            <a class="navbar-brand">Let's Pong</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link highlight" href="#home" onclick="showSection('home')">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link highlight" href="#pong" onclick="showSection('pong')">Pong</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link highlight" href="#tournoi" onclick="showSection('tournoi')">Mode Tournoi</a>
-                    </li>
-                    <li class="nav-item">
-                        
-                        <a class="nav-link highlight" href="#classement" onclick="showSection('classement')">Classement</a>
-                    </li>
-                </ul>
-            </div>
-            <button type="button" class="btn btn-dark" id="user-profile-button" data-bs-toggle="modal">
-                <a class="nav-link" href="#profil" onclick="showSection('profil')">Mon profil</a>
-            </button>
-        </div>
-    </nav> -->
     <input type="hidden" id="userIsLoggedIn" value="{% if user.is_authenticated %}true{% else %}false{% endif %}">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark custom-navbar">
         <div class="container-fluid">
@@ -53,19 +25,61 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link highlight" href="#home">Home</a></li>
-                    <li class="nav-item"><a class="nav-link highlight" href="#pong">Pong</a></li>
-                    <li class="nav-item"><a class="nav-link highlight" href="#tournoi">Mode Tournoi</a></li>
-                    <li class="nav-item"><a class="nav-link highlight" href="#classement">Classement</a></li>
+                    <li class="nav-item"><a class="nav-link highlight" onclick="showSection('home')" href="#home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link highlight" onclick="showSection('pong')" href="#pong">Pong</a></li>
+                    <li class="nav-item"><a class="nav-link highlight" onclick="showSection('tournoi')" href="#tournoi">Mode Tournoi</a></li>
+                    <li class="nav-item"><a class="nav-link highlight" onclick="showSection('classement')" href="#classement">Classement</a></li>
                 </ul>
             </div>
-            <!-- <button type="button" class="btn btn-dark" id="user-profile-button" data-bs-toggle="modal">
-                <a class="nav-link" href="#profil" onclick="showSection('profil')">Mon profil</a>
-            </button> -->
-            <a href="#profil" class="btn btn-dark game-button" id="user-profile-button" onclick="showSection('profil')" role="button">Mon profil</a>
-            
+            <li class="nav-item">
+                <a class="btn btn-dark nav-link" onclick="showSection('profil')" href="#profil">
+                    {% if request.user.is_authenticated %}
+                        <img id="avatar-img" src="{% static 'avatar/' %}{{ user.username }}-avatar.png" class="avatar small-avatar">
+                        <span class="nav-link">{{ user.username }}</span>
+                    {% else %}
+                        <span class="nav-link">Mon profil</span>
+                    {% endif %}
+                </a>
+            </li>
         </div>
     </nav>
+    
+    <div id="section-profil" class="page" style="display: none;">
+        <h1>Profil de {{ user.username }}</h1>
+        <p>Nom d'utilisateur : {{ user.username }}</p>
+        <p>Adresse e-mail : {{ user.email }}</p>
+        <img src="{% static 'avatar/' + user.username + '-avatar.png' %}" alt="Avatar">
+        <form id="avatar-upload-form" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="file" name="avatar" accept="image/png">
+            <button type="submit">Upload</button>
+        </form>
+        <li class="nav-item"><a class="nav-link highlight" onclick="showSection('modif-profil')" href="#modif-profil">Changez ces informations</a></li>
+        {% csrf_token %}
+        <button id="logout-button">Logout</button>
+        <button id="unsubscribe-btn">Se désinscrire</button>
+    </div>
+
+    <div id="section-modif-profil" class="page" style="display: none;">
+        <div id="update-user-form-container">
+            <h2>Modifier vos informations</h2>
+            <form id="update-user-form">
+                <div class="form-group">
+                    <label for="username">Nom d'utilisateur:</label>
+                    <input type="text" id="username" name="username">
+                </div>
+                <div class="form-group">
+                    <label for="email">Nouvel email:</label>
+                    <input type="email" id="email" name="email">
+                </div>
+                <div class="form-group">
+                    <label for="password">Nouveau mot de passe:</label>
+                    <input type="password" id="password" name="password">
+                </div>
+                <button type="submit">Mettre à jour</button>
+            </form>
+        </div>
+    </div>
 
     <div id="section-profil" class="page" style="display: none;">
         <h5>Profil de {{ user.username }}</h5>
@@ -139,7 +153,7 @@
                             </div>
                             <button type="submit" class="btn btn-light mt-3" id="login-button">Se connecter</button>
                             ou
-                            <button id="btn-open-login-42" type="button" class="btn btn-light mt-3">Se connecter avec 42Auth</button>
+                            <button id="btn-open-login-42" type="button" class="btn btn-light mt-3" onclick="open42AuthPopup()">Se connecter avec 42Auth</button>
                             <button id="btn-open-inscription" type="button" class="btn btn-light mt-3" data-bs-toggle="modal" data-bs-target="#ModalFormRegister">
                                 S'inscrire
                             </button>
@@ -183,6 +197,7 @@
 
     <script type="text/javascript" src="{% static 'js/index.js' %}" async></script>
     <script type="text/javascript" src="{% static 'js/account.js' %}" async></script>
+    <script type="text/javascript" src="{% static 'js/42auth.js' %}" async></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>

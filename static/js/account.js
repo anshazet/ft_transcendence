@@ -10,6 +10,7 @@ document.getElementById('register-form').addEventListener('submit', function(eve
     .then(data => {
         if (data.success) {
             console.log(data.success);
+            window.location.reload();
         } else {
             console.error(data.error);
         }
@@ -73,6 +74,59 @@ document.getElementById('logout-button').addEventListener('click', function(even
     });
 });
 
+document.getElementById('update-user-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    const formData = new FormData(this);
+    fetch('/update_user_info/', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken')
+        }
+    })
+    .then(response => {
+        window.location.reload();
+        response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            console.log('Informations utilisateur mises à jour avec succès.');
+        } else {
+            console.error('Erreur lors de la mise à jour des informations utilisateur:', data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Erreur lors de la requête:', error);
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    var form = document.getElementById('avatar-upload-form');
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        
+        var formData = new FormData(form);
+        
+        fetch('/upload_avatar/', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error uploading avatar');
+            }
+            console.log('Avatar uploaded successfully.');
+            window.location.reload();
+        })
+        .catch(error => {
+            console.error('Error uploading avatar:', error.message);
+        });
+    });
+});
 
 function getCookie(name) {
     let cookieValue = null;

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .modal-content {
     width: 80%;
     margin: 0 auto;
@@ -139,3 +140,101 @@
 .profile-info {
   align-items: flex-start; /* Aligns items to the start vertically within the container */
 }
+
+.avatar.small-avatar {
+  width: 30px;
+  height: 30px;
+  object-fit: cover;
+}
+=======
+.modal-content {
+    width: 80%;
+    margin: 0 auto;
+    border: 1px solid #2ad5ec; /* A form border */
+  }
+  /* Customizes buttons in the modal */
+  .modal-content .btn {
+    background-color: #41b8e0; /* Custom button color */
+    border: none; /* No border for a cleaner look */
+  }
+
+  #login-button:hover, #btn-open-login-42:hover, #btn-open-inscription:hover {
+    background-color: #1048a9; /* Darker bleu on hover*/
+     color: #41b8e0; /*colour text link button */
+  }
+  
+/* Custom styles for specific buttons like 'LOGIN' and 'Se connecter avec 42Auth' */
+#login-button, #btn-open-login-42, #btn-open-inscription {
+  background-color: #41b8e0; /* Blue background for better visibility */
+  color: #1048a9; /* White text */
+}
+  
+  .modal-body {
+    padding: 0;
+  }
+  .btn-close {
+    position: absolute;
+    right: 0;
+    padding: 1em;
+  }
+  h1 {
+    font-size: 2.3em;
+    font-weight: bold;
+    padding-top: 15px;
+    
+  }
+  .myform {
+    padding: 2em;
+    max-width: 100%;
+    background-color: #000f42 !important; /* colour background form */
+    color: #ffffff; /* colour text form */
+    box-shadow: 0 4px 6px 0 rgba(22, 22, 26, 0.18);
+  }
+  @media (max-width: 576px) {
+    .myform {
+      max-width: 90%;
+      margin: 0 auto;
+    }
+  }
+  .form-control:focus {
+    box-shadow: inset 0 -1px 0 #7e7e7e;
+  }
+  .form-control {
+    background-color: inherit;
+    color: #fff;
+    padding-left: 0;
+    border: 0;
+    border-radius: 0;
+    border-bottom: 1px solid #fff;
+  }
+  .myform .btn {
+    width: 100%;
+    font-weight: 800;
+    background-color: #fff;
+    border-radius: 0;
+    padding: 0.5em 0;
+  }
+  .myform .btn:hover {
+    background-color: inherit;
+    color: #fff;
+    border-color: #fff;
+  }
+  p {
+    text-align: center;
+    padding-top: 2em;
+    color: grey;
+  }
+  p a {
+    color: #e1e1e1;
+    text-decoration: none;
+  }
+  p a:hover {
+    color: #fff;
+  }
+
+  .small-avatar {
+    width: 30px; /* Définissez la largeur souhaitée */
+    height: 30px; /* Définissez la hauteur souhaitée */
+    border-radius: 50%;
+}
+>>>>>>> parent of bcca653 (add)
