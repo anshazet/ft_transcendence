@@ -34,7 +34,7 @@
             <li class="nav-item">
                 <a class="btn btn-dark nav-link" onclick="showSection('profil')" href="#profil">
                     {% if request.user.is_authenticated %}
-                        <img id="avatar-img" src="{% static 'avatar/' %}{{ user.username }}-avatar.png" class="avatar small-avatar">
+                        <img id="avatar-img" src="{% static 'avatar/' %}{{ user.username }}-avatar.png" class="avatar small-avatar" onerror="this.src='{% static 'avatar/ponguser.png' %}';">
                         <span class="nav-link">{{ user.username }}</span>
                     {% else %}
                         <span class="nav-link">Mon profil</span>
@@ -48,7 +48,7 @@
         <h1>Profil de {{ user.username }}</h1>
         <p>Nom d'utilisateur : {{ user.username }}</p>
         <p>Adresse e-mail : {{ user.email }}</p>
-        <img src="{% static 'avatar/' + user.username + '-avatar.png' %}" alt="Avatar">
+        <img id="avatar-img" src="{% static 'avatar/' %}{{ user.username }}-avatar.png" class="avatar small-avatar" onerror="this.src='{% static 'avatar/ponguser.png' %}';">
         <form id="avatar-upload-form" enctype="multipart/form-data">
             {% csrf_token %}
             <input type="file" name="avatar" accept="image/png">
@@ -79,17 +79,6 @@
                 <button type="submit">Mettre à jour</button>
             </form>
         </div>
-    </div>
-
-    <div id="section-profil" class="page" style="display: none;">
-        <h5>Profil de {{ user.username }}</h5>
-        <div class="profile-info">
-            <p class="profile-item"><span class="profile-label">Nom d'utilisateur:</span> {{ user.username }}</p>
-            <p class="profile-item"><span class="profile-label">Adresse e-mail:</span> {{ user.email }}</p>
-        </div>
-        {% csrf_token %}
-        <!-- <button id="logout-button">Logout</button> -->
-        <button id="logout-button" class="game-button">Logout</button>
     </div>
     
     <div id="section-home" class="page" style="display: none;">
@@ -137,7 +126,6 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-body">
-                    <button type="button" class="btn-close btn-close-white" id="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     <div class="myform bg-dark">
                         <h1 class="text-center">Se connecter</h1>
                         <form id="login-form" method="post">
@@ -168,7 +156,6 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-body">
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                     <div class="myform bg-dark" id="section-inscription">
                         <h1 class="text-center">S'inscrire</h1>
                         <form id="register-form" method="post">
