@@ -6,7 +6,6 @@ class Utilisateur(models.Model):
     password = models.CharField(max_length=100)
     email = models.CharField(max_length=100)
 
-
 # from django.contrib.auth.models import User
 # from django.db import models
 

@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login
+
 from .forms import LoginForm
 from django.contrib.auth import logout
 from django.shortcuts import redirect, render
@@ -155,7 +156,6 @@ def deplacer_images():
         chemin_complet_destination = os.path.join(chemin_static_avatar, fichier)
         shutil.move(chemin_complet_source, chemin_complet_destination)
         print(f"Fichier {fichier} déplacé avec succès vers {chemin_static_avatar}")
-
 
 
 def upload_avatar(request):
