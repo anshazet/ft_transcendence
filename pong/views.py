@@ -118,8 +118,12 @@ def profile_view(request):
 def update_user_info(request):
     if request.method == 'POST':
         user = request.user
-        if 'username' in request.POST and request.POST['username']:
-            user.username = request.POST['username']
+        old_username = user.username
+        new_username = request.POST.get('username', old_username)
+        
+        if new_username and new_username != old_username:
+            user.username = new_username
+            rename_avatar_file(old_username, new_username)
         if 'email' in request.POST and request.POST['email']:
             user.email = request.POST['email']
         if 'password' in request.POST and request.POST['password']:
@@ -130,6 +134,14 @@ def update_user_info(request):
     else:
         return JsonResponse({'error': 'Méthode non autorisée'}, status=405)
 
+def rename_avatar_file(old_username, new_username):
+    chemin_static_avatar = os.path.join(settings.BASE_DIR, 'static', 'avatar')
+    old_avatar_path = os.path.join(chemin_static_avatar, f'{old_username}-avatar.png')
+    new_avatar_path = os.path.join(chemin_static_avatar, f'{new_username}-avatar.png')
+
+    if os.path.exists(old_avatar_path):
+        os.rename(old_avatar_path, new_avatar_path)
+        print(f"Fichier {old_avatar_path} renommé en {new_avatar_path}")
 
 import shutil
 def deplacer_images():
@@ -158,3 +170,4 @@ def upload_avatar(request):
         return JsonResponse({'message': 'Avatar uploaded successfully.'})
     else:
         return JsonResponse({'error': 'No avatar uploaded.'}, status=400)
+    
