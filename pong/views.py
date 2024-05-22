@@ -55,18 +55,20 @@ def check_user_logged_in(request):
 import json
 import urllib.parse
 import urllib.request
+import requests
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.http import HttpResponseBadRequest,  HttpResponse
 
 CLIENT_ID = 'u-s4t2ud-69c7a5257ffb84374c9f2c6a08736a4f080650b67ed9308ad6b3f31fb7cd6ce5'
-CLIENT_SECRET = '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'
+CLIENT_SECRET = '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'
 REDIRECT_URI = 'http://localhost:8000/login42/'
 
 @csrf_exempt
 def login_42(request):
     code = request.GET.get('code')
+    print("Code reçu :", code)
     if code:
         token_data = {
             'grant_type': 'authorization_code',
@@ -75,35 +77,32 @@ def login_42(request):
             'code': code,
             'redirect_uri': REDIRECT_URI
         }
-        token_data_encoded = urllib.parse.urlencode(token_data).encode('utf-8')
-        req = urllib.request.Request('https://api.intra.42.fr/oauth/token', data=token_data_encoded)
-        with urllib.request.urlopen(req) as response:
-            if response.status == 200:
-                token_response = json.loads(response.read().decode('utf-8'))
-                access_token = token_response.get('access_token')
-                user_req = urllib.request.Request('https://api.intra.42.fr/v2/me')
-                user_req.add_header('Authorization', f'Bearer {access_token}')
-                with urllib.request.urlopen(user_req) as user_response:
-                    if user_response.status == 200:
-                        user_data = json.loads(user_response.read().decode('utf-8'))
-                        username = user_data['login']
-                        email = user_data['email']
-                        if User.objects.filter(username=username).exists():
-                            user = User.objects.get(username=username)
-                            user.backend = 'django.contrib.auth.backends.ModelBackend'
-                            login(request, user)
-                            return redirect('http://localhost:8000')
-                        else:
-                            User.objects.create_user(username=username, email=email)
-                            user = User.objects.get(username=username)
-                            login(request, user)
-                            return redirect('http://localhost:8000')
-                    else:
-                        return JsonResponse({'error': 'Impossible de récupérer les informations de l\'utilisateur 42'}, status=500)
+        token_response = requests.post('https://api.intra.42.fr/oauth/token', data=token_data)
+        if token_response.status_code == 200:
+            token_response_data = token_response.json()
+            access_token = token_response_data.get('access_token')
+            user_response = requests.get('https://api.intra.42.fr/v2/me', headers={'Authorization': f'Bearer {access_token}'})
+            if user_response.status_code == 200:
+                user_data = user_response.json()
+                username = user_data['login']
+                email = user_data['email']
+                if User.objects.filter(username=username).exists():
+                    user = User.objects.get(username=username)
+                    user.backend = 'django.contrib.auth.backends.ModelBackend'
+                    login(request, user)
+                    return redirect('http://localhost:8000')
+                else:
+                    User.objects.create_user(username=username, email=email)
+                    user = User.objects.get(username=username)
+                    login(request, user)
+                    return redirect('http://localhost:8000')
             else:
-                return JsonResponse({'error': 'Impossible de récupérer le jeton d\'accès'}, status=500)
+                return JsonResponse({'error': 'Impossible de récupérer les informations de l\'utilisateur 42'}, status=500)
+        else:
+            return JsonResponse({'error': 'Impossible de récupérer le jeton d\'accès'}, status=500)
     else:
         return JsonResponse({'error': 'Code non fourni'}, status=400)
+
     
 
 @login_required
