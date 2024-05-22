@@ -158,3 +158,7 @@ def upload_avatar(request):
         return JsonResponse({'message': 'Avatar uploaded successfully.'})
     else:
         return JsonResponse({'error': 'No avatar uploaded.'}, status=400)
+    
+def classement(request):
+    players = User.objects.all().values('username', 'email')
+    return JsonResponse(list(players), safe=False)

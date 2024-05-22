@@ -17,8 +17,8 @@ body {
   background-repeat: no-repeat;
 }
 
-#section-home, #section-pong, #section-tournoi, #section-classement, #section-profil {
-    background-image: url('../images/background_7.jpg');
+#section-home, #section-pong, #section-tournoi, #section-classement, #section-profil, #section-modif-profil {
+    background-image: url('../images/background_5.jpg');
 }
 
 /* style navigation links*/
@@ -191,11 +191,6 @@ h5 {
 
 #user-profile-button:hover {
   background-color: #0056b3; /* Darker blue on hover */
-}
-
-#user-profile-button:focus {
-  outline: 2px solid #0056b3; /* Blue outline */
-  outline-offset: 2px;
 }
 
 #user-profile-button:focus {
