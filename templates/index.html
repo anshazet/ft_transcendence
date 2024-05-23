@@ -54,11 +54,15 @@
             <input type="file" name="avatar" accept="image/png">
             <button type="submit">Upload</button>
         </form>
+        <form id="add-friend-form">
+            <input type="text" id="friend-username" placeholder="Nom d'utilisateur de l'ami">
+            <button type="button" onclick="sendFriendRequest()">Envoyer une demande d'ami</button>
+        </form>
         <li class="nav-item"><a class="nav-link highlight" onclick="showSection('modif-profil')" href="#modif-profil">Changez ces informations</a></li>
-        {% csrf_token %}
         <button id="logout-button">Logout</button>
         <button id="unsubscribe-btn">Se désinscrire</button>
     </div>
+    
 
     <div id="section-modif-profil" class="page" style="display: none;">
         <div id="update-user-form-container">
