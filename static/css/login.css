@@ -61,10 +61,13 @@
   }
 
   p {
-    text-align: center;
-    padding-top: 2em;
+    margin-left: 100px;
+    padding-top: 1em;
     color: grey;
+    font-size: 1.5em;
+    font-weight: bold;
   }
+  
   p a {
     color: #e1e1e1;
     text-decoration: none;
@@ -113,15 +116,6 @@
     margin-left: 100px;
 }
 
-#section-profil button:hover {
-    background-color: #0056b3; /* Darker on hover */
-}
-
-.page {
-  justify-content: flex-start; /* Aligns content to the start of the page horizontally */
-}
-
-
 /* Optional: Adjust the overall alignment within the profile-info if needed */
 .profile-info {
   align-items: flex-start; /* Aligns items to the start vertically within the container */
@@ -162,4 +156,74 @@
   margin-left: -0.5px;
   height: 40px;
   width: 200px;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+/* Styling for the file input label to look like a button */
+input[type="file"] + label {
+  background-color: #ffffff;
+  color: #0056b3;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+
+input[type="file"] + label:hover {
+  background-color: #0056b3;
+}
+
+input[type="file"] + label:focus {
+  outline: 2px solid #0056b3;
+  outline-offset: 2px;
+}
+
+.flex-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end; /* Aligns content to the right */
+  width: 100%;
+  margin-right: 100px; /* Adjust as needed to position properly */
+}
+
+.btn-primary {
+  background-color: #0c84da;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  display: inline-block;
+  margin-top: 20px;
+}
+
+.btn-primary_2 {
+  background-color: #0c84da;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  display: inline-block;
+  margin-top: 20px;
+  margin-right: 80px;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+/* Additional styling to position the "Changez ces informations" link */
+.change-info-link {
+  margin-top: 10px;
+  margin-left: 85px;
 }

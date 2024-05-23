@@ -29,16 +29,16 @@
                     <li class="nav-item"><a class="nav-link highlight" onclick="showSection('classement')" href="#classement">Classement</a></li>
                 </ul>
             </div>
-            <li class="nav-item">
-                <a class="btn btn-dark nav-link" onclick="showSection('profil')" href="#profil">
+            <div class="nav-item navbar-nav">
+                <a class="nav-link highlight" onclick="showSection('profil')" href="#profil">
                     {% if request.user.is_authenticated %}
                         <img id="avatar-img" src="{% static 'avatar/' %}{{ user.username }}-avatar.png" class="avatar small-avatar">
                         <span class="nav-link">{{ user.username }}</span>
                     {% else %}
-                        <span class="nav-link">Mon profil</span>
+                        Mon profil
                     {% endif %}
                 </a>
-            </li>
+            </div>
         </div>
     </nav>
     
@@ -49,14 +49,19 @@
         <img src="{% static 'avatar/' + user.username + '-avatar.png' %}" alt="Avatar">
         <form id="avatar-upload-form" enctype="multipart/form-data">
             {% csrf_token %}
-            <input type="file" name="avatar" accept="image/png">
-            <button type="submit">Upload</button>
-        </form>
-        <li class="nav-item"><a class="nav-link highlight" onclick="showSection('modif-profil')" href="#modif-profil">Changez ces informations</a></li>
+            <div class="form-group flex-container">
+                <input type="file" id="avatar" name="avatar" accept="image/png" hidden>
+                <label for="avatar" class="btn btn-primary">Choisir un fichier</label>
+                <button type="submit" class="btn btn-primary_2">Upload</button>
+            </div>
+        </form>     
+        <div class="nav-item change-info-link"><a class="nav-link highlight" onclick="showSection('modif-profil')" href="#modif-profil">Modifier mon profil</a></div>
         {% csrf_token %}
-        <button id="logout-button">Logout</button>
-        <button id="unsubscribe-btn">Se désinscrire</button>
+        <button id="logout-button" class="btn btn-primary">Logout</button>
+        <button id="unsubscribe-btn" class="btn btn-primary">Se désinscrire</button>
     </div>
+    
+    
 
     <div id="section-modif-profil" class="page" style="display: none;">
         <div id="update-user-form-container">
@@ -83,7 +88,6 @@
             <p class="profile-item"><span class="profile-label">Adresse e-mail:</span> {{ user.email }}</p>
         </div>
         {% csrf_token %}
-        <!-- <button id="logout-button">Logout</button> -->
         <button id="logout-button" class="game-button">Logout</button>
     </div>
     
