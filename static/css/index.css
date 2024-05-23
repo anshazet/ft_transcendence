@@ -15,10 +15,11 @@ body {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  justify-content: flex-start; /* Aligns content to the start of the page horizontally */
 }
 
-#section-home, #section-pong, #section-tournoi, #section-classement, #section-profil {
-    background-image: url('../images/background_7.jpg');
+#section-home, #section-pong, #section-tournoi, #section-classement, #section-profil, #section-modif-profil {
+    background-image: url('../images/background_5.jpg');
 }
 
 /* style navigation links*/
@@ -181,6 +182,11 @@ h5 {
   background-color: #0056b3;
 }
 
+/* Remove outline on focus for the Mon profil button */
+.nav-link:focus, .game-button:focus {
+  outline: none;
+}
+
 #user-profile-button {
   max-width: 200px; /* Restricts the button width */
   margin: auto; /* Centers the button horizontally */
@@ -198,8 +204,16 @@ h5 {
   outline-offset: 2px;
 }
 
-#user-profile-button:focus {
-  outline: 2px solid #0056b3; /* Blue outline */
-  outline-offset: 2px;
+.file-input-label {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #0c84da;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+  margin-top: 20px;
+  margin-left: 100px;
 }
-

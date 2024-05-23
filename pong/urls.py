@@ -16,6 +16,7 @@ Including another URLconf
 from django.urls import path
 from django.views.generic import TemplateView
 from . import views
+from .views import classement
 
 urlpatterns = [
     path('', TemplateView.as_view(template_name='index.html')),
@@ -26,4 +27,5 @@ urlpatterns = [
     path('login42/', views.login_42, name='login_42'),
     path('update_user_info/', views.update_user_info, name='update_user_info'),
     path('upload_avatar/', views.upload_avatar, name='upload_avatar'),
+	path('classement/', classement, name='classement'),
 ]
