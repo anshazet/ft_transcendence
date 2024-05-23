@@ -32,7 +32,7 @@
             <div class="nav-item navbar-nav">
                 <a class="nav-link highlight" onclick="showSection('profil')" href="#profil">
                     {% if request.user.is_authenticated %}
-                        <img id="avatar-img" src="{% static 'avatar/' %}{{ user.username }}-avatar.png" class="avatar small-avatar">
+                        <img id="avatar-img" src="{% static 'avatar/' %}{{ user.username }}-avatar.png" class="avatar small-avatar" onerror="this.src='{% static 'avatar/ponguser.png' %}';">
                         <span class="nav-link">{{ user.username }}</span>
                     {% else %}
                         Mon profil
@@ -46,7 +46,7 @@
         <h5>Profil de {{ user.username }}</h5>
         <p>Nom d'utilisateur : {{ user.username }}</p>
         <p>Adresse e-mail : {{ user.email }}</p>
-        <img src="{% static 'avatar/' + user.username + '-avatar.png' %}" alt="Avatar">
+        <img id="avatar-img" src="{% static 'avatar/' %}{{ user.username }}-avatar.png" class="avatar small-avatar" onerror="this.src='{% static 'avatar/ponguser.png' %}';">
         <form id="avatar-upload-form" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form-group flex-container">
@@ -60,8 +60,7 @@
         <button id="logout-button" class="btn btn-primary">Logout</button>
         <button id="unsubscribe-btn" class="btn btn-primary">Se désinscrire</button>
     </div>
-    
-    
+      
 
     <div id="section-modif-profil" class="page" style="display: none;">
         <div id="update-user-form-container">
@@ -134,7 +133,6 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-body">
-                    <button type="button" class="btn-close btn-close-white" id="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     <div class="myform bg-dark">
                         <h1 class="text-center">Se connecter</h1>
                         <form id="login-form" method="post">
@@ -165,7 +163,6 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-body">
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                     <div class="myform bg-dark" id="section-inscription">
                         <h1 class="text-center">S'inscrire</h1>
                         <form id="register-form" method="post">
