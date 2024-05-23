@@ -227,3 +227,14 @@ input[type="file"] + label:focus {
   margin-top: 10px;
   margin-left: 85px;
 }
+
+/* Styling for the default profile avatar */
+.profile-avatar {
+  display: block;
+  margin: 20px auto;
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #0c84da;
+}
