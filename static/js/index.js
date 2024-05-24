@@ -7,6 +7,7 @@ function showSection(sectionId) {
 	if (sectionId == 'pong')
 	{
 		MyGameInstance.SendMessage('ball', 'ResumeGame');
+		MyGameInstance.SendMessage('Button', 'SetActive', 0);
 	} else
 	{
 		MyGameInstance.SendMessage('ball', 'PauseGame');
