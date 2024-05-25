@@ -46,7 +46,9 @@
         <h5>Profil de {{ user.username }}</h5>
         <p>Nom d'utilisateur : {{ user.username }}</p>
         <p>Adresse e-mail : {{ user.email }}</p>
-        <img id="avatar-img" src="{% static 'avatar/' %}{{ user.username }}-avatar.png" class="avatar small-avatar" onerror="this.src='{% static 'avatar/ponguser.png' %}';">
+        <div class="avatar-container">
+            <img id="avatar-img" src="{% static 'avatar/' %}{{ user.username }}-avatar.png" class="profile-avatar" onerror="this.src='{% static 'avatar/ponguser.png' %}'">
+        </div>
         <form id="avatar-upload-form" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form-group flex-container">
@@ -60,6 +62,8 @@
         <button id="logout-button" class="btn btn-primary">Logout</button>
         <button id="unsubscribe-btn" class="btn btn-primary">Se désinscrire</button>
     </div>
+    
+
       
 
     <div id="section-modif-profil" class="page" style="display: none;">
@@ -178,7 +182,7 @@
                                 <label for="password-register" class="form-label">Mot de passe</label>
                                 <input type="password" class="form-control" id="password-register" name="password" aria-describedby="password" autocomplete="new-password">
                             </div>
-                            <button type="submit" class="btn btn-primary">S'inscrire</button>
+                            <button type="submit" class="btn btn-light mt-3" id=login-button>S'inscrire</button>
                             <div id="register-error" class="text-danger"></div> 
                         </form>
                     </div>

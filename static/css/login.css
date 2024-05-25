@@ -227,3 +227,31 @@ input[type="file"] + label:focus {
   margin-top: 10px;
   margin-left: 85px;
 }
+
+/* Styling for the default profile avatar */
+.profile-avatar {
+  display: block;
+  margin: 20px auto;
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #950cda;
+  position: absolute;
+  top: 80px;
+  right: 80px;
+}
+
+/* Styling for the mini avatar in the navigation bar */
+.mini-avatar {
+  width: 30px;
+  height: 30px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+}
