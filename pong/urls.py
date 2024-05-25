@@ -28,4 +28,13 @@ urlpatterns = [
     path('update_user_info/', views.update_user_info, name='update_user_info'),
     path('upload_avatar/', views.upload_avatar, name='upload_avatar'),
 	path('classement/', classement, name='classement'),
+    path('send_friend_request/<str:username>/', views.send_friend_request, name='send_friend_request'),
+    path('accept_friend_request/<int:request_id>/', views.accept_friend_request, name='accept_friend_request'),
+    path('decline_friend_request/<int:request_id>/', views.decline_friend_request, name='decline_friend_request'),
+    path('friend_requests/', views.list_friend_requests, name='list_friend_requests'),
+    path('pending_friend_requests/', views.pending_friend_requests, name='pending_friend_requests'),
+    path('list_friends_with_status/', views.list_friends_with_status, name='list_friend_requests'),
+    path('update_online_status/', views.update_online_status, name='update_online_status'),
+    path('user_logged_out_callback', views.user_logged_out_callback, name='user_logged_out_callback'),
+    path('user_logged_in_callback', views.user_logged_in_callback, name='user_logged_in_callback'),
 ]
