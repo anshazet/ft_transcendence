@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function () {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                'X-CSRFToken': '{{ csrf_token }}'  
+                'X-CSRFToken': getCookie('csrftoken')
             },
             body: 'is_online=' + isOnline
         })
@@ -151,22 +151,14 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // Appeler updateOnlineStatus lors du chargement de la page
+    window.addEventListener('load', () => {
+        updateOnlineStatus(true);
+    });
+
+    // Appeler updateOnlineStatus avant de décharger la page
     window.addEventListener('beforeunload', () => {
-        fetch('/update_online_status/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'X-CSRFToken': getCookie('csrftoken')
-            },
-            body: 'is_online=false'
-        })
-        .then(response => response.json())
-        .then(data => {
-            // Gérer la réponse du serveur si nécessaire
-        })
-        .catch(error => {
-            console.error('Erreur lors de la mise à jour du statut de connexion:', error);
-        });
+        updateOnlineStatus(false);
     });
 
     function getCookie(name) {
