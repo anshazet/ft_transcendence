@@ -35,6 +35,8 @@ def login_user(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
+                user.is_online = True
+                user.save(update_fields=['is_online'])
                 return JsonResponse({'success': True})
             else:
                 return JsonResponse({'success': False, 'error_message': 'Nom d\'utilisateur ou mot de passe incorrect.'})
@@ -45,7 +47,10 @@ def login_user(request):
 
 def logout_view(request):
     if request.user.is_authenticated:
+        user = request.user
         logout(request)
+        user.is_online = False
+        user.save(update_fields=['is_online'])
     return redirect('login_user')
 
 @login_required
@@ -90,6 +95,8 @@ def login_42(request):
                     user = CustomUser.objects.get(username=username)
                     user.backend = 'django.contrib.auth.backends.ModelBackend'
                     login(request, user)
+                    user.is_online = True
+                    user.save(update_fields=['is_online'])
                     return redirect('http://localhost:8000')
                 else:
                     CustomUser.objects.create_user(username=username, email=email)
@@ -201,9 +208,8 @@ def accept_friend_request(request):
             request_id = form.cleaned_data['request_id']
             friend_request = get_object_or_404(FriendRequest, id=request_id)
             if friend_request.to_user == request.user:
-                # Logique pour créer la relation d'amitié, par exemple en utilisant un ManyToManyField sur User
                 friend_request.delete()
-                return redirect('friend_request_accepted')  # Remplace par le nom de ta vue de confirmation
+                return redirect('friend_request_accepted') 
     else:
         form = AcceptFriendRequestForm()
     return render(request, 'accept_friend_request.html', {'form': form})

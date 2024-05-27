@@ -131,14 +131,14 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
-    setInterval(updateFriendList, 5000);
+    setInterval(updateFriendList, 2500);
 
     function updateOnlineStatus(isOnline) {
         fetch('/update_online_status/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                'X-CSRFToken': '{{ csrf_token }}'  // Assurez-vous d'avoir le jeton CSRF disponible dans votre template Django
+                'X-CSRFToken': '{{ csrf_token }}'  
             },
             body: 'is_online=' + isOnline
         })
