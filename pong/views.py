@@ -9,6 +9,18 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 import os
 from django.conf import settings
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from django_otp.plugins.otp_totp.models import TOTPDevice
+from django_otp.plugins.otp_email.models import EmailDevice
+from rest_framework_simplejwt.views import TokenObtainPairView
+from .serializers import MyTokenObtainPairSerializer 
+from django.shortcuts import render, get_object_or_404
+import logging
+
 
 @csrf_exempt
 def register_user(request):
@@ -177,8 +189,7 @@ def classement(request):
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import SendFriendRequestForm, AcceptFriendRequestForm, DeclineFriendRequestForm
-from .models import FriendRequest
-from .models import CustomUser
+from .models import FriendRequest, CustomUser
 
 @login_required
 def send_friend_request(request):
@@ -333,3 +344,109 @@ def user_logged_in_callback(sender, request, user, **kwargs):
 def user_logged_out_callback(sender, request, user, **kwargs):
     user.is_online = False
     user.save()
+
+# Register View
+class RegisterView(APIView):
+    def post(self, request):
+        username = request.data.get('username')
+        password = request.data.get('password')
+        email = request.data.get('email')
+        
+        if User.objects.filter(username=username).exists():
+            return Response({'error': 'Username already exists'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        user = User.objects.create_user(username=username, password=password, email=email)
+        user.save()
+        return Response({'message': 'User created successfully'}, status=status.HTTP_201_CREATED)
+
+# JWT Token View
+class MyTokenObtainPairView(TokenObtainPairView):
+    permission_classes = (AllowAny,)
+    serializer_class = MyTokenObtainPairSerializer
+
+# 2FA Setup View
+class SetupTOTPView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+        logger.info(f"Setting up OTP device for user {user.username}")
+        
+        # Check if a TOTP device already exists for the user
+        if TOTPDevice.objects.filter(user=user, name='default').exists():
+            return Response({'message': 'TOTP device already exists'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        device = TOTPDevice.objects.create(user=user, name='default')
+        device.confirmed = True  # Mark the device as confirmed if necessary
+        device.save()
+        
+        logger.info(f"TOTP device created for user {user.username}: {device}")
+        
+        return Response({'otp_setup_url': device.config_url}, status=status.HTTP_200_OK)
+
+# 2FA Verification View
+class VerifyTOTPView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+        token = request.data.get('token')
+        devices = TOTPDevice.objects.filter(user=user)
+        
+        for device in devices:
+            if device.verify_token(token):
+                return Response({'message': '2FA verification successful'}, status=status.HTTP_200_OK)
+        
+        return Response({'error': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+from django.core.mail import send_mail
+from django_otp.plugins.otp_email.models import EmailDevice
+
+@login_required
+@csrf_exempt
+def send_otp_email(request):
+    user = request.user
+    device, created = EmailDevice.objects.get_or_create(user=user, name='default')
+    if created:
+        device.confirmed = True
+        device.save()
+
+    if device:
+        device.generate_challenge()
+        return JsonResponse({'success': True, 'message': 'Verification email sent.'})
+    else:
+        return JsonResponse({'error': 'Unable to send verification email.'}, status=400)
+
+
+logger = logging.getLogger(__name__)
+
+@csrf_exempt
+@login_required    
+def verify_otp(request):
+    if request.method == 'POST':
+        otp_token = request.POST.get('otp_token')
+        if not otp_token:
+            logger.error("OTP token not provided")
+            return JsonResponse({'success': False, 'error_message': 'OTP token not provided'}, status=400)
+
+        logger.info(f"Received OTP token: {otp_token}")
+
+        user = request.user
+        devices = TOTPDevice.objects.filter(user=user)
+
+        if not devices.exists():
+            logger.error(f"No OTP devices found for user {user.username}")
+            return JsonResponse({'success': False, 'error_message': 'No OTP devices found'}, status=400)
+
+        for device in devices:
+            logger.info(f"Verifying token with device: {device}")
+            if device.verify_token(otp_token):
+                logger.info(f"2FA verification successful for user {user.username}")
+                return JsonResponse({'success': True, 'message': '2FA verification successful'})
+
+        logger.error(f"Invalid token for user {user.username}. Provided token: {otp_token}")
+        return JsonResponse({'success': False, 'error_message': 'Invalid token'}, status=400)
+    else:
+        logger.error("Invalid request method")
+        return JsonResponse({'success': False, 'error_message': 'Invalid request method'}, status=405)

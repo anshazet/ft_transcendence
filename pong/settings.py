@@ -39,6 +39,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'pong',
+    'rest_framework',
+    'rest_framework_simplejwt',
+    'django_otp',
+    'django_otp.plugins.otp_totp',
+    'django_otp.plugins.otp_email',
 ]
 
 MIDDLEWARE = [
@@ -49,7 +54,30 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+	'django_otp.middleware.OTPMiddleware',
+	'django_otp.middleware.OTPMiddleware',
+    'pong.middleware.Require2FAMiddleware',
 ]
+
+# JWT settings
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
 
 ROOT_URLCONF = 'pong.urls'
 
@@ -82,6 +110,7 @@ DATABASES = {
         'USER': 'admin',
         'PASSWORD': 'admin',
         'HOST': 'db',  # C'est le nom du service PostgreSQL dans Docker Compose
+		# 'HOST': 'localhost', 
         'PORT': '5432',
     }
 }
@@ -139,3 +168,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CLIENT_ID = 'u-s4t2ud-69c7a5257ffb84374c9f2c6a08736a4f080650b67ed9308ad6b3f31fb7cd6ce5'
 # CLIENT_SECRET = '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'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # Use your email provider's SMTP server
+EMAIL_PORT = 587  # Typical port for TLS
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'transcendence6642@gmail.com'
+EMAIL_HOST_PASSWORD = 'hjwo yilw ltjd givl'

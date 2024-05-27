@@ -1,6 +1,6 @@
 from django.db import models
+from django.contrib.auth.models import User
 import os
-
 # class Utilisateur(models.Model):
 #     username = models.CharField(max_length=100)
 #     password = models.CharField(max_length=100)
@@ -39,3 +39,24 @@ class FriendRequest(models.Model):
 
     class Meta:
         unique_together = ('from_user', 'to_user')
+
+from django.conf import settings
+from django.db import models
+
+class Profile(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    verification_code = models.CharField(max_length=6, blank=True, null=True)
+    is_verified = models.BooleanField(default=False)
+
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_or_update_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+    else:
+        try:
+            instance.profile.save()
+        except Profile.DoesNotExist:
+            Profile.objects.create(user=instance)

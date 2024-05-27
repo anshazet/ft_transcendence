@@ -143,3 +143,124 @@ function getCookie(name) {
     return cookieValue;
 }
 const csrftoken = getCookie('csrftoken');
+
+
+// document.getElementById('2fa-form').addEventListener('submit', function(event) {
+//     event.preventDefault();
+//     const otp_token = document.getElementById('otp-token').value;
+//     const csrftoken = getCookie('csrftoken');
+
+//     fetch('/verify_otp/', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/x-www-form-urlencoded',
+//             'X-CSRFToken': csrftoken
+//         },
+//         body: `otp_token=${encodeURIComponent(otp_token)}`
+//     })
+//     .then(response => response.json())
+//     .then(data => {
+//         if (data.success) {
+//             localStorage.setItem('access', data.access);
+//             localStorage.setItem('refresh', data.refresh);
+//             window.location.reload();
+//         } else {
+//             console.error(data.error_message);
+//             alert(data.error_message);  // Add alert for user feedback
+//         }
+//     })
+//     .catch(error => {
+//         console.error('Erreur lors de la requête:', error);
+//     });
+// });
+
+
+document.getElementById('2fa-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const otp_token = document.getElementById('otp-token').value;
+    const csrftoken = getCookie('csrftoken');
+
+    fetch('/verify_otp/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': csrftoken
+        },
+        body: new URLSearchParams({
+            'otp_token': otp_token
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            localStorage.setItem('access', data.access);
+            localStorage.setItem('refresh', data.refresh);
+            window.location.reload();
+        } else {
+            console.error(data.error_message);
+            alert(data.error_message);  // Add alert for user feedback
+        }
+    })
+    .catch(error => {
+        console.error('Erreur lors de la requête:', error);
+    });
+});
+
+
+// document.getElementById('2fa-modal-form').addEventListener('submit', function(event) {
+//     event.preventDefault();
+//     const otp_token = document.getElementById('otp-token-modal').value;
+
+//     fetch('/verify_otp/', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/x-www-form-urlencoded',
+//             'X-CSRFToken': getCookie('csrftoken')
+//         },
+//         body: `otp_token=${encodeURIComponent(otp_token)}`
+//     })
+//     .then(response => response.json())
+//     .then(data => {
+//         if (data.success) {
+//             localStorage.setItem('access', data.access);
+//             localStorage.setItem('refresh', data.refresh);
+//             window.location.reload();
+//         } else {
+//             console.error(data.error_message);
+//         }
+//     })
+//     .catch(error => {
+//         console.error('Erreur lors de la requête:', error);
+//     });
+// });
+
+
+document.getElementById('2fa-modal-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const otp_token = document.getElementById('otp-token-modal').value;
+    const csrftoken = getCookie('csrftoken');
+
+    fetch('/verify_otp/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': csrftoken
+        },
+        body: new URLSearchParams({
+            'otp_token': otp_token
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            localStorage.setItem('access', data.access);
+            localStorage.setItem('refresh', data.refresh);
+            window.location.reload();
+        } else {
+            console.error(data.error_message);
+        }
+    })
+    .catch(error => {
+        console.error('Erreur lors de la requête:', error);
+    });
+});

@@ -7,6 +7,9 @@ class LoginForm(forms.Form):
     username = forms.CharField(label='Nom d\'utilisateur')
     password = forms.CharField(label='Mot de passe', widget=forms.PasswordInput)
 
+class OTPForm(forms.Form):
+    otp_token = forms.CharField(label='OTP Token')
+
 from django import forms
 from django.contrib.auth.models import User
 from .models import CustomUser
