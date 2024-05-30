@@ -21,7 +21,7 @@ from .views import classement
 from .views import RegisterView, MyTokenObtainPairView, SetupTOTPView, VerifyTOTPView
 from rest_framework_simplejwt.views import TokenRefreshView
 from .views import send_otp_email
-
+from .views import verify_otp
 
 urlpatterns = [
     path('', TemplateView.as_view(template_name='index.html')),
@@ -52,4 +52,8 @@ urlpatterns = [
 	path('verify_otp/', views.verify_otp, name='verify_otp'),
     path('setup_totp/', SetupTOTPView.as_view(), name='setup_totp'),
     path('verify_otp/', VerifyTOTPView.as_view(), name='verify_otp'),
+	path('verify_otp/', verify_otp, name='verify_otp'),
+    path('api/2fa/setup/', SetupTOTPView.as_view(), name='setup_totp'),
+    path('api/2fa/verify/', VerifyTOTPView.as_view(), name='verify_totp'),
+
 ]

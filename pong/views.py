@@ -1,11 +1,10 @@
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 
 from .forms import LoginForm
-from django.contrib.auth import logout
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 import os
 from django.conf import settings
@@ -18,7 +17,7 @@ from django_otp.plugins.otp_totp.models import TOTPDevice
 from django_otp.plugins.otp_email.models import EmailDevice
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import MyTokenObtainPairSerializer 
-from django.shortcuts import render, get_object_or_404
+from .forms import OTPForm
 import logging
 
 
@@ -420,33 +419,56 @@ def send_otp_email(request):
 
 
 logger = logging.getLogger(__name__)
+debug_logger = logging.getLogger('my_debug_logger')
+
+
+@login_required
+@csrf_exempt
+def setup_otp(request):
+    if request.method == 'POST':
+        user = request.user
+        device, created = TOTPDevice.objects.get_or_create(user=user, name='default')
+        if created:
+            device.confirmed = True
+            device.save()
+            logger.debug('Created and confirmed TOTPDevice for user: %s', user.username)
+        else:
+            logger.debug('TOTPDevice already exists for user: %s', user.username)
+
+        return JsonResponse({'success': True, 'message': 'OTP setup successfully', 'otp_setup_url': device.config_url})
+    else:
+        return JsonResponse({'success': False, 'message': 'Invalid request method'}, status=400)
+
+
+debug_logger = logging.getLogger('my_debug_logger')
 
 @csrf_exempt
-@login_required    
+@login_required
 def verify_otp(request):
+    debug_logger.debug("verify_otp called")
+    debug_logger.info("CSRF Token: %s", request.META.get("CSRF_COOKIE"))
+    debug_logger.info("Session Key: %s", request.session.session_key)
+    debug_logger.info("User: %s", request.user)
+
     if request.method == 'POST':
+        debug_logger.debug("Request method is POST")
         otp_token = request.POST.get('otp_token')
-        if not otp_token:
-            logger.error("OTP token not provided")
-            return JsonResponse({'success': False, 'error_message': 'OTP token not provided'}, status=400)
+        debug_logger.debug("Received OTP token: %s", otp_token)
 
-        logger.info(f"Received OTP token: {otp_token}")
+        if request.user.is_authenticated:
+            debug_logger.debug("Request user: %s", request.user)
+            device = TOTPDevice.objects.filter(user=request.user, confirmed=True, name='default').first()
+            debug_logger.debug("Found device: %s", device)
 
-        user = request.user
-        devices = TOTPDevice.objects.filter(user=user)
-
-        if not devices.exists():
-            logger.error(f"No OTP devices found for user {user.username}")
-            return JsonResponse({'success': False, 'error_message': 'No OTP devices found'}, status=400)
-
-        for device in devices:
-            logger.info(f"Verifying token with device: {device}")
-            if device.verify_token(otp_token):
-                logger.info(f"2FA verification successful for user {user.username}")
-                return JsonResponse({'success': True, 'message': '2FA verification successful'})
-
-        logger.error(f"Invalid token for user {user.username}. Provided token: {otp_token}")
-        return JsonResponse({'success': False, 'error_message': 'Invalid token'}, status=400)
+            if device and device.verify_token(otp_token):
+                debug_logger.debug("OTP matched successfully.")
+                return JsonResponse({'success': True, 'access': 'dummy_access_token', 'refresh': 'dummy_refresh_token'})
+            else:
+                debug_logger.debug("Invalid OTP.")
+                return JsonResponse({'success': False, 'error_message': 'Invalid OTP'}, status=400)
+        else:
+            debug_logger.debug("User not authenticated.")
+            return JsonResponse({'success': False, 'error_message': 'User not authenticated'}, status=401)
     else:
-        logger.error("Invalid request method")
+        debug_logger.debug("Invalid request method.")
         return JsonResponse({'success': False, 'error_message': 'Invalid request method'}, status=405)

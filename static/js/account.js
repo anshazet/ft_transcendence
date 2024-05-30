@@ -142,8 +142,6 @@ function getCookie(name) {
     }
     return cookieValue;
 }
-const csrftoken = getCookie('csrftoken');
-
 
 // document.getElementById('2fa-form').addEventListener('submit', function(event) {
 //     event.preventDefault();
@@ -180,6 +178,9 @@ document.getElementById('2fa-form').addEventListener('submit', function(event) {
     const otp_token = document.getElementById('otp-token').value;
     const csrftoken = getCookie('csrftoken');
 
+    console.debug('Submitting 2FA form with token:', otp_token);
+    console.debug('CSRF Token:', csrftoken);
+
     fetch('/verify_otp/', {
         method: 'POST',
         headers: {
@@ -192,12 +193,13 @@ document.getElementById('2fa-form').addEventListener('submit', function(event) {
     })
     .then(response => response.json())
     .then(data => {
+        console.debug('Response from /verify_otp:', data);
         if (data.success) {
             localStorage.setItem('access', data.access);
             localStorage.setItem('refresh', data.refresh);
             window.location.reload();
         } else {
-            console.error(data.error_message);
+            console.error('Error:', data.error_message);
             alert(data.error_message);  // Add alert for user feedback
         }
     })
@@ -205,7 +207,6 @@ document.getElementById('2fa-form').addEventListener('submit', function(event) {
         console.error('Erreur lors de la requête:', error);
     });
 });
-
 
 // document.getElementById('2fa-modal-form').addEventListener('submit', function(event) {
 //     event.preventDefault();
@@ -240,6 +241,8 @@ document.getElementById('2fa-modal-form').addEventListener('submit', function(ev
     const otp_token = document.getElementById('otp-token-modal').value;
     const csrftoken = getCookie('csrftoken');
 
+    console.debug('Submitting 2FA modal form with token:', otp_token);
+
     fetch('/verify_otp/', {
         method: 'POST',
         headers: {
@@ -250,14 +253,18 @@ document.getElementById('2fa-modal-form').addEventListener('submit', function(ev
             'otp_token': otp_token
         })
     })
-    .then(response => response.json())
+    .then(response => {
+        console.debug('Response status:', response.status);
+        return response.json();
+    })
     .then(data => {
+        console.debug('Response from /verify_otp (modal):', data);
         if (data.success) {
             localStorage.setItem('access', data.access);
             localStorage.setItem('refresh', data.refresh);
             window.location.reload();
         } else {
-            console.error(data.error_message);
+            console.error('Error:', data.error_message);
         }
     })
     .catch(error => {

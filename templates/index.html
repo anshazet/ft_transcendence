@@ -241,6 +241,12 @@
             $('#ModalForm').modal('show');
         }
         
+        document.addEventListener('DOMContentLoaded', function() {
+        var userIsLoggedIn = document.getElementById('userIsLoggedIn').value === 'true';
+        if (!userIsLoggedIn) {
+            $('#ModalForm').modal('show');
+        }
+
         document.getElementById('verify-email-button').addEventListener('click', function(event) {
             fetch('/send_otp_email/', {
                 method: 'POST',
@@ -282,6 +288,7 @@
                     window.location.reload();
                 } else {
                     console.error(data.error_message);
+                    alert(data.error_message);
                 }
             })
             .catch(error => {
@@ -309,6 +316,7 @@
                     window.location.reload();
                 } else {
                     console.error(data.error_message);
+                    alert(data.error_message);
                 }
             })
             .catch(error => {
@@ -330,6 +338,7 @@
             }
             return cookieValue;
         }
+    });
     </script>
 </body>
 </html>

@@ -55,8 +55,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 	'django_otp.middleware.OTPMiddleware',
-	'django_otp.middleware.OTPMiddleware',
     'pong.middleware.Require2FAMiddleware',
+	
 ]
 
 # JWT settings
@@ -71,6 +71,13 @@ SIMPLE_JWT = {
     'SIGNING_KEY': SECRET_KEY,
     'AUTH_HEADER_TYPES': ('Bearer',),
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+	
+    'AUTH_COOKIE': 'access_token',  # If you are using cookies
+    'AUTH_COOKIE_SECURE': False,  # Set to True in production with HTTPS
+    'AUTH_COOKIE_HTTP_ONLY': True,
+    'AUTH_COOKIE_PATH': '/',
+    'AUTH_COOKIE_SAMESITE': 'Lax',
+
 }
 
 REST_FRAMEWORK = {
@@ -175,3 +182,74 @@ EMAIL_PORT = 587  # Typical port for TLS
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'transcendence6642@gmail.com'
 EMAIL_HOST_PASSWORD = 'hjwo yilw ltjd givl'
+
+
+CSRF_COOKIE_SECURE = False  # Set to False for development with HTTP
+SESSION_COOKIE_SECURE = False  # Set to False for development with HTTP
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'DEBUG',
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+		        'django.db.backends': {
+            'handlers': ['console'],
+            'level': 'ERROR',  # Database logging level
+            'propagate': False,
+        },
+        'pong': {  # Replace 'your_app_name' with your actual app name
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+		        'my_debug_logger': {  # Custom logger for specific debug information
+            'handlers': ['console'],
+            'level': 'DEBUG',  # Log level for this custom logger
+            'propagate': False,
+        },
+    },
+}
+
+
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'console': {
+#             'level': 'DEBUG',
+#             'class': 'logging.StreamHandler',
+#         },
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers': ['console'],
+#             'level': 'DEBUG',
+#             'propagate': True,
+#         },
+#         'django.db.backends': {
+#             'handlers': ['console'],
+#             'level': 'ERROR',
+#             'propagate': False,
+#         },
+#         'my_debug_logger': {
+#             'handlers': ['console'],
+#             'level': 'DEBUG',
+#             'propagate': False,
+#         },
+#     },
+# }
+
