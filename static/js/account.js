@@ -102,31 +102,82 @@ document.getElementById('update-user-form').addEventListener('submit', function(
 });
 
 document.addEventListener('DOMContentLoaded', function() {
-    var form = document.getElementById('avatar-upload-form');
-    form.addEventListener('submit', function(event) {
+    const otpForm = document.getElementById('otpForm');
+    
+    // Check if the form exists before adding the event listener
+    if (!otpForm) {
+        console.error("OTP form not found on the page.");
+        return;
+    }
+
+    // Flag to prevent multiple submissions
+    let isSubmitting = false;
+
+    otpForm.addEventListener('submit', function(event) {
         event.preventDefault();
         
-        var formData = new FormData(form);
+        // Prevent form submission if a request is already in progress
+        if (isSubmitting) {
+            return;
+        }
+
+        isSubmitting = true;
         
-        fetch('/upload_avatar/', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-CSRFToken': getCookie('csrftoken')
+        const formData = new FormData(otpForm);
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', otpForm.action, true);
+        xhr.setRequestHeader('X-CSRFToken', formData.get('csrfmiddlewaretoken'));
+        
+        xhr.onload = function() {
+            isSubmitting = false; // Reset the flag on request completion
+
+            if (xhr.status === 200) {
+                const response = JSON.parse(xhr.responseText);
+                if (response.success) {
+                    alert('OTP verified successfully!');
+                } else {
+                    alert(response.error_message);
+                }
+            } else {
+                alert('An error occurred while verifying the OTP.');
             }
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Error uploading avatar');
-            }
-            console.log('Avatar uploaded successfully.');
-            window.location.reload();
-        })
-        .catch(error => {
-            console.error('Error uploading avatar:', error.message);
-        });
+        };
+
+        xhr.onerror = function() {
+            isSubmitting = false; // Reset the flag on request error
+            alert('An error occurred while making the request.');
+        };
+        
+        xhr.send(formData);
     });
 });
+
+// document.addEventListener('DOMContentLoaded', function() {
+//     var form = document.getElementById('avatar-upload-form');
+//     form.addEventListener('submit', function(event) {
+//         event.preventDefault();
+        
+//         var formData = new FormData(form);
+        
+//         fetch('/upload_avatar/', {
+//             method: 'POST',
+//             body: formData,
+//             headers: {
+//                 'X-CSRFToken': getCookie('csrftoken')
+//             }
+//         })
+//         .then(response => {
+//             if (!response.ok) {
+//                 throw new Error('Error uploading avatar');
+//             }
+//             console.log('Avatar uploaded successfully.');
+//             window.location.reload();
+//         })
+//         .catch(error => {
+//             console.error('Error uploading avatar:', error.message);
+//         });
+//     });
+// });
 
 function getCookie(name) {
     let cookieValue = null;

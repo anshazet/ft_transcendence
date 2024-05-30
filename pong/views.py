@@ -18,6 +18,8 @@ from django_otp.plugins.otp_email.models import EmailDevice
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import MyTokenObtainPairSerializer 
 from .forms import OTPForm
+from django.core.mail import send_mail
+import random
 import logging
 
 
@@ -119,11 +121,16 @@ def login_42(request):
 @login_required
 def profile_view(request):
     user = request.user
+    form = OTPForm()  # Instantiate the form
+    print("User:", user)  # Debugging output
+    print("Form:", form)  # Debugging output
+    
     context = {
         'user': user,
+        'form': form,  # Add the form to the context
     }
-    return render(request, 'index.html', context)
-
+    
+    return render(request, 'index.html', context)  # Render the template with the context
 
 @login_required
 def update_user_info(request):
@@ -406,16 +413,34 @@ from django_otp.plugins.otp_email.models import EmailDevice
 @csrf_exempt
 def send_otp_email(request):
     user = request.user
+    logger.debug("Sending OTP email to user: %s", user.email)
+    
     device, created = EmailDevice.objects.get_or_create(user=user, name='default')
     if created:
         device.confirmed = True
         device.save()
+        logger.debug("Created new email device for user: %s", user.email)
 
     if device:
         device.generate_challenge()
+        logger.debug("OTP email sent to user: %s", user.email)
         return JsonResponse({'success': True, 'message': 'Verification email sent.'})
     else:
+        logger.error("Failed to send OTP email to user: %s", user.email)
         return JsonResponse({'error': 'Unable to send verification email.'}, status=400)
+
+# def send_otp_email(request):
+#     user = request.user
+#     device, created = EmailDevice.objects.get_or_create(user=user, name='default')
+#     if created:
+#         device.confirmed = True
+#         device.save()
+
+#     if device:
+#         device.generate_challenge()
+#         return JsonResponse({'success': True, 'message': 'Verification email sent.'})
+#     else:
+#         return JsonResponse({'error': 'Unable to send verification email.'}, status=400)
 
 
 logger = logging.getLogger(__name__)

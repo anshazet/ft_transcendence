@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
     <link rel="stylesheet" href="{% static 'css/index.css' %}">
     <link rel="stylesheet" href="{% static 'TemplateData/style.css' %}">
-    <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+    <!-- <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon"> -->
     <title>Let's Pong - Accueil</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -63,6 +63,7 @@
         <div id="2fa-verification-section" style="display:none;">
             <form id="2fa-form" method="post">
                 {% csrf_token %}
+                {{ form.as_p }}
                 <div class="mb-3 mt-4">
                     <label for="otp-token" class="form-label">Enter OTP</label>
                     <input type="text" class="form-control" id="otp-token" name="otp_token" aria-describedby="otpHelp" autocomplete="one-time-code">
@@ -94,7 +95,8 @@
     <div id="section-modif-profil" class="page" style="display: none;">
         <div id="update-user-form-container">
             <h5>Modifier vos informations</h5>
-            <form id="update-user-form">
+            <form id="update-user-form" method="post">
+                {% csrf_token %}
                 <div class="form-group">
                     <input type="text" id="username" name="username" placeholder="Nom d'utilisateur:">
                 </div>
@@ -183,6 +185,7 @@
                         <h1 class="text-center">S'inscrire</h1>
                         <form id="register-form" method="post">
                             {% csrf_token %}
+                            {{ form.as_p }}
                             <div class="mb-3 mt-4">
                                 <label for="email-register" class="form-label">Adresse e-mail</label>
                                 <input type="email" class="form-control" id="email-register" name="email" aria-describedby="email">
@@ -212,6 +215,7 @@
                         <h1 class="text-center">Two-Factor Authentication</h1>
                         <form id="2fa-modal-form">
                             {% csrf_token %}
+                            {{ form.as_p }}
                             <div class="mb-3 mt-4">
                                 <label for="otp-token-modal" class="form-label">Enter OTP</label>
                                 <input type="text" class="form-control" id="otp-token-modal" name="otp_token" aria-describedby="otpHelp" autocomplete="one-time-code">
