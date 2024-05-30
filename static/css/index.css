@@ -92,7 +92,7 @@ h5 {
 
 /* Navigation palette Styles */
 .navbar.custom-navbar {
-  background-color: #51858d !important; /* Change to any color you like */
+  background-color: #51858d !important; 
   border-bottom: 1px solid #85d7f3; /* Adds a border under the navbar */
 }
 
@@ -103,7 +103,6 @@ h5 {
 
 
 /* pong style */
-
 #section-pong {
   display: flex;
   flex-direction: column;
