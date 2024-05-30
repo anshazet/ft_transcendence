@@ -187,42 +187,42 @@ EMAIL_HOST_PASSWORD = 'hjwo yilw ltjd givl'
 CSRF_COOKIE_SECURE = False  # Set to False for development with HTTP
 SESSION_COOKIE_SECURE = False  # Set to False for development with HTTP
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'root': {
-        'handlers': ['console'],
-        'level': 'DEBUG',
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-		        'django.db.backends': {
-            'handlers': ['console'],
-            'level': 'ERROR',  # Database logging level
-            'propagate': False,
-        },
-        'pong': {  # Replace 'your_app_name' with your actual app name
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-		        'my_debug_logger': {  # Custom logger for specific debug information
-            'handlers': ['console'],
-            'level': 'DEBUG',  # Log level for this custom logger
-            'propagate': False,
-        },
-    },
-}
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'console': {
+#             'level': 'DEBUG',
+#             'class': 'logging.StreamHandler',
+#         },
+#     },
+#     'root': {
+#         'handlers': ['console'],
+#         'level': 'DEBUG',
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers': ['console'],
+#             'level': 'DEBUG',
+#             'propagate': True,
+#         },
+# 		        'django.db.backends': {
+#             'handlers': ['console'],
+#             'level': 'ERROR',  # Database logging level
+#             'propagate': False,
+#         },
+#         'pong': {  # Replace 'your_app_name' with your actual app name
+#             'handlers': ['console'],
+#             'level': 'DEBUG',
+#             'propagate': True,
+#         },
+# 		        'my_debug_logger': {  # Custom logger for specific debug information
+#             'handlers': ['console'],
+#             'level': 'DEBUG',  # Log level for this custom logger
+#             'propagate': False,
+#         },
+#     },
+# }
 
 
 # LOGGING = {
