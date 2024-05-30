@@ -1,17 +1,6 @@
-import { MyGameInstance } from "./pong.js";
-
 let currentSection = null;
 
 function showSection(sectionId) {
-	console.log('targetId: ' + sectionId);
-	if (sectionId == 'pong')
-	{
-		MyGameInstance.SendMessage('ball', 'ResumeGame');
-		MyGameInstance.SendMessage('Button', 'SetActive', 0);
-	} else
-	{
-		MyGameInstance.SendMessage('ball', 'PauseGame');
-	}
     const current = document.querySelector('.current-section');
     if (current) {
         current.classList.remove('current-section');
