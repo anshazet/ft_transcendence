@@ -1,14 +1,27 @@
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 
 from .forms import LoginForm
-from django.contrib.auth import logout
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 import os
 from django.conf import settings
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from django_otp.plugins.otp_totp.models import TOTPDevice
+from django_otp.plugins.otp_email.models import EmailDevice
+from rest_framework_simplejwt.views import TokenObtainPairView
+from .serializers import MyTokenObtainPairSerializer 
+from .forms import OTPForm
+from django.core.mail import send_mail
+import random
+import logging
+
 
 @csrf_exempt
 def register_user(request):
@@ -115,11 +128,16 @@ def login_42(request):
 @login_required
 def profile_view(request):
     user = request.user
+    form = OTPForm()  # Instantiate the form
+    print("User:", user)  # Debugging output
+    print("Form:", form)  # Debugging output
+    
     context = {
         'user': user,
+        'form': form,  # Add the form to the context
     }
-    return render(request, 'index.html', context)
-
+    
+    return render(request, 'index.html', context)  # Render the template with the context
 
 @login_required
 def update_user_info(request):
@@ -184,8 +202,7 @@ def classement(request):
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import SendFriendRequestForm, AcceptFriendRequestForm, DeclineFriendRequestForm
-from .models import FriendRequest
-from .models import CustomUser
+from .models import FriendRequest, CustomUser
 
 @login_required
 def send_friend_request(request):
@@ -326,3 +343,163 @@ def update_online_status(request):
     user.save()
     return JsonResponse({'success': True})
 
+from django.contrib.auth.signals import user_logged_in, user_logged_out
+from django.dispatch import receiver
+from .models import CustomUser
+
+@receiver(user_logged_in)
+def user_logged_in_callback(sender, request, user, **kwargs):
+    user.is_online = True
+    user.save()
+
+@receiver(user_logged_out)
+def user_logged_out_callback(sender, request, user, **kwargs):
+    user.is_online = False
+    user.save()
+
+# Register View
+class RegisterView(APIView):
+    def post(self, request):
+        username = request.data.get('username')
+        password = request.data.get('password')
+        email = request.data.get('email')
+        
+        if User.objects.filter(username=username).exists():
+            return Response({'error': 'Username already exists'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        user = User.objects.create_user(username=username, password=password, email=email)
+        user.save()
+        return Response({'message': 'User created successfully'}, status=status.HTTP_201_CREATED)
+
+# JWT Token View
+class MyTokenObtainPairView(TokenObtainPairView):
+    permission_classes = (AllowAny,)
+    serializer_class = MyTokenObtainPairSerializer
+
+# 2FA Setup View
+class SetupTOTPView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+        logger.info(f"Setting up OTP device for user {user.username}")
+        
+        # Check if a TOTP device already exists for the user
+        if TOTPDevice.objects.filter(user=user, name='default').exists():
+            return Response({'message': 'TOTP device already exists'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        device = TOTPDevice.objects.create(user=user, name='default')
+        device.confirmed = True  # Mark the device as confirmed if necessary
+        device.save()
+        
+        logger.info(f"TOTP device created for user {user.username}: {device}")
+        
+        return Response({'otp_setup_url': device.config_url}, status=status.HTTP_200_OK)
+
+# 2FA Verification View
+class VerifyTOTPView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+        token = request.data.get('token')
+        devices = TOTPDevice.objects.filter(user=user)
+        
+        for device in devices:
+            if device.verify_token(token):
+                return Response({'message': '2FA verification successful'}, status=status.HTTP_200_OK)
+        
+        return Response({'error': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+from django.core.mail import send_mail
+from django_otp.plugins.otp_email.models import EmailDevice
+
+@login_required
+@csrf_exempt
+def send_otp_email(request):
+    user = request.user
+    logger.debug("Sending OTP email to user: %s", user.email)
+    
+    device, created = EmailDevice.objects.get_or_create(user=user, name='default')
+    if created:
+        device.confirmed = True
+        device.save()
+        logger.debug("Created new email device for user: %s", user.email)
+
+    if device:
+        device.generate_challenge()
+        logger.debug("OTP email sent to user: %s", user.email)
+        return JsonResponse({'success': True, 'message': 'Verification email sent.'})
+    else:
+        logger.error("Failed to send OTP email to user: %s", user.email)
+        return JsonResponse({'error': 'Unable to send verification email.'}, status=400)
+
+# def send_otp_email(request):
+#     user = request.user
+#     device, created = EmailDevice.objects.get_or_create(user=user, name='default')
+#     if created:
+#         device.confirmed = True
+#         device.save()
+
+#     if device:
+#         device.generate_challenge()
+#         return JsonResponse({'success': True, 'message': 'Verification email sent.'})
+#     else:
+#         return JsonResponse({'error': 'Unable to send verification email.'}, status=400)
+
+
+logger = logging.getLogger(__name__)
+debug_logger = logging.getLogger('my_debug_logger')
+
+
+@login_required
+@csrf_exempt
+def setup_otp(request):
+    if request.method == 'POST':
+        user = request.user
+        device, created = TOTPDevice.objects.get_or_create(user=user, name='default')
+        if created:
+            device.confirmed = True
+            device.save()
+            logger.debug('Created and confirmed TOTPDevice for user: %s', user.username)
+        else:
+            logger.debug('TOTPDevice already exists for user: %s', user.username)
+
+        return JsonResponse({'success': True, 'message': 'OTP setup successfully', 'otp_setup_url': device.config_url})
+    else:
+        return JsonResponse({'success': False, 'message': 'Invalid request method'}, status=400)
+
+
+debug_logger = logging.getLogger('my_debug_logger')
+
+@csrf_exempt
+@login_required
+def verify_otp(request):
+    debug_logger.debug("verify_otp called")
+    debug_logger.info("CSRF Token: %s", request.META.get("CSRF_COOKIE"))
+    debug_logger.info("Session Key: %s", request.session.session_key)
+    debug_logger.info("User: %s", request.user)
+
+    if request.method == 'POST':
+        debug_logger.debug("Request method is POST")
+        otp_token = request.POST.get('otp_token')
+        debug_logger.debug("Received OTP token: %s", otp_token)
+
+        if request.user.is_authenticated:
+            debug_logger.debug("Request user: %s", request.user)
+            device = TOTPDevice.objects.filter(user=request.user, confirmed=True, name='default').first()
+            debug_logger.debug("Found device: %s", device)
+
+            if device and device.verify_token(otp_token):
+                debug_logger.debug("OTP matched successfully.")
+                return JsonResponse({'success': True, 'access': 'dummy_access_token', 'refresh': 'dummy_refresh_token'})
+            else:
+                debug_logger.debug("Invalid OTP.")
+                return JsonResponse({'success': False, 'error_message': 'Invalid OTP'}, status=400)
+        else:
+            debug_logger.debug("User not authenticated.")
+            return JsonResponse({'success': False, 'error_message': 'User not authenticated'}, status=401)
+    else:
+        debug_logger.debug("Invalid request method.")
+        return JsonResponse({'success': False, 'error_message': 'Invalid request method'}, status=405)
