@@ -35,6 +35,4 @@ urlpatterns = [
     path('pending_friend_requests/', views.pending_friend_requests, name='pending_friend_requests'),
     path('list_friends_with_status/', views.list_friends_with_status, name='list_friend_requests'),
     path('update_online_status/', views.update_online_status, name='update_online_status'),
-    path('user_logged_out_callback', views.user_logged_out_callback, name='user_logged_out_callback'),
-    path('user_logged_in_callback', views.user_logged_in_callback, name='user_logged_in_callback'),
 ]
