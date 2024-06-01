@@ -2,6 +2,9 @@
     width: 80%;
     margin: 0 auto;
     border: 1px solid #2ad5ec; /* A form border */
+    /*max-height: 90vh;  Set a max height for the modal content */
+    max-height: 90vh; /* Set a max height for the modal content */
+    overflow-y: auto; /* Enable vertical scrolling */
   }
   /* Customizes buttons in the modal */
   .modal-content .btn {
@@ -9,13 +12,13 @@
     border: none; /* No border for a cleaner look */
   }
 
-  #login-button:hover, #btn-open-login-42:hover, #btn-open-inscription:hover {
+  #login-button:hover, #btn-open-login-42:hover,#two-fa-modal-button:hover, #btn-open-inscription:hover {
     background-color: #1048a9; /* Darker bleu on hover*/
      color: #41b8e0; /*colour text link button */
   }
   
 /* Custom styles for specific buttons like 'LOGIN' and 'Se connecter avec 42Auth' */
-#login-button, #btn-open-login-42, #btn-open-inscription {
+#login-button, #btn-open-login-42, #btn-open-inscription, #two-fa-modal-button {
   background-color: #41b8e0; /* Blue background for better visibility */
   color: #1048a9; /* White text */
 }
@@ -158,6 +161,20 @@
   width: 200px;
 }
 
+#friend-username {
+  padding-left: 10px; 
+  width: 200px; 
+  box-sizing: border-box; 
+  margin-left: 100px; 
+}
+
+/* Placeholder styling */
+#friend-username::placeholder {
+  text-align: left; 
+  color: #747474;
+}
+
+
 input[type="file"] {
   display: none;
 }
@@ -222,7 +239,7 @@ input[type="file"] + label:focus {
   background-color: #0056b3;
 }
 
-/* Additional styling to position the "Changez ces informations" link */
+/* Additional styling to position the "Modifier mon profil" link */
 .change-info-link {
   margin-top: 10px;
   margin-left: 85px;
