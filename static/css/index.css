@@ -3,7 +3,6 @@ body {
   background-position: top;
   background-repeat: no-repeat;
   font-family: 'Oswald', sans-serif;
-  font-weight: 200;  
 }
 
 .page {
@@ -16,10 +15,20 @@ body {
   background-position: center;
   background-repeat: no-repeat;
   justify-content: flex-start; /* Aligns content to the start of the page horizontally */
+  height: 100vh;
+  overflow: auto
 }
+
+html, body {
+  height: 100%;
+  overflow: auto;
+}
+
 
 #section-home, #section-pong, #section-tournoi, #section-classement, #section-profil, #section-modif-profil {
     background-image: url('../images/background_5.jpg');
+    height: 100vh; /* Full height to enable scrolling */
+    overflow-y: auto; /* Enable vertical scrolling */
 }
 
 /* style navigation links*/

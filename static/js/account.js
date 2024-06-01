@@ -246,6 +246,7 @@ document.getElementById('2fa-form').addEventListener('submit', function(event) {
     .then(data => {
         console.debug('Response from /verify_otp:', data);
         if (data.success) {
+            alert('2FA verification successful and confirmed.');  // Add alert for successful verification
             localStorage.setItem('access', data.access);
             localStorage.setItem('refresh', data.refresh);
             window.location.reload();
@@ -258,6 +259,7 @@ document.getElementById('2fa-form').addEventListener('submit', function(event) {
         console.error('Erreur lors de la requête:', error);
     });
 });
+
 
 // document.getElementById('2fa-modal-form').addEventListener('submit', function(event) {
 //     event.preventDefault();

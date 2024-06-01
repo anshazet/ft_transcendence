@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
     <link rel="stylesheet" href="{% static 'css/index.css' %}">
     <link rel="stylesheet" href="{% static 'TemplateData/style.css' %}">
-    <!-- <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon"> -->
     <title>Let's Pong - Accueil</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,7 +26,7 @@
                     <li class="nav-item"><a class="nav-link highlight" onclick="showSection('home')" href="#home">Home</a></li>
                     <li class="nav-item"><a class="nav-link highlight" onclick="showSection('pong')" href="#pong">Pong</a></li>
                     <li class="nav-item"><a class="nav-link highlight" onclick="showSection('tournoi')" href="#tournoi">Mode Tournoi</a></li>
-                    <li class="nav-item"><a class="nav-link highlight" onclick="showSection('classement')" href="#classement">Classement</a></li>
+                    <!-- <li class="nav-item"><a class="nav-link highlight" onclick="showSection('classement')" href="#classement">Classement</a></li> -->
                 </ul>
             </div>
             <div class="nav-item navbar-nav">
@@ -43,7 +42,7 @@
         </div>
     </nav>
 
-    <div id="section-profil" class="page" style="display: none;">
+    <div id="section-profil" class="page" style="display: none; overflow-y: auto;">
         <h5>Profil de {{ user.username }}</h5>
         <p>Nom d'utilisateur : {{ user.username }}</p>
         <p>Adresse e-mail : {{ user.email }}</p>
@@ -140,12 +139,12 @@
         </div>
     </div>
 
-    <div id="section-classement" class="page" style="display: none;">
+    <!-- <div id="section-classement" class="page" style="display: none;">
         <h5>Classement</h5>
-        <div id="classement-list" class="profile-info">
+        <div id="classement-list" class="profile-info"> -->
             <!-- Player list will here -->
-        </div>
-    </div>
+        <!-- </div>
+    </div> -->
 
     <div class="modal fade" id="ModalForm" tabindex="-1" aria-labelledby="ModalFormLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -220,7 +219,7 @@
                                 <label for="otp-token-modal" class="form-label">Enter OTP</label>
                                 <input type="text" class="form-control" id="otp-token-modal" name="otp_token" aria-describedby="otpHelp" autocomplete="one-time-code">
                             </div>
-                            <button type="submit" class="btn btn-light mt-3" id="2fa-modal-button">Verify</button>
+                            <button type="submit" class="btn btn-light mt-3" id="two-fa-modal-button">Verify</button>
                         </form>
                     </div>
                 </div>

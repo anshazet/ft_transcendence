@@ -124,8 +124,6 @@ def login_42(request):
 def profile_view(request):
     user = request.user
     form = OTPForm()  # Instantiate the form
-    print("User:", user)  # Debugging output
-    print("Form:", form)  # Debugging output
     
     context = {
         'user': user,
@@ -417,7 +415,7 @@ def send_otp_email(request):
     user = request.user
     logger.debug("Sending OTP email to user: %s", user.email)
     
-    device, created = EmailDevice.objects.get_or_create(user=user, name='default')
+    device, created = EmailDevice.objects.get_or_create(user=user, name='default') 
     if created:
         device.confirmed = True
         device.save()
@@ -451,7 +449,7 @@ debug_logger = logging.getLogger('my_debug_logger')
 
 @login_required
 @csrf_exempt
-def setup_otp(request):
+def setup_totp(request):
     if request.method == 'POST':
         user = request.user
         device, created = TOTPDevice.objects.get_or_create(user=user, name='default')
