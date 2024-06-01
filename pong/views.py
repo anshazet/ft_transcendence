@@ -503,3 +503,20 @@ def verify_otp(request):
     else:
         debug_logger.debug("Invalid request method.")
         return JsonResponse({'success': False, 'error_message': 'Invalid request method'}, status=405)
+
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+from .models import Game, CustomUser
+
+@csrf_exempt
+def record_game(request):
+    if request.method == 'POST':
+        player_id = request.POST.get('player_id')
+        score = request.POST.get('score')
+        player = CustomUser.objects.get(id=player_id)
+
+        # Enregistrer le jeu
+        game = Game.objects.create(player=player, score=int(score))
+
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'fail'}, status=400)
