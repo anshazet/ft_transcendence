@@ -39,3 +39,21 @@ function showSection(sectionId) {
         console.error('No section found for:', sectionId);
     }
 }
+
+fetch('/record_game/', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    player_id: playerId,
+    score: score
+  })
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Success:', data);
+})
+.catch((error) => {
+  console.error('Error:', error);
+});

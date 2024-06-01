@@ -511,12 +511,19 @@ from .models import Game, CustomUser
 @csrf_exempt
 def record_game(request):
     if request.method == 'POST':
-        player_id = request.POST.get('player_id')
-        score = request.POST.get('score')
-        player = CustomUser.objects.get(id=player_id)
+        try:
+            data = json.loads(request.body)
+            player_id = data.get('player_id')
+            score = data.get('score')
+            if player_id is None or score is None:
+                return JsonResponse({'status': 'fail', 'error': 'Invalid data'}, status=400)
 
-        # Enregistrer le jeu
-        game = Game.objects.create(player=player, score=int(score))
+            player = CustomUser.objects.get(id=player_id)
+            game = Game.objects.create(player=player, score=int(score))
 
-        return JsonResponse({'status': 'success'})
-    return JsonResponse({'status': 'fail'}, status=400)
+            return JsonResponse({'status': 'success'})
+        except json.JSONDecodeError:
+            return JsonResponse({'status': 'fail', 'error': 'Invalid JSON'}, status=400)
+        except CustomUser.DoesNotExist:
+            return JsonResponse({'status': 'fail', 'error': 'Player not found'}, status=404)
+    return JsonResponse({'status': 'fail', 'error': 'Invalid request method'}, status=405)
