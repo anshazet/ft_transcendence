@@ -227,6 +227,21 @@
         </div>
     </div>
 
+    <div class="modal fade" id="2FASuccessModal" tabindex="-1" aria-labelledby="2FASuccessModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="alert alert-success" role="alert">
+                        Two-Factor Authentication verified successfully!
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script type="text/javascript" src="{% static 'js/index.js' %}" async></script>
     <script type="text/javascript" src="{% static 'js/account.js' %}" async></script>
     <script type="text/javascript" src="{% static 'js/42auth.js' %}" async></script>
@@ -245,103 +260,110 @@
         }
         
         document.addEventListener('DOMContentLoaded', function() {
-        var userIsLoggedIn = document.getElementById('userIsLoggedIn').value === 'true';
-        if (!userIsLoggedIn) {
-            $('#ModalForm').modal('show');
-        }
-
-        document.getElementById('verify-email-button').addEventListener('click', function(event) {
-            fetch('/send_otp_email/', {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': getCookie('csrftoken')
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Verification email sent. Please check your email for the verification code.');
-                    $('#2FAModal').modal('show');
-                } else {
-                    console.error('Error sending verification email:', data.message || response.statusText);
-                }
-            })
-            .catch(error => {
-                console.error('Error during the request:', error);
+            var userIsLoggedIn = document.getElementById('userIsLoggedIn').value === 'true';
+            if (!userIsLoggedIn) {
+                $('#ModalForm').modal('show');
+            }
+    
+            document.getElementById('verify-email-button').addEventListener('click', function(event) {
+                fetch('/send_otp_email/', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Verification email sent. Please check your email for the verification code.');
+                        $('#2FAModal').modal('show');
+                    } else {
+                        console.error('Error sending verification email:', data.message || response.statusText);
+                        alert('Error sending verification email: ' + (data.message || response.statusText));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error during the request:', error);
+                    alert('Error during the request: ' + error.message);
+                });
             });
-        });
-
-        document.getElementById('2fa-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const otp_token = document.getElementById('otp-token').value;
-
-            fetch('/verify_otp/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: `otp_token=${encodeURIComponent(otp_token)}`
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    localStorage.setItem('access', data.access);
-                    localStorage.setItem('refresh', data.refresh);
-                    window.location.reload();
-                } else {
-                    console.error(data.error_message);
-                    alert(data.error_message);
-                }
-            })
-            .catch(error => {
-                console.error('Erreur lors de la requête:', error);
+    
+            document.getElementById('2fa-form').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const otp_token = document.getElementById('otp-token').value;
+    
+                fetch('/verify_otp/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: `otp_token=${encodeURIComponent(otp_token)}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('2FA verification successful and confirmed.');
+                        localStorage.setItem('access', data.access);
+                        localStorage.setItem('refresh', data.refresh);
+                        window.location.reload();
+                    } else {
+                        console.error(data.error_message);
+                        alert('Error: ' + data.error_message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la requête:', error);
+                    alert('Erreur lors de la requête: ' + error.message);
+                });
             });
-        });
-
-        document.getElementById('2fa-modal-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const otp_token = document.getElementById('otp-token-modal').value;
-
-            fetch('/verify_otp/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: `otp_token=${encodeURIComponent(otp_token)}`
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    localStorage.setItem('access', data.access);
-                    localStorage.setItem('refresh', data.refresh);
-                    window.location.reload();
-                } else {
-                    console.error(data.error_message);
-                    alert(data.error_message);
-                }
-            })
-            .catch(error => {
-                console.error('Erreur lors de la requête:', error);
+    
+            document.getElementById('2fa-modal-form').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const otp_token = document.getElementById('otp-token-modal').value;
+    
+                fetch('/verify_otp/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: `otp_token=${encodeURIComponent(otp_token)}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('2FA verification successful and confirmed.');
+                        localStorage.setItem('access', data.access);
+                        localStorage.setItem('refresh', data.refresh);
+                        window.location.reload();
+                    } else {
+                        console.error(data.error_message);
+                        alert('Error: ' + data.error_message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la requête:', error);
+                    alert('Erreur lors de la requête: ' + error.message);
+                });
             });
-        });
-
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
+    
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
                     }
                 }
+                return cookieValue;
             }
-            return cookieValue;
-        }
-    });
+        });
     </script>
+    
 </body>
 </html>
