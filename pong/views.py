@@ -452,6 +452,7 @@ def verify_otp(request):
 
             if device and device.verify_token(otp_token):
                 debug_logger.debug("OTP matched successfully.")
+                request.session['is_2fa_verified'] = True
                 return JsonResponse({'success': True, 'access': 'dummy_access_token', 'refresh': 'dummy_refresh_token'})
             else:
                 debug_logger.debug("Invalid OTP.")
