@@ -152,33 +152,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// document.addEventListener('DOMContentLoaded', function() {
-//     var form = document.getElementById('avatar-upload-form');
-//     form.addEventListener('submit', function(event) {
-//         event.preventDefault();
-        
-//         var formData = new FormData(form);
-        
-//         fetch('/upload_avatar/', {
-//             method: 'POST',
-//             body: formData,
-//             headers: {
-//                 'X-CSRFToken': getCookie('csrftoken')
-//             }
-//         })
-//         .then(response => {
-//             if (!response.ok) {
-//                 throw new Error('Error uploading avatar');
-//             }
-//             console.log('Avatar uploaded successfully.');
-//             window.location.reload();
-//         })
-//         .catch(error => {
-//             console.error('Error uploading avatar:', error.message);
-//         });
-//     });
-// });
-
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -193,36 +166,6 @@ function getCookie(name) {
     }
     return cookieValue;
 }
-
-// document.getElementById('2fa-form').addEventListener('submit', function(event) {
-//     event.preventDefault();
-//     const otp_token = document.getElementById('otp-token').value;
-//     const csrftoken = getCookie('csrftoken');
-
-//     fetch('/verify_otp/', {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/x-www-form-urlencoded',
-//             'X-CSRFToken': csrftoken
-//         },
-//         body: `otp_token=${encodeURIComponent(otp_token)}`
-//     })
-//     .then(response => response.json())
-//     .then(data => {
-//         if (data.success) {
-//             localStorage.setItem('access', data.access);
-//             localStorage.setItem('refresh', data.refresh);
-//             window.location.reload();
-//         } else {
-//             console.error(data.error_message);
-//             alert(data.error_message);  // Add alert for user feedback
-//         }
-//     })
-//     .catch(error => {
-//         console.error('Erreur lors de la requête:', error);
-//     });
-// });
-
 
 document.getElementById('2fa-form').addEventListener('submit', function(event) {
     event.preventDefault();
@@ -246,48 +189,16 @@ document.getElementById('2fa-form').addEventListener('submit', function(event) {
     .then(data => {
         console.debug('Response from /verify_otp:', data);
         if (data.success) {
-            alert('2FA verification successful and confirmed.');  // Add alert for successful verification
-            localStorage.setItem('access', data.access);
-            localStorage.setItem('refresh', data.refresh);
-            window.location.reload();
+            $('#2FASuccessModal').modal('show');
         } else {
             console.error('Error:', data.error_message);
-            alert(data.error_message);  // Add alert for user feedback
+            alert(data.error_message);
         }
     })
     .catch(error => {
         console.error('Erreur lors de la requête:', error);
     });
 });
-
-
-// document.getElementById('2fa-modal-form').addEventListener('submit', function(event) {
-//     event.preventDefault();
-//     const otp_token = document.getElementById('otp-token-modal').value;
-
-//     fetch('/verify_otp/', {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/x-www-form-urlencoded',
-//             'X-CSRFToken': getCookie('csrftoken')
-//         },
-//         body: `otp_token=${encodeURIComponent(otp_token)}`
-//     })
-//     .then(response => response.json())
-//     .then(data => {
-//         if (data.success) {
-//             localStorage.setItem('access', data.access);
-//             localStorage.setItem('refresh', data.refresh);
-//             window.location.reload();
-//         } else {
-//             console.error(data.error_message);
-//         }
-//     })
-//     .catch(error => {
-//         console.error('Erreur lors de la requête:', error);
-//     });
-// });
-
 
 document.getElementById('2fa-modal-form').addEventListener('submit', function(event) {
     event.preventDefault();
@@ -313,11 +224,10 @@ document.getElementById('2fa-modal-form').addEventListener('submit', function(ev
     .then(data => {
         console.debug('Response from /verify_otp (modal):', data);
         if (data.success) {
-            localStorage.setItem('access', data.access);
-            localStorage.setItem('refresh', data.refresh);
-            window.location.reload();
+            $('#2FASuccessModal').modal('show');
         } else {
             console.error('Error:', data.error_message);
+            alert(data.error_message);
         }
     })
     .catch(error => {

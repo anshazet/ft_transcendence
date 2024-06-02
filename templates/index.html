@@ -15,6 +15,7 @@
 </head>
 <body>
     <input type="hidden" id="userIsLoggedIn" value="{% if user.is_authenticated %}true{% else %}false{% endif %}">
+    <input type="hidden" id="is2FACompleted" value="{% if request.session.is_2fa_verified %}true{% else %}false{% endif %}">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark custom-navbar">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">Let's Pong</a>
@@ -26,7 +27,6 @@
                     <li class="nav-item"><a class="nav-link highlight" onclick="showSection('home')" href="#home">Home</a></li>
                     <li class="nav-item"><a class="nav-link highlight" onclick="showSection('pong')" href="#pong">Pong</a></li>
                     <li class="nav-item"><a class="nav-link highlight" onclick="showSection('tournoi')" href="#tournoi">Mode Tournoi</a></li>
-                    <!-- <li class="nav-item"><a class="nav-link highlight" onclick="showSection('classement')" href="#classement">Classement</a></li> -->
                 </ul>
             </div>
             <div class="nav-item navbar-nav">
@@ -57,19 +57,7 @@
                 <button type="submit" class="btn btn-primary_2">Upload</button>
             </div>
         </form>
-        <h5>Two-Factor Authentication</h5>
-        <button id="verify-email-button" class="btn btn-primary">Send Verification Email</button>
-        <div id="2fa-verification-section" style="display:none;">
-            <form id="2fa-form" method="post">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <div class="mb-3 mt-4">
-                    <label for="otp-token" class="form-label">Enter OTP</label>
-                    <input type="text" class="form-control" id="otp-token" name="otp_token" aria-describedby="otpHelp" autocomplete="one-time-code">
-                </div>
-                <button type="submit" class="btn btn-light mt-3" id="2fa-button">Verify</button>
-            </form>
-        </div>
+
         <h5>Demandes d'amis</h5>
         <div id="friend-requests">
         <!-- Les demandes d'amis seront affichées ici -->
@@ -139,13 +127,6 @@
         </div>
     </div>
 
-    <!-- <div id="section-classement" class="page" style="display: none;">
-        <h5>Classement</h5>
-        <div id="classement-list" class="profile-info"> -->
-            <!-- Player list will here -->
-        <!-- </div>
-    </div> -->
-
     <div class="modal fade" id="ModalForm" tabindex="-1" aria-labelledby="ModalFormLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -206,27 +187,46 @@
         </div>
     </div>   
 
+    <!-- Modal for 2FA -->
     <div class="modal fade" id="2FAModal" tabindex="-1" aria-labelledby="2FAModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-body">
                     <div class="myform bg-dark">
                         <h1 class="text-center">Two-Factor Authentication</h1>
-                        <form id="2fa-modal-form">
-                            {% csrf_token %}
-                            {{ form.as_p }}
-                            <div class="mb-3 mt-4">
-                                <label for="otp-token-modal" class="form-label">Enter OTP</label>
-                                <input type="text" class="form-control" id="otp-token-modal" name="otp_token" aria-describedby="otpHelp" autocomplete="one-time-code">
-                            </div>
-                            <button type="submit" class="btn btn-light mt-3" id="two-fa-modal-button">Verify</button>
-                        </form>
+                        <button id="verify-email-button" class="btn btn-primary">Send Verification Email</button>
+                        <div id="2fa-verification-section" style="display:none;">
+                            <form id="2fa-form" method="post">
+                                {% csrf_token %}
+                                {{ form.as_p }}
+                                <div class="mb-3 mt-4">
+                                    <label for="otp-token" class="form-label">Enter OTP</label>
+                                    <input type="text" class="form-control" id="otp-token" name="otp_token" aria-describedby="otpHelp" autocomplete="one-time-code">
+                                </div>
+                                <button type="submit" class="btn btn-light mt-3" id="two-fa-button">Verify</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <div class="modal fade" id="2FASuccessModal" tabindex="-1" aria-labelledby="2FASuccessModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="alert alert-success" role="alert">
+                        Two-Factor Authentication verified successfully!
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="2fa-success-close-button" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <script type="text/javascript" src="{% static 'js/index.js' %}" async></script>
     <script type="text/javascript" src="{% static 'js/account.js' %}" async></script>
     <script type="text/javascript" src="{% static 'js/42auth.js' %}" async></script>
@@ -240,108 +240,105 @@
     
     <script>
         var userIsLoggedIn = document.getElementById('userIsLoggedIn').value === 'true';
+        var is2FACompleted = document.getElementById('is2FACompleted').value === 'true';
+
         if (!userIsLoggedIn) {
             $('#ModalForm').modal('show');
+        } else if (!is2FACompleted) {
+            $('#2FAModal').modal('show'); // Show 2FA modal if user is logged in but hasn't completed 2FA
         }
-        
+
         document.addEventListener('DOMContentLoaded', function() {
-        var userIsLoggedIn = document.getElementById('userIsLoggedIn').value === 'true';
-        if (!userIsLoggedIn) {
-            $('#ModalForm').modal('show');
-        }
+            var userIsLoggedIn = document.getElementById('userIsLoggedIn').value === 'true';
+            var is2FACompleted = document.getElementById('is2FACompleted').value === 'true';
 
-        document.getElementById('verify-email-button').addEventListener('click', function(event) {
-            fetch('/send_otp_email/', {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': getCookie('csrftoken')
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Verification email sent. Please check your email for the verification code.');
-                    $('#2FAModal').modal('show');
-                } else {
-                    console.error('Error sending verification email:', data.message || response.statusText);
-                }
-            })
-            .catch(error => {
-                console.error('Error during the request:', error);
+            if (!userIsLoggedIn) {
+                $('#ModalForm').modal('show');
+            } else if (!is2FACompleted) {
+                $('#2FAModal').modal('show'); // Show 2FA modal if user is logged in but hasn't completed 2FA
+            }
+
+            document.getElementById('verify-email-button').addEventListener('click', function(event) {
+                fetch('/send_otp_email/', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Verification email sent. Please check your email for the verification code.');
+                        $('#2fa-verification-section').show();
+                        $('#verify-email-button').hide(); // Hide the button after it's clicked
+                    } else {
+                        console.error('Error sending verification email:', data.message || response.statusText);
+                        alert('Error sending verification email: ' + (data.message || response.statusText));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error during the request:', error);
+                    alert('Error during the request: ' + error.message);
+                });
             });
-        });
 
-        document.getElementById('2fa-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const otp_token = document.getElementById('otp-token').value;
+            document.getElementById('2fa-form').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const otp_token = document.getElementById('otp-token').value;
 
-            fetch('/verify_otp/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: `otp_token=${encodeURIComponent(otp_token)}`
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    localStorage.setItem('access', data.access);
-                    localStorage.setItem('refresh', data.refresh);
-                    window.location.reload();
-                } else {
-                    console.error(data.error_message);
-                    alert(data.error_message);
-                }
-            })
-            .catch(error => {
-                console.error('Erreur lors de la requête:', error);
+                fetch('/verify_otp/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: `otp_token=${encodeURIComponent(otp_token)}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('2FA verification successful and confirmed.');
+                        localStorage.setItem('access', data.access);
+                        localStorage.setItem('refresh', data.refresh);
+                        $('#2FAModal').modal('hide'); // Hide the 2FA modal
+                        $('#2FASuccessModal').modal('show'); // Show the success modal
+                    } else {
+                        console.error(data.error_message);
+                        alert('Error: ' + data.error_message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la requête:', error);
+                    alert('Erreur lors de la requête: ' + error.message);
+                });
             });
-        });
 
-        document.getElementById('2fa-modal-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const otp_token = document.getElementById('otp-token-modal').value;
-
-            fetch('/verify_otp/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: `otp_token=${encodeURIComponent(otp_token)}`
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    localStorage.setItem('access', data.access);
-                    localStorage.setItem('refresh', data.refresh);
-                    window.location.reload();
-                } else {
-                    console.error(data.error_message);
-                    alert(data.error_message);
-                }
-            })
-            .catch(error => {
-                console.error('Erreur lors de la requête:', error);
+            $('#2FASuccessModal').on('hide.bs.modal', function () {
+                $('#2FAModal').modal('hide'); // Hide the 2FA modal
             });
-        });
 
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
+            document.getElementById('2fa-success-close-button').addEventListener('click', function(event) {
+                $('#2FASuccessModal').modal('hide');
+                $('#2FAModal').modal('hide');
+                window.location.reload();
+            });
+
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
                     }
                 }
+                return cookieValue;
             }
-            return cookieValue;
-        }
-    });
+        });
     </script>
+    
 </body>
 </html>

@@ -382,7 +382,7 @@ class SetupTOTPView(APIView):
             return Response({'message': 'TOTP device already exists'}, status=status.HTTP_400_BAD_REQUEST)
         
         device = TOTPDevice.objects.create(user=user, name='default')
-        device.confirmed = True  # Mark the device as confirmed if necessary
+        device.confirmed = True
         device.save()
         
         logger.info(f"TOTP device created for user {user.username}: {device}")
@@ -414,7 +414,6 @@ def send_otp_email(request):
     user = request.user
     logger.debug("Sending OTP email to user: %s", user.email)
     
-    # Ensure existing devices are handled properly
     EmailDevice.objects.filter(user=request.user, name=request.user.username).delete()
     create = EmailDevice.objects.create(user=request.user, name=request.user.username)
     
@@ -429,51 +428,9 @@ def send_otp_email(request):
         logger.error("Failed to send OTP email to user: %s", user.email)
         return JsonResponse({'error': 'Unable to send verification email.'}, status=400)
 
-    # if create:
-    #     create.generate_challenge()
-    #     logger.debug("OTP email sent to user: %s", user.email)
-    #     return JsonResponse({'success': True, 'message': 'Verification email sent.'})
-    # else:
-    #     logger.error("Failed to send OTP email to user: %s", user.email)
-    #     return JsonResponse({'error': 'Unable to send verification email.'}, status=400)
-
-# def send_otp_email(request):
-#     user = request.user
-#     device, created = EmailDevice.objects.get_or_create(user=user, name='default')
-#     if created:
-#         device.confirmed = True
-#         device.save()
-
-#     if device:
-#         device.generate_challenge()
-#         return JsonResponse({'success': True, 'message': 'Verification email sent.'})
-#     else:
-#         return JsonResponse({'error': 'Unable to send verification email.'}, status=400)
-
 
 logger = logging.getLogger(__name__)
 debug_logger = logging.getLogger('my_debug_logger')
-
-
-# @login_required
-# @csrf_exempt
-# def setup_otp(request):
-#     if request.method == 'POST':
-#         user = request.user
-#         device, created = TOTPDevice.objects.get_or_create(user=user, name='default')
-#         if created:
-#             device.confirmed = True
-#             device.save()
-#             logger.debug('Created and confirmed TOTPDevice for user: %s', user.username)
-#         else:
-#             logger.debug('TOTPDevice already exists for user: %s', user.username)
-
-#         return JsonResponse({'success': True, 'message': 'OTP setup successfully', 'otp_setup_url': device.config_url})
-#     else:
-#         return JsonResponse({'success': False, 'message': 'Invalid request method'}, status=400)
-
-
-# debug_logger = logging.getLogger('my_debug_logger')
 
 @csrf_exempt
 @login_required
@@ -495,6 +452,7 @@ def verify_otp(request):
 
             if device and device.verify_token(otp_token):
                 debug_logger.debug("OTP matched successfully.")
+                request.session['is_2fa_verified'] = True
                 return JsonResponse({'success': True, 'access': 'dummy_access_token', 'refresh': 'dummy_refresh_token'})
             else:
                 debug_logger.debug("Invalid OTP.")
