@@ -506,20 +506,44 @@ def verify_otp(request):
 
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
-from .models import Game, CustomUser
+from .models import Game, CustomUser, Statistic
 
 @csrf_exempt
 def record_game(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            player_id = data.get('player_id')
-            score = data.get('score')
-            if player_id is None or score is None:
+            player1_username = data.get('player1_username')
+            player1_score = data.get('player1_score')
+            player2_username = data.get('player2_username')
+            player2_score = data.get('player2_score')
+            date_played = data.get('date_played')
+            winner_username = data.get('winner_username')
+            
+            if None in [player1_username, player1_score, player2_username, player2_score, date_played, winner_username]:
                 return JsonResponse({'status': 'fail', 'error': 'Invalid data'}, status=400)
 
-            player = CustomUser.objects.get(id=player_id)
-            game = Game.objects.create(player=player, score=int(score))
+            player1 = CustomUser.objects.get(username=player1_username)
+            player2 = CustomUser.objects.get(username=player2_username)
+            winner = CustomUser.objects.get(username=winner_username)
+
+            game = Game.objects.create(
+                player1=player1,
+                player2=player2,
+                player1_score=int(player1_score),
+                player2_score=int(player2_score),
+                date_played=date_played,
+                winner=winner
+            )
+
+            for player, score, is_win in [
+                (player1, player1_score, winner.username == player1_username),
+                (player2, player2_score, winner.username == player2_username)
+            ]:
+                statistics, _ = Statistic.objects.get_or_create(player=player)
+                statistics.games_played += 1
+                statistics.total_score += int(score)
+                statistics.save()
 
             return JsonResponse({'status': 'success'})
         except json.JSONDecodeError:

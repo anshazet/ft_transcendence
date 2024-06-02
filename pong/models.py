@@ -38,9 +38,13 @@ def create_or_update_user_profile(sender, instance, created, **kwargs):
             Profile.objects.create(user=instance)
 
 class Game(models.Model):
-    player = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    score = models.IntegerField()
-    date_played = models.DateTimeField(auto_now_add=True)
+    player1 = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='games_as_player1', on_delete=models.CASCADE)
+    player2 = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='games_as_player2', on_delete=models.CASCADE)
+    player1_score = models.IntegerField()
+    player2_score = models.IntegerField()
+    date_played = models.DateTimeField()
+    winner = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='games_won', on_delete=models.CASCADE)
+
 
 class Statistic(models.Model):
     player = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
