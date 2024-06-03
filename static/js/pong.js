@@ -54,7 +54,7 @@ var container = document.querySelector("#unity-container");
 
         var meta = document.createElement('meta');
         meta.name = 'viewport';
-        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=';
         document.getElementsByTagName('head')[0].appendChild(meta);
         container.className = "unity-mobile";
         canvas.className = "unity-mobile";
@@ -67,10 +67,17 @@ var container = document.querySelector("#unity-container");
       } else {
         // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
 
-        // canvas.style.width = "960px";
-        // canvas.style.height = "600px";
-        canvas.style.width = "100%";
-        canvas.style.height = "calc(100vh - 116px)"; // Subtracting the height of the navigation bar and adding margins
+        var width = 800
+		var height = width * 10 / 16;
+		var maxWidth = window.innerWidth;
+		var maxHeight = window.innerHeight;
+
+		var ratio = maxWidth / width;
+		if(height * ratio > maxHeight) {
+			ratio = maxHeight / height;
+		}
+        canvas.style.width = (width * ratio) + "px";
+        canvas.style.height = (height * ratio) + "px"; 
     }
 
       loadingBar.style.display = "block";

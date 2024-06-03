@@ -6,11 +6,11 @@
 
 # Make database migrations
 echo "Making database migrations"
-python3 manage.py makemigrations pong
+python3 manage.py makemigrations
 
 # Apply database migrations
 echo "Applying database migrations"
-python3 manage.py migrate pong
+python3 manage.py migrate
 
 # Start server
 echo "Starting server"
