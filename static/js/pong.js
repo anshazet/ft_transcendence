@@ -67,9 +67,11 @@ var container = document.querySelector("#unity-container");
       } else {
         // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
 
-        canvas.style.width = "960px";
-        canvas.style.height = "600px";
-      }
+        // canvas.style.width = "960px";
+        // canvas.style.height = "600px";
+        canvas.style.width = "100%";
+        canvas.style.height = "calc(100vh - 116px)"; // Subtracting the height of the navigation bar and adding margins
+    }
 
       loadingBar.style.display = "block";
 
@@ -89,3 +91,8 @@ var container = document.querySelector("#unity-container");
             };
 
       document.body.appendChild(script);
+
+      window.addEventListener('resize', () => {
+        canvas.style.height = "calc(100vh - 116px)"; // Adjust the canvas height dynamically on window resize
+    });
+  

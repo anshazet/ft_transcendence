@@ -2,6 +2,9 @@
     width: 80%;
     margin: 0 auto;
     border: 1px solid #2ad5ec; /* A form border */
+    /*max-height: 90vh;  Set a max height for the modal content */
+    max-height: 90vh; /* Set a max height for the modal content */
+    overflow-y: auto; /* Enable vertical scrolling */
   }
   /* Customizes buttons in the modal */
   .modal-content .btn {
@@ -9,13 +12,13 @@
     border: none; /* No border for a cleaner look */
   }
 
-  #login-button:hover, #btn-open-login-42:hover, #btn-open-inscription:hover {
+  #login-button:hover, #btn-open-login-42:hover, #btn-open-inscription:hover, #two-fa-button:hover, #verify-email-button:hover {
     background-color: #1048a9; /* Darker bleu on hover*/
      color: #41b8e0; /*colour text link button */
   }
   
 /* Custom styles for specific buttons like 'LOGIN' and 'Se connecter avec 42Auth' */
-#login-button, #btn-open-login-42, #btn-open-inscription {
+#login-button, #btn-open-login-42, #btn-open-inscription, #two-fa-button, #verify-email-button{
   background-color: #41b8e0; /* Blue background for better visibility */
   color: #1048a9; /* White text */
 }
@@ -41,12 +44,6 @@
     color: #ffffff; /* colour text form */
     box-shadow: 0 4px 6px 0 rgba(22, 22, 26, 0.18);
   }
-  @media (max-width: 576px) {
-    .myform {
-      max-width: 90%;
-      margin: 0 auto;
-    }
-  }
 
   .form-control:focus {
     box-shadow: inset 0 -1px 0 #7e7e7e;
@@ -66,40 +63,71 @@
     color: grey;
     font-size: 1.5em;
     font-weight: bold;
-  }
-  
-  p a {
-    color: #e1e1e1;
-    text-decoration: none;
-  }
-  p a:hover {
-    color: #fff;
+    margin-left: 0px;
   }
 
-  /* Style profil */
-  .profile-info {
-    margin-top: 10px;
-    background-color: #51858d86;  /* Background */
-    border: 1px solid #85d7f3;  /* Slight border for the rectangle */
-    padding: 15px;
-    margin-left: 100px;  /* Left margin to push the box right */
-    margin-right: 300px;
-    width: auto; /* ???????? Adjust width as needed */
-    border-radius: 5px;
-    padding-left: 30px;
+  .email {
+    color: rgb(255, 255, 255); /* Adjust this color as needed */
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-top: 0px;
+    margin-left: 0px;
+}
+
+.username {
+    color: rgb(255, 255, 255); /* Adjust this color as needed */
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-top: 0px;
+    margin-left: 0px;
+
+}
+
+p a {
+  color: #e1e1e1;
+  text-decoration: none;
+}
+
+p a:hover {
+  color: #fff;
+}
+
+/* Style profil */
+.profile-info {
+  margin-top: 10px;
+  background-color: #51858d86;  /* Background */
+  border: 1px solid #85d7f3;  /* Slight border for the rectangle */
+  padding: 15px;
+  margin-left: 100px;  /* Left margin to push the box right */
+  margin-right: 600px;
+  width: auto; 
+  border-radius: 5px;
+  padding-left: 30px;
+}
+
+.my-profile-info {
+  margin-top: 10px;
+  background-color: #51858d86;  /* Background */
+  border: 1px solid #85d7f3;  /* Slight border for the rectangle */
+  padding: 15px;
+  margin-left: 100px;  /* Left margin to push the box right */
+  margin-right: 500px;
+  width: auto; /* ???????? Adjust width as needed */
+  border-radius: 5px;
+  padding-left: 30px;
 }
 
 .profile-item {
-    margin-bottom: 20px; /* Space between items */
-    font-size: 16px; /* Larger font for readability */
-    color: #05178e; /* Darker text for contrast */
-    font-size: 1.5em;
-    text-align: left; /* Aligns text to the left */
-  }
+  margin-bottom: 20px; /* Space between items */
+  font-size: 16px; /* Larger font for readability */
+  color: #05178e; /* Darker text for contrast */
+  font-size: 1.5em;
+  text-align: left; /* Aligns text to the left */
+}
   
-  .profile-label {
-    font-weight: bold; /* Make labels bold */
-    margin-right: 10px; /* Space between label and value */
+.profile-label {
+  font-weight: bold; /* Make labels bold */
+  margin-right: 10px; /* Space between label and value */
 }
 
 #section-profil button {
@@ -110,13 +138,13 @@
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
-    display: block; /* Ensure it's a block to fill width */
+    display: block;
     width: 100%; /* Full width */
     margin-top: 20px; /* Space above the button */
     margin-left: 100px;
 }
 
-/* Optional: Adjust the overall alignment within the profile-info if needed */
+/* Adjust the overall alignment within the profile-info */
 .profile-info {
   align-items: flex-start; /* Aligns items to the start vertically within the container */
 }
@@ -127,23 +155,24 @@
   object-fit: cover;
 }
   
-  .myform .btn {
-    width: 100%;
-    font-weight: 800;
-    background-color: #fff;
-    border-radius: 0;
-    padding: 0.5em 0;
-  }
-  .myform .btn:hover {
-    background-color: inherit;
-    color: #fff;
-    border-color: #fff;
-  }
+.myform .btn {
+  width: 100%;
+  font-weight: 800;
+  background-color: #fff;
+  border-radius: 0;
+  padding: 0.5em 0;
+}
 
-  .small-avatar {
-    width: 30px; /* Définissez la largeur souhaitée */
-    height: 30px; /* Définissez la hauteur souhaitée */
-    border-radius: 50%;
+.myform .btn:hover {
+  background-color: inherit;
+  color: #fff;
+  border-color: #fff;
+}
+
+.small-avatar {
+  width: 30px; /* Définissez la largeur souhaitée */
+  height: 30px; /* Définissez la hauteur souhaitée */
+  border-radius: 50%;
 }
 
 #update-user-form{
@@ -157,6 +186,26 @@
   height: 40px;
   width: 200px;
 }
+
+#friend-username {
+  padding-left: 10px; 
+  width: 200px; 
+  box-sizing: border-box; 
+  margin-left: 0px !important; /* Adjust the margin as needed */
+  margin-top: 10px; /* Add margin-top if needed */
+  margin-bottom: 10px; /* Add margin-bottom if needed */
+}
+
+#friend-username::placeholder {
+  text-align: left; 
+  color: #747474;
+}
+
+#friend-requests, #friend-list, #pending-friend-requests {
+  margin-left: 0px !important;
+  padding-top: 1em;
+}
+
 
 input[type="file"] {
   display: none;
@@ -203,6 +252,8 @@ input[type="file"] + label:focus {
   cursor: pointer;
   display: inline-block;
   margin-top: 20px;
+  
+  /* margin-bottom: 20px; */
 }
 
 .btn-primary_2 {
@@ -214,15 +265,33 @@ input[type="file"] + label:focus {
   font-size: 16px;
   cursor: pointer;
   display: inline-block;
-  margin-top: 20px;
-  margin-right: 80px;
+  margin-top: 10px; /* Adjusted margin-top to ensure proper spacing */
+  margin-right: 10px  !important;
+
 }
+
 
 .btn-primary:hover {
   background-color: #0056b3;
 }
 
-/* Additional styling to position the "Changez ces informations" link */
+@media (max-width: 576px) {
+  .btn-primary, .btn-file, .btn-upload {
+      width: calc(100% - 40px); /* Adjust width for small screens */
+      margin-left: 20px; /* Ensure there's some margin */
+      margin-right: 20px;
+  }
+}
+
+.button-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  position: fixed;
+  right: 100px;
+}
+
+/* Additional styling to position the "Modifier mon profil" link */
 .change-info-link {
   margin-top: 10px;
   margin-left: 85px;
@@ -231,27 +300,29 @@ input[type="file"] + label:focus {
 /* Styling for the default profile avatar */
 .profile-avatar {
   display: block;
-  margin: 20px auto;
-  width: 120px;
-  height: 120px;
+  /* margin: 20px auto; */
+  width: 150px;
+  height: 150px;
   object-fit: cover;
   border-radius: 50%;
   border: 2px solid #950cda;
   position: absolute;
-  top: 80px;
-  right: 80px;
-}
-
-/* Styling for the mini avatar in the navigation bar */
-.mini-avatar {
-  width: 30px;
-  height: 30px;
-  object-fit: cover;
-  border-radius: 50%;
-  margin-right: 10px;
+  top: 150px;
+  right: 100px;
 }
 
 .nav-link {
   display: flex;
   align-items: center;
+}
+
+#send-friend-request {
+  margin-left: 0px !important; /* Adjust the margin as needed */
+  margin-top: 10px; /* Add margin-top if needed */
+  margin-bottom: 10px; /* Add margin-bottom if needed */
+}
+
+#unsubscribe-btn {
+  margin-bottom: 20px; /* Space above the button */
+  margin-bottom: 100px !important;
 }
