@@ -41,38 +41,45 @@
             </div>
         </div>
     </nav>
-
+                
     <div id="section-profil" class="page" style="display: none; overflow-y: auto;">
-        <h5>Profil de {{ user.username }}</h5>
-        <p>Nom d'utilisateur : {{ user.username }}</p>
-        <p>Adresse e-mail : {{ user.email }}</p>
-        <div class="avatar-container">
-            <img id="avatar-img" src="{% static 'avatar/' %}{{ user.username }}-avatar.png" class="profile-avatar" onerror="this.src='{% static 'avatar/ponguser.png' %}'">
+        <div class="my-profile-info">
+            <h6>Profil de : {{ user.username }}</h6>
+            <p class="email">Adresse e-mail : {{ user.email }}</p>
+            <p class="username">Nom d'utilisateur : {{ user.username }}</p>
         </div>
+        
+    <div class="avatar-container">
+        <img id="avatar-img" src="{% static 'avatar/' %}{{ user.username }}-avatar.png" class="profile-avatar" onerror="this.src='{% static 'avatar/ponguser.png' %}'">
         <form id="avatar-upload-form" enctype="multipart/form-data">
             {% csrf_token %}
-            <div class="form-group flex-container">
+            <div class="form-group button-group">
                 <input type="file" id="avatar" name="avatar" accept="image/png" hidden>
                 <label for="avatar" class="btn btn-primary">Choisir un fichier</label>
                 <button type="submit" class="btn btn-primary_2">Upload</button>
             </div>
         </form>
+    </div>
+        
 
-        <h5>Demandes d'amis</h5>
-        <div id="friend-requests">
-        <!-- Les demandes d'amis seront affichées ici -->
+        <div class="my-profile-info">
+            <h6>Demandes d'amis</h6>
+            <div id="friend-requests">
+            <!-- Les demandes d'amis seront affichées ici -->
+            </div>
+            <input type="text" id="friend-username" placeholder="Nom d'utilisateur">
+            {% csrf_token %}
+            <button id="send-friend-request" class="btn btn-primary">Envoyer une demande d'ami</button>
+            <h6>Liste d'amis</h6>
+            <div id="friend-list">
+                <!-- La liste d'amis sera affichée ici -->
+            </div>
+            <h6>Demandes d'amis en attente</h6>
+            <div id="pending-friend-requests">
+            <!-- Les demandes d'amis en attente seront affichées ici -->
+            </div>
         </div>
-        <input type="text" id="friend-username" placeholder="Nom d'utilisateur">
-        {% csrf_token %}
-        <button id="send-friend-request" class="btn btn-primary">Envoyer une demande d'ami</button>
-        <h5>Liste d'amis</h5>
-        <div id="friend-list">
-            <!-- La liste d'amis sera affichée ici -->
-        </div>
-        <h5>Demandes d'amis en attente</h5>
-        <div id="pending-friend-requests">
-        <!-- Les demandes d'amis en attente seront affichées ici -->
-        </div>
+
         <div class="nav-item change-info-link"><a class="nav-link highlight" onclick="showSection('modif-profil')" href="#modif-profil">Modifier mon profil</a></div>
         {% csrf_token %}
         <button id="logout-button" class="btn btn-primary">Logout</button>
@@ -102,23 +109,6 @@
         <h3>Welcome to Let's Pong!</h3>
         <h4>Enjoy playing Pong or participate in our tournaments.</h4>
     </div>    
-    
-    <!-- <div id="section-pong" class="page" style="display: none;">
-        <div id="unity-container" class="unity-desktop">
-            <canvas id="unity-canvas" width=960 height=600 tabindex="-1" margin-left="auto" margin-right="auto"></canvas>
-            <div id="unity-loading-bar">
-                <div id="unity-logo"></div>
-                <div id="unity-progress-bar-empty">
-                    <div id="unity-progress-bar-full"></div>
-                </div>
-            </div>
-            <div id="unity-warning"> </div>
-            <div id="unity-footer">
-                <div id="unity-fullscreen-button"></div>
-            </div>
-        </div>
-        <script type="module" src="{% static 'js/pong.js' %}" async></script>
-    </div> -->
 
     <div id="section-pong" class="page" style="display: none;">
         <div id="unity-container" class="unity-desktop">
