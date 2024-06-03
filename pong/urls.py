@@ -55,5 +55,6 @@ urlpatterns = [
 	path('verify_otp/', verify_otp, name='verify_otp'),
     path('api/2fa/setup/', SetupTOTPView.as_view(), name='setup_totp'),
     path('api/2fa/verify/', VerifyTOTPView.as_view(), name='verify_totp'),
-    path('record_game/', views.record_game, name='record_game'),
+    path('save_game_history/', views.save_game_history, name='save_game_history'),
+    path('get_game_history/', views.get_game_history, name='get_game_history'),
 ]

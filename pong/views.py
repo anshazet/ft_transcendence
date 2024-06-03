@@ -470,50 +470,52 @@ def verify_otp(request):
         debug_logger.debug("Invalid request method.")
         return JsonResponse({'success': False, 'error_message': 'Invalid request method'}, status=405)
 
-from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse
-from .models import Game, CustomUser, Statistic
+from .models import GameHistory
 
-@csrf_exempt
-def record_game(request):
+def save_game_history(request):
     if request.method == 'POST':
+        game_data = request.POST.get('game_data')  # Assurez-vous que les données JSON sont envoyées en POST
         try:
-            data = json.loads(request.body)
-            player1_username = data.get('player1_username')
-            player1_score = data.get('player1_score')
-            player2_username = data.get('player2_username')
-            player2_score = data.get('player2_score')
-            date_played = data.get('date_played')
-            winner_username = data.get('winner_username')
-            
-            if None in [player1_username, player1_score, player2_username, player2_score, date_played, winner_username]:
-                return JsonResponse({'status': 'fail', 'error': 'Invalid data'}, status=400)
-
-            player1 = CustomUser.objects.get(username=player1_username)
-            player2 = CustomUser.objects.get(username=player2_username)
-            winner = CustomUser.objects.get(username=winner_username)
-
-            game = Game.objects.create(
-                player1=player1,
-                player2=player2,
-                player1_score=int(player1_score),
-                player2_score=int(player2_score),
-                date_played=date_played,
+            game_json = json.loads(game_data)
+            player1_score = game_json['player1_score']
+            player2_score = game_json['player2_score']
+            winner_id = game_json['winner_id']
+            winner = CustomUser.objects.get(id=winner_id)
+            game_history_entry = GameHistory.objects.create(
+                player1_score=player1_score,
+                player2_score=player2_score,
+                date_played=game_json['date_played'],
                 winner=winner
             )
+            current_user = request.user
+            current_user.game_history.add(game_history_entry)
+            current_user.total_games_played += 1
+            if winner_id == current_user.id:
+                current_user.games_won += 1
+            current_user.save()
+            return JsonResponse({'message': 'Game history saved successfully'})
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-            for player, score, is_win in [
-                (player1, player1_score, winner.username == player1_username),
-                (player2, player2_score, winner.username == player2_username)
-            ]:
-                statistics, _ = Statistic.objects.get_or_create(player=player)
-                statistics.games_played += 1
-                statistics.total_score += int(score)
-                statistics.save()
+def get_game_history(request):
+    if request.method == 'GET':
+        current_user = request.user
+        if current_user.is_authenticated:
+            game_history = GameHistory.objects.filter(players=current_user)
+            total_games_played = game_history.count()
+            games_won = game_history.filter(winner=current_user).count()
+            game_history_data = []
+            for game in game_history:
+                game_history_data.append({
+                    'player1_score': game.player1_score,
+                    'player2_score': game.player2_score,
+                    'date_played': game.date_played.strftime('%Y-%m-%dT%H:%M:%SZ'),
+                })
 
-            return JsonResponse({'status': 'success'})
-        except json.JSONDecodeError:
-            return JsonResponse({'status': 'fail', 'error': 'Invalid JSON'}, status=400)
-        except CustomUser.DoesNotExist:
-            return JsonResponse({'status': 'fail', 'error': 'Player not found'}, status=404)
-    return JsonResponse({'status': 'fail', 'error': 'Invalid request method'}, status=405)
+            return JsonResponse({
+                'game_history': game_history_data,
+                'total_games_played': total_games_played,
+                'games_won': games_won
+            })
+    return JsonResponse({'error': 'Unauthorized'}, status=401)
