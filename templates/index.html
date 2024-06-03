@@ -103,7 +103,7 @@
         <h4>Enjoy playing Pong or participate in our tournaments.</h4>
     </div>    
     
-    <div id="section-pong" class="page" style="display: none;">
+    <!-- <div id="section-pong" class="page" style="display: none;">
         <div id="unity-container" class="unity-desktop">
             <canvas id="unity-canvas" width=960 height=600 tabindex="-1" margin-left="auto" margin-right="auto"></canvas>
             <div id="unity-loading-bar">
@@ -118,7 +118,26 @@
             </div>
         </div>
         <script type="module" src="{% static 'js/pong.js' %}" async></script>
+    </div> -->
+
+    <div id="section-pong" class="page" style="display: none;">
+        <div id="unity-container" class="unity-desktop">
+            <canvas id="unity-canvas" width="960" height="600" tabindex="-1"></canvas>
+            <div id="unity-loading-bar">
+                <div id="unity-logo"></div>
+                <div id="unity-progress-bar-empty">
+                    <div id="unity-progress-bar-full"></div>
+                </div>
+            </div>
+            <div id="unity-warning"></div>
+            <div id="unity-footer">
+                <div id="unity-fullscreen-button"></div>
+            </div>
+        </div>
+        <script type="module" src="{% static 'js/pong.js' %}" async></script>
     </div>
+    
+
 
     <div id="section-tournoi" class="page" style="display: none;">
         <h5>Welcome to tournoi Pong!</h5>
