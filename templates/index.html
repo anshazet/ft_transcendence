@@ -27,9 +27,9 @@
                     <li class="nav-item"><a class="nav-link highlight" onclick="showSection('home')" href="#home">Home</a></li>
                     <li class="nav-item"><a class="nav-link highlight" onclick="showSection('pong')" href="#pong">Pong</a></li>
                     <li class="nav-item"><a class="nav-link highlight" onclick="showSection('tournoi')" href="#tournoi">Mode Tournoi</a></li>
-					<li class="nav-item"><a class="nav-link highlight" onclick="showSection('historique')" href="#historique">Historique</a></li>
+                    <li class="nav-item"><a class="nav-link highlight" onclick="showSection('historique')" href="#historique">Historique</a></li>
                     <li class="nav-item"><a class="nav-link highlight" onclick="showSection('chat')" href="#chat">ChatRooms</a></li>
-				</ul>
+                </ul>
             </div>
             <div class="nav-item navbar-nav">
                 <a class="nav-link highlight" onclick="showSection('profil')" href="#profil">
@@ -43,6 +43,31 @@
             </div>
         </div>
     </nav>
+
+    <div id="section-historique" class="page" style="display: none;">
+        <div class="historique">
+            <h6>Historique des parties</h6>
+            <ul id="game-history-list"></ul>
+            <p id="total-games-played">Nombre total de parties jouées : <span id="total-games"></span></p>
+            <p id="games-won">Nombre de parties remportées : <span id="won-games"></span></p>
+        </div>
+    </div>
+
+    <div id="section-chat" class="page" style="display: none;">
+        <div class="chat">
+            <div>
+                <h6>Transcendence Chat</h6>
+            </div>
+            <div class="container">
+                <form id = "post-form" method="POST" action="chat/checkview">
+                    {% csrf_token %}
+                    <input type="text" name="room_name" placeholder="Room" />
+                    <input type="text" name="username" placeholder="Username"/>
+                    <input type="submit" value="Enter Room">
+                </form>
+            </div>
+        </div>
+    </div> 
                 
     <div id="section-profil" class="page" style="display: none; overflow-y: auto;">
         <div class="my-profile-info">
