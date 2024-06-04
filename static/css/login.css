@@ -60,7 +60,7 @@
   p {
     margin-left: 100px;
     padding-top: 1em;
-    color: grey;
+    color: rgb(255, 255, 255);
     font-size: 1.5em;
     font-weight: bold;
     margin-left: 0px;
@@ -115,6 +115,31 @@ p a:hover {
   width: auto; /* ???????? Adjust width as needed */
   border-radius: 5px;
   padding-left: 30px;
+}
+
+.historique {
+  margin-top: 10px;
+  background-color: #51858d86;  /* Background */
+  border: 1px solid #85d7f3;  /* Slight border for the rectangle */
+  padding: 15px;
+  margin-left: 100px;  /* Left margin to push the box right */
+  margin-right: 500px;
+  width: auto; /* ???????? Adjust width as needed */
+  border-radius: 5px;
+  padding-left: 30px;
+}
+
+.chat {
+  margin-top: 10px;
+  background-color: #51858d86;  /* Background */
+  border: 1px solid #85d7f3;  /* Slight border for the rectangle */
+  padding: 15px;
+  margin-left: 100px;  /* Left margin to push the box right */
+  margin-right: 700px;
+  width: auto; /* ???????? Adjust width as needed */
+  border-radius: 5px;
+  padding-left: 30px;
+  padding-bottom: 50px;
 }
 
 .profile-item {
