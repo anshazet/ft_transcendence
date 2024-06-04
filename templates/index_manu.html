@@ -15,7 +15,6 @@
 </head>
 <body>
     <input type="hidden" id="userIsLoggedIn" value="{% if user.is_authenticated %}true{% else %}false{% endif %}">
-    <input type="hidden" id="is2FACompleted" value="{% if request.session.is_2fa_verified %}true{% else %}false{% endif %}">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark custom-navbar">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">Let's Pong</a>
@@ -26,8 +25,9 @@
                 <ul class="navbar-nav">
                     <li class="nav-item"><a class="nav-link highlight" onclick="showSection('home')" href="#home">Home</a></li>
                     <li class="nav-item"><a class="nav-link highlight" onclick="showSection('pong')" href="#pong">Pong</a></li>
-                    <li class="nav-item"><a class="nav-link highlight" onclick="showSection('historique')" href="#historique">Historique</a></li>
+                    <li class="nav-item"><a class="nav-link highlight" onclick="showSection('tournoi')" href="#tournoi">Mode Tournoi</a></li>
                     <li class="nav-item"><a class="nav-link highlight" onclick="showSection('chat')" href="#chat">ChatRooms</a></li>
+                    <!-- <li class="nav-item"><a class="nav-link highlight" onclick="showSection('classement')" href="#classement">Classement</a></li> -->
                 </ul>
             </div>
             <div class="nav-item navbar-nav">
@@ -43,69 +43,63 @@
         </div>
     </nav>
 
-    <div id="section-historique" class="page" style="display: none;">
-        <div class="historique">
-            <h6>Historique des parties</h6>
-            <ul id="game-history-list"></ul>
-            <p id="total-games-played">Nombre total de parties jouées : <span id="total-games"></span></p>
-            <p id="games-won">Nombre de parties remportées : <span id="won-games"></span></p>
-        </div>
-    </div>
-
     <div id="section-chat" class="page" style="display: none;">
-        <div class="chat">
-            <div>
-                <h6>Transcendence Chat</h6>
-            </div>
-            <div class="container">
-                <form id = "post-form" method="POST" action="chat/checkview">
-                    {% csrf_token %}
-                    <input type="text" name="room_name" placeholder="Room" />
-                    <input type="text" name="username" placeholder="Username"/>
-                    <input type="submit" value="Enter Room">
-                </form>
-            </div>
+        <div>
+            <h2>Transcendence Chat</h2>
+        </div>
+        <div class="container">
+            <form id = "post-form" method="POST" action="chat/checkview">
+                {% csrf_token %}
+                <input type="text" name="room_name" placeholder="Room" />
+                <input type="text" name="username" placeholder="Username"/>
+                <input type="submit" value="Enter Room">
+            </form>
         </div>
     </div> 
-                
+
     <div id="section-profil" class="page" style="display: none; overflow-y: auto;">
-        <div class="my-profile-info">
-            <h6>Profil de : {{ user.username }}</h6>
-            <p class="email">Adresse e-mail : {{ user.email }}</p>
-            <p class="username">Nom d'utilisateur : {{ user.username }}</p>
+        <h5>Profil de {{ user.username }}</h5>
+        <p>Nom d'utilisateur : {{ user.username }}</p>
+        <p>Adresse e-mail : {{ user.email }}</p>
+        <div class="avatar-container">
+            <img id="avatar-img" src="{% static 'avatar/' %}{{ user.username }}-avatar.png" class="profile-avatar" onerror="this.src='{% static 'avatar/ponguser.png' %}'">
         </div>
-        
-    <div class="avatar-container">
-        <img id="avatar-img" src="{% static 'avatar/' %}{{ user.username }}-avatar.png" class="profile-avatar" onerror="this.src='{% static 'avatar/ponguser.png' %}'">
         <form id="avatar-upload-form" enctype="multipart/form-data">
             {% csrf_token %}
-            <div class="form-group button-group">
+            <div class="form-group flex-container">
                 <input type="file" id="avatar" name="avatar" accept="image/png" hidden>
                 <label for="avatar" class="btn btn-primary">Choisir un fichier</label>
                 <button type="submit" class="btn btn-primary_2">Upload</button>
             </div>
         </form>
-    </div>
-        
-
-        <div class="my-profile-info">
-            <h6>Demandes d'amis</h6>
-            <div id="friend-requests">
-            <!-- Les demandes d'amis seront affichées ici -->
-            </div>
-            <input type="text" id="friend-username" placeholder="Nom d'utilisateur">
-            {% csrf_token %}
-            <button id="send-friend-request" class="btn btn-primary">Envoyer une demande d'ami</button>
-            <h6>Liste d'amis</h6>
-            <div id="friend-list">
-                <!-- La liste d'amis sera affichée ici -->
-            </div>
-            <h6>Demandes d'amis en attente</h6>
-            <div id="pending-friend-requests">
-            <!-- Les demandes d'amis en attente seront affichées ici -->
-            </div>
+        <h5>Two-Factor Authentication</h5>
+        <button id="verify-email-button" class="btn btn-primary">Send Verification Email</button>
+        <div id="2fa-verification-section" style="display:none;">
+            <form id="2fa-form" method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div class="mb-3 mt-4">
+                    <label for="otp-token" class="form-label">Enter OTP</label>
+                    <input type="text" class="form-control" id="otp-token" name="otp_token" aria-describedby="otpHelp" autocomplete="one-time-code">
+                </div>
+                <button type="submit" class="btn btn-light mt-3" id="2fa-button">Verify</button>
+            </form>
         </div>
-
+        <h5>Demandes d'amis</h5>
+        <div id="friend-requests">
+        <!-- Les demandes d'amis seront affichées ici -->
+        </div>
+        <input type="text" id="friend-username" placeholder="Nom d'utilisateur">
+        {% csrf_token %}
+        <button id="send-friend-request" class="btn btn-primary">Envoyer une demande d'ami</button>
+        <h5>Liste d'amis</h5>
+        <div id="friend-list">
+            <!-- La liste d'amis sera affichée ici -->
+        </div>
+        <h5>Demandes d'amis en attente</h5>
+        <div id="pending-friend-requests">
+        <!-- Les demandes d'amis en attente seront affichées ici -->
+        </div>
         <div class="nav-item change-info-link"><a class="nav-link highlight" onclick="showSection('modif-profil')" href="#modif-profil">Modifier mon profil</a></div>
         {% csrf_token %}
         <button id="logout-button" class="btn btn-primary">Logout</button>
@@ -135,23 +129,37 @@
         <h3>Welcome to Let's Pong!</h3>
         <h4>Enjoy playing Pong or participate in our tournaments.</h4>
     </div>    
-
+    
     <div id="section-pong" class="page" style="display: none;">
         <div id="unity-container" class="unity-desktop">
-            <canvas id="unity-canvas" width="960" height="600" tabindex="-1"></canvas>
+            <canvas id="unity-canvas" width=960 height=600 tabindex="-1" margin-left="auto" margin-right="auto"></canvas>
             <div id="unity-loading-bar">
                 <div id="unity-logo"></div>
                 <div id="unity-progress-bar-empty">
                     <div id="unity-progress-bar-full"></div>
                 </div>
             </div>
-            <div id="unity-warning"></div>
+            <div id="unity-warning"> </div>
             <div id="unity-footer">
                 <div id="unity-fullscreen-button"></div>
             </div>
         </div>
         <script type="module" src="{% static 'js/pong.js' %}" async></script>
     </div>
+
+    <div id="section-tournoi" class="page" style="display: none;">
+        <h5>Welcome to tournoi Pong!</h5>
+        <div class="profile-info">
+            <p class="profile-item"><span class="profile-label">Player 1</p>
+        </div>
+    </div>
+
+    <!-- <div id="section-classement" class="page" style="display: none;">
+        <h5>Classement</h5>
+        <div id="classement-list" class="profile-info"> -->
+            <!-- Player list will here -->
+        <!-- </div>
+    </div> -->
 
     <div class="modal fade" id="ModalForm" tabindex="-1" aria-labelledby="ModalFormLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -213,25 +221,21 @@
         </div>
     </div>   
 
-    <!-- Modal for 2FA -->
     <div class="modal fade" id="2FAModal" tabindex="-1" aria-labelledby="2FAModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-body">
                     <div class="myform bg-dark">
                         <h1 class="text-center">Two-Factor Authentication</h1>
-                        <button id="verify-email-button" class="btn btn-primary">Send Verification Email</button>
-                        <div id="2fa-verification-section" style="display:none;">
-                            <form id="2fa-form" method="post">
-                                {% csrf_token %}
-                                {{ form.as_p }}
-                                <div class="mb-3 mt-4">
-                                    <label for="otp-token" class="form-label">Enter OTP</label>
-                                    <input type="text" class="form-control" id="otp-token" name="otp_token" aria-describedby="otpHelp" autocomplete="one-time-code">
-                                </div>
-                                <button type="submit" class="btn btn-light mt-3" id="two-fa-button">Verify</button>
-                            </form>
-                        </div>
+                        <form id="2fa-modal-form">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <div class="mb-3 mt-4">
+                                <label for="otp-token-modal" class="form-label">Enter OTP</label>
+                                <input type="text" class="form-control" id="otp-token-modal" name="otp_token" aria-describedby="otpHelp" autocomplete="one-time-code">
+                            </div>
+                            <button type="submit" class="btn btn-light mt-3" id="two-fa-modal-button">Verify</button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -247,12 +251,12 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="2fa-success-close-button" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
     </div>
-    
+
     <script type="text/javascript" src="{% static 'js/index.js' %}" async></script>
     <script type="text/javascript" src="{% static 'js/account.js' %}" async></script>
     <script type="text/javascript" src="{% static 'js/42auth.js' %}" async></script>
@@ -266,24 +270,16 @@
     
     <script>
         var userIsLoggedIn = document.getElementById('userIsLoggedIn').value === 'true';
-        var is2FACompleted = document.getElementById('is2FACompleted').value === 'true';
-
         if (!userIsLoggedIn) {
             $('#ModalForm').modal('show');
-        } else if (!is2FACompleted) {
-            $('#2FAModal').modal('show'); // Show 2FA modal if user is logged in but hasn't completed 2FA
         }
-
+        
         document.addEventListener('DOMContentLoaded', function() {
             var userIsLoggedIn = document.getElementById('userIsLoggedIn').value === 'true';
-            var is2FACompleted = document.getElementById('is2FACompleted').value === 'true';
-
             if (!userIsLoggedIn) {
                 $('#ModalForm').modal('show');
-            } else if (!is2FACompleted) {
-                $('#2FAModal').modal('show'); // Show 2FA modal if user is logged in but hasn't completed 2FA
             }
-
+    
             document.getElementById('verify-email-button').addEventListener('click', function(event) {
                 fetch('/send_otp_email/', {
                     method: 'POST',
@@ -295,8 +291,7 @@
                 .then(data => {
                     if (data.success) {
                         alert('Verification email sent. Please check your email for the verification code.');
-                        $('#2fa-verification-section').show();
-                        $('#verify-email-button').hide(); // Hide the button after it's clicked
+                        $('#2FAModal').modal('show');
                     } else {
                         console.error('Error sending verification email:', data.message || response.statusText);
                         alert('Error sending verification email: ' + (data.message || response.statusText));
@@ -307,11 +302,11 @@
                     alert('Error during the request: ' + error.message);
                 });
             });
-
+    
             document.getElementById('2fa-form').addEventListener('submit', function(event) {
                 event.preventDefault();
                 const otp_token = document.getElementById('otp-token').value;
-
+    
                 fetch('/verify_otp/', {
                     method: 'POST',
                     headers: {
@@ -326,8 +321,7 @@
                         alert('2FA verification successful and confirmed.');
                         localStorage.setItem('access', data.access);
                         localStorage.setItem('refresh', data.refresh);
-                        $('#2FAModal').modal('hide'); // Hide the 2FA modal
-                        $('#2FASuccessModal').modal('show'); // Show the success modal
+                        window.location.reload();
                     } else {
                         console.error(data.error_message);
                         alert('Error: ' + data.error_message);
@@ -338,17 +332,37 @@
                     alert('Erreur lors de la requête: ' + error.message);
                 });
             });
-
-            $('#2FASuccessModal').on('hide.bs.modal', function () {
-                $('#2FAModal').modal('hide'); // Hide the 2FA modal
+    
+            document.getElementById('2fa-modal-form').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const otp_token = document.getElementById('otp-token-modal').value;
+    
+                fetch('/verify_otp/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: `otp_token=${encodeURIComponent(otp_token)}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('2FA verification successful and confirmed.');
+                        localStorage.setItem('access', data.access);
+                        localStorage.setItem('refresh', data.refresh);
+                        window.location.reload();
+                    } else {
+                        console.error(data.error_message);
+                        alert('Error: ' + data.error_message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la requête:', error);
+                    alert('Erreur lors de la requête: ' + error.message);
+                });
             });
-
-            document.getElementById('2fa-success-close-button').addEventListener('click', function(event) {
-                $('#2FASuccessModal').modal('hide');
-                $('#2FAModal').modal('hide');
-                window.location.reload();
-            });
-
+    
             function getCookie(name) {
                 let cookieValue = null;
                 if (document.cookie && document.cookie !== '') {
