@@ -77,12 +77,12 @@
         
     <div class="avatar-container">
         <img id="avatar-img" src="{% static 'avatar/' %}{{ user.username }}-avatar.png" class="profile-avatar" onerror="this.src='{% static 'avatar/ponguser.png' %}'">
-        <form id="avatar-upload-form" enctype="multipart/form-data">
+        <form id="avatar-upload-form" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form-group button-group">
-                <input type="file" id="avatar" name="avatar" accept="image/png" hidden>
-                <label for="avatar" class="btn btn-primary">Choisir un fichier</label>
-                <button type="submit" class="btn btn-primary_2">Upload</button>
+                <input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg, image/jpg, image/gif" hidden>
+                <label for="avatar" class="btn btn-primary">Choose File</label>
+                <button type="submit" class="btn btn-primary">Upload</button>
             </div>
         </form>
     </div>

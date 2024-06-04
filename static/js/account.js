@@ -74,6 +74,31 @@ document.getElementById('logout-button').addEventListener('click', function(even
     });
 });
 
+document.getElementById('avatar-upload-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    var formData = new FormData(this);
+    
+    fetch('/upload_avatar/', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.message) {
+            alert(data.message);
+            // Optionally refresh the avatar image here
+            location.reload();
+        } else {
+            alert(data.error);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+});
+
+
 document.getElementById('update-user-form').addEventListener('submit', function(event) {
     event.preventDefault();
     
