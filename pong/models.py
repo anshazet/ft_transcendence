@@ -21,7 +21,7 @@ class GameHistory(models.Model):
     player1_score = models.IntegerField()
     player2_score = models.IntegerField()
     date_played = models.DateTimeField()
-    winner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='won_games')
+    player1_won = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = _('Game History')
