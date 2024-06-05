@@ -1,13 +1,12 @@
 document.addEventListener('DOMContentLoaded', function() {
     let currentRoom = null;
-    let currentUsername = null;
+    let currentUsername = currentUserUsername; // Assuming you're using Django templating
 
     function setRoom(room, username, roomId) {
         currentRoom = room;
-        currentUsername = username;
         document.querySelector('#section-chat').setAttribute('data-room-name', room);
-        document.querySelector('#username').value = username;
-        document.querySelector('#room_id').value = roomId;
+        document.querySelector('#send-username').value = username;
+        document.querySelector('#send-room_id').value = roomId;
         document.querySelector('#chat-room').style.display = 'block';
         document.querySelector('#room-name').innerText = room;
         fetchMessages();
@@ -15,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function fetchMessages() {
         if (!currentRoom) {
+            // console.error('Room name is not defined');
             return;
         }
         var display = $("#display");
@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
             type: 'GET',
             url: '/chat/getMessages/' + currentRoom + '/',
             success: function(response) {
+                // console.log('Messages fetched successfully:', response);
                 $("#display").empty();
                 for (var key in response.messages) {
                     var rawDate = new Date(response.messages[key].date);
@@ -47,32 +48,26 @@ document.addEventListener('DOMContentLoaded', function() {
     // Set up send message form submission handler
     $('#send-message-form').on('submit', function(e) {
         e.preventDefault();
-        const messageInput = $('#message');
         $.ajax({
             type: 'POST',
             url: '/chat/send',
             data: {
                 username: currentUsername,
                 room_id: currentRoom,
-                message: messageInput.val(),
+                message: $('#message').val(),
                 csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
             },
             success: function(data) {
                 console.log('Message sent successfully:', data);
-                messageInput.val(''); // Clear the message input on success
-            },
-            error: function(response) {
-                console.error('An error occurred while sending the message', response);
-                messageInput.val(''); // Clear the message input on error
+                $('#message').val('');
             }
         });
     });
 
-    // Set up post form submission handler to show the chat room
-    $('#post-form').on('submit', function(e) {
-        e.preventDefault();
-        const roomName = $('input[name="room_name"]').val();
-        const username = $('input[name="username"]').val();
+    // Automatically join "room1" on page load
+    function autoJoinRoom() {
+        const roomName = 'room1';
+        const username = currentUsername;
         $.ajax({
             type: 'POST',
             url: '/chat/checkview',
@@ -90,9 +85,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert('An error occurred');
             }
         });
-    });
+    }
 
-    // Set up leave room form submission handler to hide the chat room and show the post form
+    // Automatically join the room when the page is loaded
+    autoJoinRoom();
+
+    // Set up leave form submission handler
     $('#leave-form').on('submit', function(e) {
         e.preventDefault();
         currentRoom = null;
@@ -100,6 +98,5 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelector('#chat-room').style.display = 'none';
         document.querySelector('#post-form').parentElement.style.display = 'block';
         console.log('Room left successfully:', currentRoom);
-        window.location.reload();
     });
 });
