@@ -15,7 +15,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function fetchMessages() {
         if (!currentRoom) {
-            // console.error('Room name is not defined');
             return;
         }
         var display = $("#display");
@@ -24,7 +23,6 @@ document.addEventListener('DOMContentLoaded', function() {
             type: 'GET',
             url: '/chat/getMessages/' + currentRoom + '/',
             success: function(response) {
-                // console.log('Messages fetched successfully:', response);
                 $("#display").empty();
                 for (var key in response.messages) {
                     var rawDate = new Date(response.messages[key].date);
@@ -49,18 +47,23 @@ document.addEventListener('DOMContentLoaded', function() {
     // Set up send message form submission handler
     $('#send-message-form').on('submit', function(e) {
         e.preventDefault();
+        const messageInput = $('#message');
         $.ajax({
             type: 'POST',
             url: '/chat/send',
             data: {
                 username: currentUsername,
                 room_id: currentRoom,
-                message: $('#message').val(),
+                message: messageInput.val(),
                 csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
             },
             success: function(data) {
                 console.log('Message sent successfully:', data);
-                $('#message').val('');
+                messageInput.val(''); // Clear the message input on success
+            },
+            error: function(response) {
+                console.error('An error occurred while sending the message', response);
+                messageInput.val(''); // Clear the message input on error
             }
         });
     });
@@ -89,6 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // Set up leave room form submission handler to hide the chat room and show the post form
     $('#leave-form').on('submit', function(e) {
         e.preventDefault();
         currentRoom = null;
@@ -96,13 +100,6 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelector('#chat-room').style.display = 'none';
         document.querySelector('#post-form').parentElement.style.display = 'block';
         console.log('Room left successfully:', currentRoom);
+        window.location.reload();
     });
-
-
-	// $('#leave-form').on('submit', function(e) {
-    //     e.preventDefault();
-	// 	console.log('Room left successfully:', currentRoom);
-	// 	currentRoom = null;
-	// 	currentUsername = null;
-    // });
 });
