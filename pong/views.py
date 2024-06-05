@@ -181,16 +181,25 @@ def deplacer_images():
         print(f"Fichier {fichier} déplacé avec succès vers {chemin_static_avatar}")
 
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 def upload_avatar(request):
     if request.method == 'POST' and request.FILES.get('avatar'):
         avatar = request.FILES['avatar']
         username = request.user.username
         avatar_path = os.path.join(settings.MEDIA_ROOT, 'avatar', f'{username}-avatar.png')
-        with open(avatar_path, 'wb') as f:
-            for chunk in avatar.chunks():
-                f.write(chunk)
-        deplacer_images()
-        return JsonResponse({'message': 'Avatar uploaded successfully.'})
+        logger.info(f'Uploading avatar for user: {username}, saving to {avatar_path}')
+        try:
+            with open(avatar_path, 'wb') as f:
+                for chunk in avatar.chunks():
+                    f.write(chunk)
+            deplacer_images()
+            return JsonResponse({'message': 'Avatar uploaded successfully.'})
+        except Exception as e:
+            logger.error(f'Error uploading avatar: {e}')
+            return JsonResponse({'error': str(e)}, status=500)
     else:
         return JsonResponse({'error': 'No avatar uploaded.'}, status=400)
     
