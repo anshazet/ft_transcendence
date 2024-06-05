@@ -5,6 +5,20 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 
+from datetime import datetime
+from django.db import models
+from datetime import datetime
+from django.utils import timezone
+
+class Room(models.Model):
+    name = models.CharField(max_length=2000)
+
+class Message(models.Model):
+    value = models.CharField(max_length=1000000)
+    date = models.DateTimeField(default=timezone.now, blank=True)
+    user = models.CharField(max_length=1000000)
+    room = models.CharField(max_length=1000000)
+
 class CustomUser(AbstractUser):
     friends = models.ManyToManyField('self', symmetrical=False, related_name='friends_list', blank=True)
     friend_requests_sent = models.ManyToManyField('self', symmetrical=False, related_name='friend_requests_received', blank=True, through='FriendRequest')
@@ -41,6 +55,14 @@ class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     verification_code = models.CharField(max_length=6, blank=True, null=True)
     is_verified = models.BooleanField(default=False)
+
+class BlockedUser(models.Model):
+    user = models.ForeignKey(CustomUser, related_name='blocker', on_delete=models.CASCADE)
+    blocked_user = models.ForeignKey(CustomUser, related_name='blocked', on_delete=models.CASCADE)
+    blocked_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'blocked_user')
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_or_update_user_profile(sender, instance, created, **kwargs):

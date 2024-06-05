@@ -21,7 +21,96 @@ from django.core.mail import send_mail
 import random
 import logging
 
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse, JsonResponse
+from rest_framework import viewsets
+from .models import Message, BlockedUser, Room, CustomUser, GameHistory, FriendRequest
+from .serializers import MessageSerializer, BlockedUserSerializer
+from rest_framework.decorators import action
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
+from django_otp.plugins.otp_totp.models import TOTPDevice
+from django.dispatch import receiver
+from django.contrib.auth.signals import user_logged_in, user_logged_out
 
+
+# chat
+def home(request):
+    return render(request, 'index.html')
+
+def room(request, room):
+    username = request.GET.get('username')
+    room_details = get_object_or_404(Room, name=room)
+    return JsonResponse({
+        'username': username,
+        'room': room,
+        'room_details': {
+            'id': room_details.id,
+            'name': room_details.name,
+        }
+    })
+
+@csrf_exempt
+def checkview(request):
+    room_name = request.POST['room_name']
+    username = request.POST['username']
+    room, created = Room.objects.get_or_create(name=room_name)
+    return JsonResponse({
+        'username': username,
+        'room': room.name,
+        'room_details': {
+            'id': room.id,
+            'name': room.name,
+        }
+    })
+
+@csrf_exempt
+def send(request):
+    message = request.POST['message']
+    username = request.POST['username']
+    room_id = request.POST['room_id']
+    room = get_object_or_404(Room, id=room_id)
+
+    new_message = Message.objects.create(value=message, user=username, room=room)
+    new_message.save()
+    return HttpResponse('Message sent successfully')
+
+
+
+
+def getMessages(request, room):
+    try:
+        room_details = get_object_or_404(Room, name=room)
+        messages = Message.objects.filter(room=room_details).order_by('date')
+        return JsonResponse({"messages": list(messages.values())})
+    except Room.DoesNotExist:
+        return JsonResponse({"error": "Room not found"}, status=404)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
+
+class MessageViewSet(viewsets.ModelViewSet):
+    queryset = Message.objects.all()
+    serializer_class = MessageSerializer
+
+class BlockedUserViewSet(viewsets.ModelViewSet):
+    queryset = BlockedUser.objects.all()
+    serializer_class = BlockedUserSerializer
+
+    @action(detail=False, methods=['post'], permission_classes=[login_required])
+    def block_user(self, request):
+        user = request.user
+        blocked_user = get_object_or_404(CustomUser, username=request.data.get('blocked_user'))
+        BlockedUser.objects.create(user=user, blocked_user=blocked_user)
+        return Response({'status': 'user blocked'})
+
+    @action(detail=False, methods=['post'], permission_classes=[login_required])
+    def unblock_user(self, request):
+        user = request.user
+        blocked_user = get_object_or_404(CustomUser, username=request.data.get('blocked_user'))
+        blocked_instance = get_object_or_404(BlockedUser, user=user, blocked_user=blocked_user)
+        blocked_instance.delete()
+        return Response({'status': 'user unblocked'})
+    
 @csrf_exempt
 def register_user(request):
     if request.method == 'POST':
@@ -528,3 +617,8 @@ def get_game_history(request):
                 'games_won': games_won
             })
     return JsonResponse({'error': 'Unauthorized'}, status=401)
+
+
+
+# chat
+

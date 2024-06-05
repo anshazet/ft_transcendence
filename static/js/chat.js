@@ -1,5 +1,3 @@
-// copy chat
-
 document.addEventListener('DOMContentLoaded', function() {
     let currentRoom = null;
     let currentUsername = null;

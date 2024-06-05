@@ -109,9 +109,9 @@ padding-left: 30px;
 margin-top: 10px;
 background-color: #51858d86;  /* Background */
 border: 1px solid #85d7f3;  /* Slight border for the rectangle */
-padding: 15px;
+padding: 30px;
 margin-left: 100px;  /* Left margin to push the box right */
-margin-right: 500px;
+margin-right: 100px;
 width: auto; /* ???????? Adjust width as needed */
 border-radius: 5px;
 padding-left: 30px;
@@ -121,7 +121,7 @@ padding-left: 30px;
 margin-top: 10px;
 background-color: #51858d86;  /* Background */
 border: 1px solid #85d7f3;  /* Slight border for the rectangle */
-padding: 15px;
+padding: 30px;
 margin-left: 100px;  /* Left margin to push the box right */
 margin-right: 500px;
 width: auto; /* ???????? Adjust width as needed */
@@ -133,9 +133,9 @@ padding-left: 30px;
 margin-top: 10px;
 background-color: #51858d86;  /* Background */
 border: 1px solid #85d7f3;  /* Slight border for the rectangle */
-padding: 15px;
+padding: 30px;
 margin-left: 100px;  /* Left margin to push the box right */
-margin-right: 700px;
+margin-right: 100px;
 width: auto; /* ???????? Adjust width as needed */
 border-radius: 5px;
 padding-left: 30px;
@@ -166,7 +166,7 @@ margin-right: 10px; /* Space between label and value */
   display: block;
   width: 100%; /* Full width */
   margin-top: 20px; /* Space above the button */
-  margin-left: 100px;
+  /* margin-left: 100px; */
 }
 
 /* Adjust the overall alignment within the profile-info */
@@ -310,10 +310,12 @@ background-color: #0056b3;
 
 .button-group {
 display: flex;
-flex-direction: column;
-align-items: flex-end;
-position: fixed;
-right: 100px;
+/* flex-direction: column; */
+align-items: end;
+position: relative;
+left: calc(100% - 200px); 
+bottom: 220px;
+/* right: 100px; */
 }
 
 /* Additional styling to position the "Modifier mon profil" link */
@@ -324,16 +326,22 @@ margin-left: 85px;
 
 /* Styling for the default profile avatar */
 .profile-avatar {
-display: block;
-/* margin: 20px auto; */
+display: flex;
+/* margin: -10px auto; */
 width: 150px;
 height: 150px;
 object-fit: cover;
 border-radius: 50%;
-border: 2px solid #950cda;
-position: absolute;
-top: 150px;
-right: 100px;
+border: 2px solid #0e6071;
+position: relative;
+margin-right: 50px;
+vertical-align: middle;
+bottom: 230px;
+left: calc(100% - 150px);
+}
+
+.avatar-container {
+height: 0px;
 }
 
 .nav-link {
