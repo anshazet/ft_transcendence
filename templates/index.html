@@ -55,7 +55,7 @@
     <div id="section-chat" class="page" style="display: none;" data-room-name="">
         <div class="chat">
             <h6>Transcendence Chat</h6>
-            <div class="container">
+            <div class="container" style="display: none;">
                 <form id="post-form" method="POST" style="display:none;">
                     {% csrf_token %}
                     <input type="hidden" name="room_name" id="room_name" value="room1" />
@@ -64,12 +64,6 @@
                 </form>
             </div>
             <div id="chat-room">
-                <h2 class="title"><span id="room-name">Chat Room</span>
-                    <form id="leave-form" method="POST">
-                        {% csrf_token %}
-                        <input type="submit" value="Leave Room">
-                    </form>
-                </h2>
                 <div id="display">
                     <p>Aucun message présent</p>
                 </div>

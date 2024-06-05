@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 for (var key in response.messages) {
                     var rawDate = new Date(response.messages[key].date);
                     var formattedDate = rawDate.toLocaleString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-                    var temp = "<div class='darker'><b>" + response.messages[key].user + "</b><p>" + response.messages[key].value + "</p><span>" + formattedDate + "</span></div>";
+                    var temp = "<div class='darker'><b class='chat-user'>" + response.messages[key].user + "</b><p>" + response.messages[key].value + "</p><span class='chat-date'>" + formattedDate + "</span></div>";
                     $("#display").append(temp);
                 }
                 if (isAtBottom) {

@@ -59,7 +59,8 @@ h1 {
 
 p {
   margin-left: 100px;
-  padding-top: 1em;
+  padding: 0;
+  margin-bottom: 0;
   color: rgb(255, 255, 255);
   font-size: 1.5em;
   font-weight: bold;
@@ -105,6 +106,22 @@ border-radius: 5px;
 padding-left: 30px;
 }
 
+.darker {
+	margin-bottom: 10px;
+	background-color: #51858d86;  /* Background */
+	border: 1px solid #85d7f3;  /* Slight border for the rectangle */
+	padding: 15px;
+	border-radius: 10px;
+}
+
+.chat-user {
+	margin: 0;
+}
+
+.chat-date {
+	margin: 0;
+}
+
 .my-profile-info {
 margin-top: 10px;
 background-color: #51858d86;  /* Background */
@@ -136,10 +153,11 @@ border: 1px solid #85d7f3;  /* Slight border for the rectangle */
 padding: 30px;
 margin-left: 100px;  /* Left margin to push the box right */
 margin-right: 100px;
+margin-bottom: 100px;
 width: auto; /* ???????? Adjust width as needed */
 border-radius: 5px;
 padding-left: 30px;
-padding-bottom: 50px;
+padding-bottom: 20px;
 }
 
 .profile-item {
