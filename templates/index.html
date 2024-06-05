@@ -56,15 +56,15 @@
         <div class="chat">
             <h6>Transcendence Chat</h6>
             <div class="container">
-                <form id="post-form" method="POST">
+                <form id="post-form" method="POST" style="display:none;">
                     {% csrf_token %}
-                    <input type="text" name="room_name" placeholder="Room" />
-                    <input type="text" name="username" placeholder="Username"/>
+                    <input type="hidden" name="room_name" id="room_name" value="room1" />
+                    <input type="hidden" name="username" id="post-username" value="{{ request.user.username }}"/>
                     <input type="submit" value="Enter Room">
                 </form>
             </div>
-            <div id="chat-room" style="display: none;">
-                <h2 class="title"><span id="room-name"></span> - Groupe
+            <div id="chat-room">
+                <h2 class="title"><span id="room-name">Chat Room</span>
                     <form id="leave-form" method="POST">
                         {% csrf_token %}
                         <input type="submit" value="Leave Room">
@@ -76,8 +76,8 @@
                 <div class="container">
                     <form id="send-message-form">
                         {% csrf_token %}
-                        <input type="hidden" name="username" id="username" value=""/>
-                        <input type="hidden" name="room_id" id="room_id" value=""/>
+                        <input type="hidden" name="username" id="send-username" value="{{ request.user.username }}"/>
+                        <input type="hidden" name="room_id" id="send-room_id" value="1"/>
                         <input type="text" name="message" id="message" placeholder="Type a message..." />
                         <input type="submit" value="Send">
                     </form>
@@ -290,7 +290,7 @@
         var is2FACompleted = document.getElementById('is2FACompleted').value === 'true';
 
         if (!userIsLoggedIn) {
-            $('#ModalForm').modal('show');
+            $('#ModalForm').modal({backdrop: 'static', keyboard: false}, 'show');
         } else if (!is2FACompleted) {
             $('#2FAModal').modal('show'); // Show 2FA modal if user is logged in but hasn't completed 2FA
         }
@@ -300,9 +300,9 @@
             var is2FACompleted = document.getElementById('is2FACompleted').value === 'true';
 
             if (!userIsLoggedIn) {
-                $('#ModalForm').modal('show');
+                $('#ModalForm').modal({backdrop: 'static', keyboard: false}, 'show');
             } else if (!is2FACompleted) {
-                $('#2FAModal').modal('show'); // Show 2FA modal if user is logged in but hasn't completed 2FA
+                $('#2FAModal').modal({backdrop: 'static', keyboard: false}, 'show'); // Show 2FA modal if user is logged in but hasn't completed 2FA
             }
 
             document.getElementById('verify-email-button').addEventListener('click', function(event) {
@@ -348,6 +348,7 @@
                         localStorage.setItem('access', data.access);
                         localStorage.setItem('refresh', data.refresh);
                         $('#2FAModal').modal('hide'); // Hide the 2FA modal
+						//window.location.reload();
                         $('#2FASuccessModal').modal('show'); // Show the success modal
                     } else {
                         console.error(data.error_message);
@@ -451,6 +452,9 @@
             });
             document.getElementById('section-' + sectionId).style.display = 'block';
         }
+    </script>
+    <script>
+        var currentUserUsername = "{{ user.username }}"
     </script>
 </body>
 </html>

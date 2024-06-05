@@ -52,29 +52,42 @@ def room(request, room):
 
 @csrf_exempt
 def checkview(request):
-    room_name = request.POST['room_name']
-    username = request.POST['username']
-    room, created = Room.objects.get_or_create(name=room_name)
-    return JsonResponse({
-        'username': username,
-        'room': room.name,
-        'room_details': {
-            'id': room.id,
-            'name': room.name,
-        }
-    })
+    if request.method == 'POST':
+        room_name = request.POST.get('room_name')
+        username = request.POST.get('username')
+
+        if not room_name or not username:
+            return JsonResponse({'error': 'Room name and username are required'}, status=400)
+
+        room, created = Room.objects.get_or_create(name=room_name)
+        return JsonResponse({
+            'username': username,
+            'room': room.name,
+            'room_details': {
+                'id': room.id,
+                'name': room.name,
+            }
+        })
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
+
 
 @csrf_exempt
 def send(request):
-    message = request.POST['message']
-    username = request.POST['username']
-    room_id = request.POST['room_id']
-    room = get_object_or_404(Room, id=room_id)
+    if request.method == 'POST':
+        message = request.POST.get('message')
+        username = request.POST.get('username')
+        room_name = request.POST.get('room_id')  # Changer 'room_id' en 'room_name'
+        
+        if not room_name:
+            return JsonResponse({'error': 'Room name is required'}, status=400)
 
-    new_message = Message.objects.create(value=message, user=username, room=room)
-    new_message.save()
-    return HttpResponse('Message sent successfully')
+        # Recherche de la salle par son nom
+        room = get_object_or_404(Room, name=room_name)
 
+        new_message = Message.objects.create(value=message, user=username, room=room)
+        new_message.save()
+        return HttpResponse('Message sent successfully')
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 
 

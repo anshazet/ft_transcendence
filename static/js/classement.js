@@ -1,3 +1,5 @@
+
+
 var sectionHistorique = document.getElementById('section-historique');
 var gameHistoryList = document.getElementById('game-history-list');
 var totalGamesPlayed = document.getElementById('total-games');
@@ -10,7 +12,7 @@ function fetchGameHistory() {
             gameHistoryList.innerHTML = '';
             data.game_history.forEach(function(game) {
                 var listItem = document.createElement('li');
-                var player1Name = game.current_user;
+                var player1Name = currentUserUsername;
                 var winnerName = game.player1_won ? player1Name : 'Invité';
                 listItem.textContent = player1Name + ' : ' + game.player1_score + ' || Invité : ' + game.player2_score + ' ---> Gagnant : ' + winnerName;
                 gameHistoryList.appendChild(listItem);

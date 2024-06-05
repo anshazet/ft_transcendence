@@ -214,7 +214,7 @@ document.getElementById('2fa-form').addEventListener('submit', function(event) {
     .then(data => {
         console.debug('Response from /verify_otp:', data);
         if (data.success) {
-            $('#2FASuccessModal').modal('show');
+            $('#2FASuccessModal').modal({backdrop: 'static', keyboard: false}, 'show');
         } else {
             console.error('Error:', data.error_message);
             alert(data.error_message);
@@ -249,7 +249,7 @@ document.getElementById('2fa-modal-form').addEventListener('submit', function(ev
     .then(data => {
         console.debug('Response from /verify_otp (modal):', data);
         if (data.success) {
-            $('#2FASuccessModal').modal('show');
+            $('#2FASuccessModal').modal({backdrop: 'static', keyboard: false}, 'show');
         } else {
             console.error('Error:', data.error_message);
             alert(data.error_message);
