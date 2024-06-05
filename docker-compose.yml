@@ -12,13 +12,13 @@ services:
       - "5432:5432"
 
   pgadmin:
-    image: dpage/pgadmin4
+    build: ./pgadmin
     container_name: pgadmin
     env_file: .env
     ports:
       - "80:80"
-    volumes:
-      - ./postgreserver.json:/pgadmin4/servers.json
+    user: root
+    entrypoint: /bin/sh -c "sed -i -e 's/POSTGRES_USER/'${POSTGRES_USER}'/g' /pgadmin4/servers.json; sed -i -e 's/POSTGRES_PASSWORD/'${POSTGRES_PASSWORD}'/g' /pgadmin4/servers.json; /entrypoint.sh;"
     depends_on:
       - db
 
