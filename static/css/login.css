@@ -1,353 +1,353 @@
 .modal-content {
-    width: 80%;
-    margin: 0 auto;
-    border: 1px solid #2ad5ec; /* A form border */
-    /*max-height: 90vh;  Set a max height for the modal content */
-    max-height: 90vh; /* Set a max height for the modal content */
-    overflow-y: auto; /* Enable vertical scrolling */
-  }
-  /* Customizes buttons in the modal */
-  .modal-content .btn {
-    background-color: #41b8e0; /* Custom button color */
-    border: none; /* No border for a cleaner look */
-  }
+  width: 80%;
+  margin: 0 auto;
+  border: 1px solid #2ad5ec; /* A form border */
+  /*max-height: 90vh;  Set a max height for the modal content */
+  max-height: 90vh; /* Set a max height for the modal content */
+  overflow-y: auto; /* Enable vertical scrolling */
+}
+/* Customizes buttons in the modal */
+.modal-content .btn {
+  background-color: #41b8e0; /* Custom button color */
+  border: none; /* No border for a cleaner look */
+}
 
-  #login-button:hover, #btn-open-login-42:hover, #btn-open-inscription:hover, #two-fa-button:hover, #verify-email-button:hover {
-    background-color: #1048a9; /* Darker bleu on hover*/
-     color: #41b8e0; /*colour text link button */
-  }
-  
+#login-button:hover, #btn-open-login-42:hover, #btn-open-inscription:hover, #two-fa-button:hover, #verify-email-button:hover {
+  background-color: #1048a9; /* Darker bleu on hover*/
+   color: #41b8e0; /*colour text link button */
+}
+
 /* Custom styles for specific buttons like 'LOGIN' and 'Se connecter avec 42Auth' */
 #login-button, #btn-open-login-42, #btn-open-inscription, #two-fa-button, #verify-email-button{
-  background-color: #41b8e0; /* Blue background for better visibility */
-  color: #1048a9; /* White text */
+background-color: #41b8e0; /* Blue background for better visibility */
+color: #1048a9; /* White text */
 }
+
+.modal-body {
+  padding: 0;
+}
+.btn-close {
+  position: absolute;
+  right: 0;
+  padding: 1em;
+}
+h1 {
+  font-size: 2.3em;
+  font-weight: bold;
+  padding-top: 15px;
   
-  .modal-body {
-    padding: 0;
-  }
-  .btn-close {
-    position: absolute;
-    right: 0;
-    padding: 1em;
-  }
-  h1 {
-    font-size: 2.3em;
-    font-weight: bold;
-    padding-top: 15px;
-    
-  }
-  .myform {
-    padding: 2em;
-    max-width: 100%;
-    background-color: #51858d !important; /* colour background form */
-    color: #ffffff; /* colour text form */
-    box-shadow: 0 4px 6px 0 rgba(22, 22, 26, 0.18);
-  }
+}
+.myform {
+  padding: 2em;
+  max-width: 100%;
+  background-color: #51858d !important; /* colour background form */
+  color: #ffffff; /* colour text form */
+  box-shadow: 0 4px 6px 0 rgba(22, 22, 26, 0.18);
+}
 
-  .form-control:focus {
-    box-shadow: inset 0 -1px 0 #7e7e7e;
-  }
-  .form-control {
-    background-color: inherit;
-    color: #fff;
-    padding-left: 0;
-    border: 0;
-    border-radius: 0;
-    border-bottom: 1px solid #fff;
-  }
+.form-control:focus {
+  box-shadow: inset 0 -1px 0 #7e7e7e;
+}
+.form-control {
+  background-color: inherit;
+  color: #fff;
+  padding-left: 0;
+  border: 0;
+  border-radius: 0;
+  border-bottom: 1px solid #fff;
+}
 
-  p {
-    margin-left: 100px;
-    padding-top: 1em;
-    color: rgb(255, 255, 255);
-    font-size: 1.5em;
-    font-weight: bold;
-    margin-left: 0px;
-  }
+p {
+  margin-left: 100px;
+  padding-top: 1em;
+  color: rgb(255, 255, 255);
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-left: 0px;
+}
 
-  .email {
-    color: rgb(255, 255, 255); /* Adjust this color as needed */
-    font-size: 1.5em;
-    font-weight: bold;
-    margin-top: 0px;
-    margin-left: 0px;
+.email {
+  color: rgb(255, 255, 255); /* Adjust this color as needed */
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-top: 0px;
+  margin-left: 0px;
 }
 
 .username {
-    color: rgb(255, 255, 255); /* Adjust this color as needed */
-    font-size: 1.5em;
-    font-weight: bold;
-    margin-top: 0px;
-    margin-left: 0px;
+  color: rgb(255, 255, 255); /* Adjust this color as needed */
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-top: 0px;
+  margin-left: 0px;
 
 }
 
 p a {
-  color: #e1e1e1;
-  text-decoration: none;
+color: #e1e1e1;
+text-decoration: none;
 }
 
 p a:hover {
-  color: #fff;
+color: #fff;
 }
 
 /* Style profil */
 .profile-info {
-  margin-top: 10px;
-  background-color: #51858d86;  /* Background */
-  border: 1px solid #85d7f3;  /* Slight border for the rectangle */
-  padding: 15px;
-  margin-left: 100px;  /* Left margin to push the box right */
-  margin-right: 600px;
-  width: auto; 
-  border-radius: 5px;
-  padding-left: 30px;
+margin-top: 10px;
+background-color: #51858d86;  /* Background */
+border: 1px solid #85d7f3;  /* Slight border for the rectangle */
+padding: 15px;
+margin-left: 100px;  /* Left margin to push the box right */
+margin-right: 600px;
+width: auto; 
+border-radius: 5px;
+padding-left: 30px;
 }
 
 .my-profile-info {
-  margin-top: 10px;
-  background-color: #51858d86;  /* Background */
-  border: 1px solid #85d7f3;  /* Slight border for the rectangle */
-  padding: 15px;
-  margin-left: 100px;  /* Left margin to push the box right */
-  margin-right: 500px;
-  width: auto; /* ???????? Adjust width as needed */
-  border-radius: 5px;
-  padding-left: 30px;
+margin-top: 10px;
+background-color: #51858d86;  /* Background */
+border: 1px solid #85d7f3;  /* Slight border for the rectangle */
+padding: 15px;
+margin-left: 100px;  /* Left margin to push the box right */
+margin-right: 500px;
+width: auto; /* ???????? Adjust width as needed */
+border-radius: 5px;
+padding-left: 30px;
 }
 
 .historique {
-  margin-top: 10px;
-  background-color: #51858d86;  /* Background */
-  border: 1px solid #85d7f3;  /* Slight border for the rectangle */
-  padding: 15px;
-  margin-left: 100px;  /* Left margin to push the box right */
-  margin-right: 500px;
-  width: auto; /* ???????? Adjust width as needed */
-  border-radius: 5px;
-  padding-left: 30px;
+margin-top: 10px;
+background-color: #51858d86;  /* Background */
+border: 1px solid #85d7f3;  /* Slight border for the rectangle */
+padding: 15px;
+margin-left: 100px;  /* Left margin to push the box right */
+margin-right: 500px;
+width: auto; /* ???????? Adjust width as needed */
+border-radius: 5px;
+padding-left: 30px;
 }
 
 .chat {
-  margin-top: 10px;
-  background-color: #51858d86;  /* Background */
-  border: 1px solid #85d7f3;  /* Slight border for the rectangle */
-  padding: 15px;
-  margin-left: 100px;  /* Left margin to push the box right */
-  margin-right: 700px;
-  width: auto; /* ???????? Adjust width as needed */
-  border-radius: 5px;
-  padding-left: 30px;
-  padding-bottom: 50px;
+margin-top: 10px;
+background-color: #51858d86;  /* Background */
+border: 1px solid #85d7f3;  /* Slight border for the rectangle */
+padding: 15px;
+margin-left: 100px;  /* Left margin to push the box right */
+margin-right: 700px;
+width: auto; /* ???????? Adjust width as needed */
+border-radius: 5px;
+padding-left: 30px;
+padding-bottom: 50px;
 }
 
 .profile-item {
-  margin-bottom: 20px; /* Space between items */
-  font-size: 16px; /* Larger font for readability */
-  color: #05178e; /* Darker text for contrast */
-  font-size: 1.5em;
-  text-align: left; /* Aligns text to the left */
+margin-bottom: 20px; /* Space between items */
+font-size: 16px; /* Larger font for readability */
+color: #05178e; /* Darker text for contrast */
+font-size: 1.5em;
+text-align: left; /* Aligns text to the left */
 }
-  
+
 .profile-label {
-  font-weight: bold; /* Make labels bold */
-  margin-right: 10px; /* Space between label and value */
+font-weight: bold; /* Make labels bold */
+margin-right: 10px; /* Space between label and value */
 }
 
 #section-profil button {
-    background-color: #0c84da; /* Match other button styles */
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    display: block;
-    width: 100%; /* Full width */
-    margin-top: 20px; /* Space above the button */
-    margin-left: 100px;
+  background-color: #0c84da; /* Match other button styles */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  display: block;
+  width: 100%; /* Full width */
+  margin-top: 20px; /* Space above the button */
+  margin-left: 100px;
 }
 
 /* Adjust the overall alignment within the profile-info */
 .profile-info {
-  align-items: flex-start; /* Aligns items to the start vertically within the container */
+align-items: flex-start; /* Aligns items to the start vertically within the container */
 }
 
 .avatar.small-avatar {
-  width: 30px;
-  height: 30px;
-  object-fit: cover;
+width: 30px;
+height: 30px;
+object-fit: cover;
 }
-  
+
 .myform .btn {
-  width: 100%;
-  font-weight: 800;
-  background-color: #fff;
-  border-radius: 0;
-  padding: 0.5em 0;
+width: 100%;
+font-weight: 800;
+background-color: #fff;
+border-radius: 0;
+padding: 0.5em 0;
 }
 
 .myform .btn:hover {
-  background-color: inherit;
-  color: #fff;
-  border-color: #fff;
+background-color: inherit;
+color: #fff;
+border-color: #fff;
 }
 
 .small-avatar {
-  width: 30px; /* Définissez la largeur souhaitée */
-  height: 30px; /* Définissez la hauteur souhaitée */
-  border-radius: 50%;
+width: 30px; /* Définissez la largeur souhaitée */
+height: 30px; /* Définissez la hauteur souhaitée */
+border-radius: 50%;
 }
 
 #update-user-form{
-  padding-left: 100px;
-  /* margin: 10px; */
+padding-left: 100px;
+/* margin: 10px; */
 }
 
 #update-user-form input {
-  margin: 15px;
-  margin-left: -0.5px;
-  height: 40px;
-  width: 200px;
+margin: 15px;
+margin-left: -0.5px;
+height: 40px;
+width: 200px;
 }
 
 #friend-username {
-  padding-left: 10px; 
-  width: 200px; 
-  box-sizing: border-box; 
-  margin-left: 0px !important; /* Adjust the margin as needed */
-  margin-top: 10px; /* Add margin-top if needed */
-  margin-bottom: 10px; /* Add margin-bottom if needed */
+padding-left: 10px; 
+width: 200px; 
+box-sizing: border-box; 
+margin-left: 0px !important; /* Adjust the margin as needed */
+margin-top: 10px; /* Add margin-top if needed */
+margin-bottom: 10px; /* Add margin-bottom if needed */
 }
 
 #friend-username::placeholder {
-  text-align: left; 
-  color: #747474;
+text-align: left; 
+color: #747474;
 }
 
 #friend-requests, #friend-list, #pending-friend-requests {
-  margin-left: 0px !important;
-  padding-top: 1em;
+margin-left: 0px !important;
+padding-top: 1em;
 }
 
 
 input[type="file"] {
-  display: none;
+display: none;
 }
 
 /* Styling for the file input label to look like a button */
 input[type="file"] + label {
-  background-color: #ffffff;
-  color: #0056b3;
-  border: none;
-  border-radius: 5px;
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
-  display: inline-block;
-  margin-right: 10px;
+background-color: #ffffff;
+color: #0056b3;
+border: none;
+border-radius: 5px;
+padding: 10px 20px;
+font-size: 16px;
+cursor: pointer;
+display: inline-block;
+margin-right: 10px;
 }
 
 
 input[type="file"] + label:hover {
-  background-color: #0056b3;
+background-color: #0056b3;
 }
 
 input[type="file"] + label:focus {
-  outline: 2px solid #0056b3;
-  outline-offset: 2px;
+outline: 2px solid #0056b3;
+outline-offset: 2px;
 }
 
 .flex-container {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end; /* Aligns content to the right */
-  width: 100%;
-  margin-right: 100px; /* Adjust as needed to position properly */
+display: flex;
+align-items: center;
+justify-content: flex-end; /* Aligns content to the right */
+width: 100%;
+margin-right: 100px; /* Adjust as needed to position properly */
 }
 
 .btn-primary {
-  background-color: #0c84da;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
-  display: inline-block;
-  margin-top: 20px;
-  
-  /* margin-bottom: 20px; */
+background-color: #0c84da;
+color: white;
+border: none;
+border-radius: 5px;
+padding: 10px 20px;
+font-size: 16px;
+cursor: pointer;
+display: inline-block;
+margin-top: 20px;
+
+/* margin-bottom: 20px; */
 }
 
 .btn-primary_2 {
-  background-color: #0c84da;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
-  display: inline-block;
-  margin-top: 10px; /* Adjusted margin-top to ensure proper spacing */
-  margin-right: 10px  !important;
+background-color: #0c84da;
+color: white;
+border: none;
+border-radius: 5px;
+padding: 10px 20px;
+font-size: 16px;
+cursor: pointer;
+display: inline-block;
+margin-top: 10px; /* Adjusted margin-top to ensure proper spacing */
+margin-right: 10px  !important;
 
 }
 
 
 .btn-primary:hover {
-  background-color: #0056b3;
+background-color: #0056b3;
 }
 
 @media (max-width: 576px) {
-  .btn-primary, .btn-file, .btn-upload {
-      width: calc(100% - 40px); /* Adjust width for small screens */
-      margin-left: 20px; /* Ensure there's some margin */
-      margin-right: 20px;
-  }
+.btn-primary, .btn-file, .btn-upload {
+    width: calc(100% - 40px); /* Adjust width for small screens */
+    margin-left: 20px; /* Ensure there's some margin */
+    margin-right: 20px;
+}
 }
 
 .button-group {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  position: fixed;
-  right: 100px;
+display: flex;
+flex-direction: column;
+align-items: flex-end;
+position: fixed;
+right: 100px;
 }
 
 /* Additional styling to position the "Modifier mon profil" link */
 .change-info-link {
-  margin-top: 10px;
-  margin-left: 85px;
+margin-top: 10px;
+margin-left: 85px;
 }
 
 /* Styling for the default profile avatar */
 .profile-avatar {
-  display: block;
-  /* margin: 20px auto; */
-  width: 150px;
-  height: 150px;
-  object-fit: cover;
-  border-radius: 50%;
-  border: 2px solid #950cda;
-  position: absolute;
-  top: 150px;
-  right: 100px;
+display: block;
+/* margin: 20px auto; */
+width: 150px;
+height: 150px;
+object-fit: cover;
+border-radius: 50%;
+border: 2px solid #950cda;
+position: absolute;
+top: 150px;
+right: 100px;
 }
 
 .nav-link {
-  display: flex;
-  align-items: center;
+display: flex;
+align-items: center;
 }
 
 #send-friend-request {
-  margin-left: 0px !important; /* Adjust the margin as needed */
-  margin-top: 10px; /* Add margin-top if needed */
-  margin-bottom: 10px; /* Add margin-bottom if needed */
+margin-left: 0px !important; /* Adjust the margin as needed */
+margin-top: 10px; /* Add margin-top if needed */
+margin-bottom: 10px; /* Add margin-bottom if needed */
 }
 
 #unsubscribe-btn {
-  margin-bottom: 20px; /* Space above the button */
-  margin-bottom: 100px !important;
+margin-bottom: 20px; /* Space above the button */
+margin-bottom: 100px !important;
 }

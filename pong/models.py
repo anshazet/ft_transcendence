@@ -12,6 +12,7 @@ class CustomUser(AbstractUser):
     total_games_played = models.IntegerField(default=0)
     games_won = models.IntegerField(default=0)
     game_history = models.ManyToManyField('GameHistory', related_name='players', blank=True)
+    avatar = models.ImageField(upload_to='avatar/', default='avatar/ponguser.png')
 
     class Meta:
         verbose_name = _('Custom User')

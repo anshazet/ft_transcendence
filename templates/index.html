@@ -26,10 +26,9 @@
                 <ul class="navbar-nav">
                     <li class="nav-item"><a class="nav-link highlight" onclick="showSection('home')" href="#home">Home</a></li>
                     <li class="nav-item"><a class="nav-link highlight" onclick="showSection('pong')" href="#pong">Pong</a></li>
-                    <li class="nav-item"><a class="nav-link highlight" onclick="showSection('tournoi')" href="#tournoi">Mode Tournoi</a></li>
-					<li class="nav-item"><a class="nav-link highlight" onclick="showSection('historique')" href="#historique">Historique</a></li>
+                    <li class="nav-item"><a class="nav-link highlight" onclick="showSection('historique')" href="#historique">Historique</a></li>
                     <li class="nav-item"><a class="nav-link highlight" onclick="showSection('chat')" href="#chat">ChatRooms</a></li>
-				</ul>
+                </ul>
             </div>
             <div class="nav-item navbar-nav">
                 <a class="nav-link highlight" onclick="showSection('profil')" href="#profil">
@@ -43,6 +42,31 @@
             </div>
         </div>
     </nav>
+
+    <div id="section-historique" class="page" style="display: none;">
+        <div class="historique">
+            <h6>Historique des parties</h6>
+            <ul id="game-history-list"></ul>
+            <p id="total-games-played">Nombre total de parties jouées : <span id="total-games"></span></p>
+            <p id="games-won">Nombre de parties remportées : <span id="won-games"></span></p>
+        </div>
+    </div>
+
+    <div id="section-chat" class="page" style="display: none;">
+        <div class="chat">
+            <div>
+                <h6>Transcendence Chat</h6>
+            </div>
+            <div class="container">
+                <form id = "post-form" method="POST" action="chat/checkview">
+                    {% csrf_token %}
+                    <input type="text" name="room_name" placeholder="Room" />
+                    <input type="text" name="username" placeholder="Username"/>
+                    <input type="submit" value="Enter Room">
+                </form>
+            </div>
+        </div>
+    </div> 
                 
     <div id="section-profil" class="page" style="display: none; overflow-y: auto;">
         <div class="my-profile-info">
@@ -53,12 +77,12 @@
         
     <div class="avatar-container">
         <img id="avatar-img" src="{% static 'avatar/' %}{{ user.username }}-avatar.png" class="profile-avatar" onerror="this.src='{% static 'avatar/ponguser.png' %}'">
-        <form id="avatar-upload-form" enctype="multipart/form-data">
+        <form id="avatar-upload-form" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form-group button-group">
-                <input type="file" id="avatar" name="avatar" accept="image/png" hidden>
-                <label for="avatar" class="btn btn-primary">Choisir un fichier</label>
-                <button type="submit" class="btn btn-primary_2">Upload</button>
+                <input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg, image/jpg, image/gif" hidden>
+                <label for="avatar" class="btn btn-primary">Choose File</label>
+                <button type="submit" class="btn btn-primary">Upload</button>
             </div>
         </form>
     </div>
@@ -127,15 +151,6 @@
             </div>
         </div>
         <script type="module" src="{% static 'js/pong.js' %}" async></script>
-    </div>
-    
-
-
-    <div id="section-tournoi" class="page" style="display: none;">
-        <h5>Welcome to tournoi Pong!</h5>
-        <div class="profile-info">
-            <p class="profile-item"><span class="profile-label">Player 1</p>
-        </div>
     </div>
 
     <div class="modal fade" id="ModalForm" tabindex="-1" aria-labelledby="ModalFormLabel" aria-hidden="true">

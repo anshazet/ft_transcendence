@@ -1,0 +1,15 @@
+{
+    "Servers": 
+    {
+        "1": {
+            "Name": "Pong",
+            "Group": "Servers",
+            "Port": 5432,
+            "Username": "POSTGRES_USER",
+            "Password": "POSTGRES_PASSWORD",
+            "Host": "db",
+            "SSLMode": "prefer",
+            "MaintenanceDB": "postgres"
+        }
+    }
+}
