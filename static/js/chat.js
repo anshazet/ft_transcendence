@@ -98,6 +98,15 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Room left successfully:', currentRoom);
     });
 
+    document.getElementById('block-user-button').addEventListener('click', function() {
+        const username = document.getElementById('block-username').value;
+        if (username) {
+            blockUser(username);
+        } else {
+            alert('Please enter a username to block.');
+        }
+    });
+
     // Block User
     function blockUser(username) {
         $.ajax({
@@ -172,5 +181,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Initialize Blocked Users List on Load
+    fetchBlockedUsers();
+});
+
+
+$(document).ready(function() {
     fetchBlockedUsers();
 });

@@ -32,7 +32,7 @@ from django.contrib.auth.decorators import login_required
 from django_otp.plugins.otp_totp.models import TOTPDevice
 from django.dispatch import receiver
 from django.contrib.auth.signals import user_logged_in, user_logged_out
-
+from rest_framework.response import Response
 
 # chat
 def home(request):
@@ -115,16 +115,24 @@ class BlockedUserViewSet(viewsets.ModelViewSet):
     queryset = BlockedUser.objects.all()
     serializer_class = BlockedUserSerializer
 
-    @action(detail=False, methods=['post'], permission_classes=[IsAuthenticated])
+    @csrf_exempt
+    @action(detail=False, methods=['post'], permission_classes=[])
     def block_user(self, request):
         user = request.user
+        if user.is_anonymous:
+            return Response({'status': 'not authenticated'}, status=403)
+
         blocked_user = get_object_or_404(CustomUser, username=request.data.get('blocked_user'))
         BlockedUser.objects.create(user=user, blocked_user=blocked_user)
         return Response({'status': 'user blocked'})
 
-    @action(detail=False, methods=['post'], permission_classes=[IsAuthenticated])
+    @csrf_exempt
+    @action(detail=False, methods=['post'], permission_classes=[])
     def unblock_user(self, request):
         user = request.user
+        if user.is_anonymous:
+            return Response({'status': 'not authenticated'}, status=403)
+
         blocked_user = get_object_or_404(CustomUser, username=request.data.get('blocked_user'))
         blocked_instance = get_object_or_404(BlockedUser, user=user, blocked_user=blocked_user)
         blocked_instance.delete()
