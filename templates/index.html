@@ -292,7 +292,7 @@
         if (!userIsLoggedIn) {
             $('#ModalForm').modal({backdrop: 'static', keyboard: false}, 'show');
         } else if (!is2FACompleted) {
-            $('#2FAModal').modal({backdrop: 'static', keyboard: false}, 'show'); // Show 2FA modal if user is logged in but hasn't completed 2FA
+            $('#2FAModal').modal('show'); // Show 2FA modal if user is logged in but hasn't completed 2FA
         }
 
         document.addEventListener('DOMContentLoaded', function() {
