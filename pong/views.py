@@ -105,18 +105,24 @@ class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
 
+    def get_queryset(self):
+        user = self.request.user
+        blocked_users = BlockedUser.objects.filter(user=user).values_list('blocked_user', flat=True)
+        return Message.objects.exclude(user__in=blocked_users)
+
+
 class BlockedUserViewSet(viewsets.ModelViewSet):
     queryset = BlockedUser.objects.all()
     serializer_class = BlockedUserSerializer
 
-    @action(detail=False, methods=['post'], permission_classes=[login_required])
+    @action(detail=False, methods=['post'], permission_classes=[IsAuthenticated])
     def block_user(self, request):
         user = request.user
         blocked_user = get_object_or_404(CustomUser, username=request.data.get('blocked_user'))
         BlockedUser.objects.create(user=user, blocked_user=blocked_user)
         return Response({'status': 'user blocked'})
 
-    @action(detail=False, methods=['post'], permission_classes=[login_required])
+    @action(detail=False, methods=['post'], permission_classes=[IsAuthenticated])
     def unblock_user(self, request):
         user = request.user
         blocked_user = get_object_or_404(CustomUser, username=request.data.get('blocked_user'))

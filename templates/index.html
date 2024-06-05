@@ -81,10 +81,19 @@
                         <input type="text" name="message" id="message" placeholder="Type a message..." />
                         <input type="submit" value="Send">
                     </form>
+                    <div class="block-user-container">
+                        <input type="text" id="block-username" placeholder="Enter username to block">
+                        <button id="block-user-button" class="btn btn-danger">Block User</button>
+                    </div>
+                    <div id="blocked-users-list">
+                        <!-- Blocked users will be displayed here -->
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+    
+    
     
     
                 
@@ -452,6 +461,82 @@
             });
             document.getElementById('section-' + sectionId).style.display = 'block';
         }
+
+        document.getElementById('block-user-button').addEventListener('click', function() {
+        const username = document.getElementById('block-username').value;
+        if (username) {
+            blockUser(username);
+        } else {
+            alert('Please enter a username to block.');
+        }
+    });
+
+    function blockUser(username) {
+        $.ajax({
+            type: 'POST',
+            url: '/api/blocked_users/block_user/',
+            data: {
+                blocked_user: username,
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+            },
+            success: function(response) {
+                console.log('User blocked successfully:', response);
+                fetchBlockedUsers();
+            },
+            error: function(response) {
+                console.error('An error occurred while blocking the user', response);
+            }
+        });
+    }
+
+    function fetchBlockedUsers() {
+        $.ajax({
+            type: 'GET',
+            url: '/api/blocked_users/',
+            success: function(response) {
+                console.log('Blocked users fetched successfully:', response);
+                updateBlockedUsersUI(response.blocked_users);
+            },
+            error: function(response) {
+                console.error('An error occurred while fetching blocked users', response);
+            }
+        });
+    }
+
+    function updateBlockedUsersUI(blockedUsers) {
+        const blockedUsersList = $('#blocked-users-list');
+        blockedUsersList.empty();
+        blockedUsers.forEach(user => {
+            blockedUsersList.append(`
+                <div class="blocked-user">
+                    <span>${user.username}</span>
+                    <button onclick="unblockUser('${user.username}')">Unblock</button>
+                </div>
+            `);
+        });
+    }
+
+    function unblockUser(username) {
+        $.ajax({
+            type: 'POST',
+            url: '/api/blocked_users/unblock_user/',
+            data: {
+                blocked_user: username,
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+            },
+            success: function(response) {
+                console.log('User unblocked successfully:', response);
+                fetchBlockedUsers();
+            },
+            error: function(response) {
+                console.error('An error occurred while unblocking the user', response);
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        fetchBlockedUsers();
+    });
     </script>
     <script>
         var currentUserUsername = "{{ user.username }}"
