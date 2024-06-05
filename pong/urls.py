@@ -53,5 +53,6 @@ urlpatterns = [
     path('api/2fa/verify/', VerifyTOTPView.as_view(), name='verify_totp'),
     path('save_game_history/', views.save_game_history, name='save_game_history'),
     path('get_game_history/', views.get_game_history, name='get_game_history'),
+    path('get_user_info/<str:username>/', views.get_user_info, name='get_user_info'),
     path('api/', include(router.urls)),  # Ensure this is placed after other patterns to avoid conflicts
 ]

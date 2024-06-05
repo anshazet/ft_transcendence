@@ -65,10 +65,6 @@
             </div>
             <div id="chat-room">
                 <h2 class="title"><span id="room-name">Chat Room</span>
-                    <form id="leave-form" method="POST">
-                        {% csrf_token %}
-                        <input type="submit" value="Leave Room">
-                    </form>
                 </h2>
                 <div id="display">
                     <p>Aucun message présent</p>
@@ -86,7 +82,9 @@
         </div>
     </div>
     
-    
+    <div id="profil-chat-ami" class="page" style="display: none;">
+        <h1 id="username-chat-profil"></h1>
+    </div>
                 
     <div id="section-profil" class="page" style="display: none; overflow-y: auto;">
         <div class="my-profile-info">
@@ -285,12 +283,13 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
     
+    
     <script>
         var userIsLoggedIn = document.getElementById('userIsLoggedIn').value === 'true';
         var is2FACompleted = document.getElementById('is2FACompleted').value === 'true';
 
         if (!userIsLoggedIn) {
-            $('#ModalForm').modal('show');
+            $('#ModalForm').modal({backdrop: 'static', keyboard: false}, 'show');
         } else if (!is2FACompleted) {
             $('#2FAModal').modal('show'); // Show 2FA modal if user is logged in but hasn't completed 2FA
         }
@@ -300,9 +299,9 @@
             var is2FACompleted = document.getElementById('is2FACompleted').value === 'true';
 
             if (!userIsLoggedIn) {
-                $('#ModalForm').modal('show');
+                $('#ModalForm').modal({backdrop: 'static', keyboard: false}, 'show');
             } else if (!is2FACompleted) {
-                $('#2FAModal').modal('show'); // Show 2FA modal if user is logged in but hasn't completed 2FA
+                $('#2FAModal').modal({backdrop: 'static', keyboard: false}, 'show'); // Show 2FA modal if user is logged in but hasn't completed 2FA
             }
 
             document.getElementById('verify-email-button').addEventListener('click', function(event) {
@@ -348,6 +347,7 @@
                         localStorage.setItem('access', data.access);
                         localStorage.setItem('refresh', data.refresh);
                         $('#2FAModal').modal('hide'); // Hide the 2FA modal
+						//window.location.reload();
                         $('#2FASuccessModal').modal('show'); // Show the success modal
                     } else {
                         console.error(data.error_message);

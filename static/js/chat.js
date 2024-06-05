@@ -2,11 +2,9 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentRoom = null;
     let currentUsername = currentUserUsername; // Assuming you're using Django templating
 
-    function setRoom(room, username, roomId) {
+    function setRoom(room) {
         currentRoom = room;
         document.querySelector('#section-chat').setAttribute('data-room-name', room);
-        document.querySelector('#send-username').value = username;
-        document.querySelector('#send-room_id').value = roomId;
         document.querySelector('#chat-room').style.display = 'block';
         document.querySelector('#room-name').innerText = room;
         fetchMessages();
@@ -28,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 for (var key in response.messages) {
                     var rawDate = new Date(response.messages[key].date);
                     var formattedDate = rawDate.toLocaleString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-                    var temp = "<div class='darker'><b>" + response.messages[key].user + "</b><p>" + response.messages[key].value + "</p><span>" + formattedDate + "</span></div>";
+                    var temp = "<div class='darker'><b><a href='#' class='user-link'>" + response.messages[key].user + "</a></b><p>" + response.messages[key].value + "</p><span>" + formattedDate + "</span></div>";
                     $("#display").append(temp);
                 }
                 if (isAtBottom) {
@@ -41,6 +39,48 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    $(document).on('click', '.user-link', function(e) {
+        e.preventDefault();
+        // Masquer la section de chat
+        $('#section-chat').hide();
+        // Afficher la section de profil
+        $('#profil-chat-ami').show();
+    });
+
+    $(document).on('click', '.user-link', function(e) {
+        e.preventDefault();
+        var username = $(this).text();
+        $.ajax({
+            type: 'GET',
+            url: '/get_user_info/' + username + '/',
+            success: function(response) {
+                const chatProfil = document.getElementById('profil-chat-ami');
+                
+                const usernameElement = document.createElement('p');
+                usernameElement.textContent = 'Username: ' + response.username;
+            
+                const totalGamesPlayedElement = document.createElement('p');
+                totalGamesPlayedElement.textContent = 'Total games played: ' + response.total_games_played;
+            
+                const gamesWonElement = document.createElement('p');
+                gamesWonElement.textContent = 'Games won: ' + response.games_won;
+
+                const gameAvatar = document.createElement('p');
+                gameAvatar.textContent = '<img id="avatar-img" src="{% static \'avatar/\' %}{{ ' + response.username + ' }}-avatar.png" class="avatar small-avatar" onerror="this.src=\'{% static \'avatar/ponguser.png\' %}\';">';
+            
+                chatProfil.innerHTML = ''; // Pour effacer les éventuels anciens éléments
+                chatProfil.appendChild(usernameElement);
+                chatProfil.appendChild(totalGamesPlayedElement);
+                chatProfil.appendChild(gamesWonElement);
+                chatProfil.appendChild(gameAvatar);
+                
+                $('#section-chat').hide();
+                chatProfil.style.display = 'block';
+            }
+
+        });
+    });
 
     // Call fetchMessages every 500ms
     setInterval(fetchMessages, 500);

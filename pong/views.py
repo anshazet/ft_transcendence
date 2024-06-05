@@ -642,4 +642,11 @@ def get_game_history(request):
         })
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-
+def get_user_info(request, username):
+    user = get_object_or_404(CustomUser, username=username)
+    user_info = {
+        'username': user.username,
+        'total_games_played':  user.total_games_played,
+        'games_won': user.games_won,
+    }
+    return JsonResponse(user_info)
