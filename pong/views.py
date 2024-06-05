@@ -472,50 +472,63 @@ def verify_otp(request):
 
 from .models import GameHistory
 
+import datetime
+
+@csrf_exempt
 def save_game_history(request):
     if request.method == 'POST':
-        game_data = request.POST.get('game_data')  # Assurez-vous que les données JSON sont envoyées en POST
         try:
-            game_json = json.loads(game_data)
-            player1_score = game_json['player1_score']
-            player2_score = game_json['player2_score']
-            winner_id = game_json['winner_id']
-            winner = CustomUser.objects.get(id=winner_id)
+            game_data = json.loads(request.body).get('game_data')
+            player1_score = game_data['player1_score']
+            player2_score = game_data['player2_score']
+            player1_won = player1_score > player2_score
+            date_played = datetime.datetime.now()
+
             game_history_entry = GameHistory.objects.create(
                 player1_score=player1_score,
                 player2_score=player2_score,
-                date_played=game_json['date_played'],
-                winner=winner
+                date_played=date_played,
+                player1_won=player1_won
             )
+
             current_user = request.user
             current_user.game_history.add(game_history_entry)
             current_user.total_games_played += 1
-            if winner_id == current_user.id:
+            if player1_won:
                 current_user.games_won += 1
             current_user.save()
+
             return JsonResponse({'message': 'Game history saved successfully'})
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
+
+
+
+@login_required
 def get_game_history(request):
     if request.method == 'GET':
         current_user = request.user
-        if current_user.is_authenticated:
-            game_history = GameHistory.objects.filter(players=current_user)
-            total_games_played = game_history.count()
-            games_won = game_history.filter(winner=current_user).count()
-            game_history_data = []
-            for game in game_history:
-                game_history_data.append({
-                    'player1_score': game.player1_score,
-                    'player2_score': game.player2_score,
-                    'date_played': game.date_played.strftime('%Y-%m-%dT%H:%M:%SZ'),
-                })
+        game_history = current_user.game_history.all()
 
-            return JsonResponse({
-                'game_history': game_history_data,
-                'total_games_played': total_games_played,
-                'games_won': games_won
+        total_games_played = game_history.count()
+        games_won = game_history.filter(player1_won=True).count()
+
+        game_history_data = []
+        for game in game_history:
+            game_history_data.append({
+                'player1_score': game.player1_score,
+                'player2_score': game.player2_score,
+                'date_played': game.date_played.strftime('%Y-%m-%dT%H:%M:%SZ'),
+                'player1_won': game.player1_won
             })
-    return JsonResponse({'error': 'Unauthorized'}, status=401)
+
+        return JsonResponse({
+            'game_history': game_history_data,
+            'total_games_played': total_games_played,
+            'games_won': games_won
+        })
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+
