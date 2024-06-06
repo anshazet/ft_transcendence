@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function fetchMessages() {
         if (!currentRoom) {
-            // console.error('Room name is not defined');
             return;
         }
         var display = $("#display");
@@ -21,12 +20,11 @@ document.addEventListener('DOMContentLoaded', function() {
             type: 'GET',
             url: '/chat/getMessages/' + currentRoom + '/',
             success: function(response) {
-                // console.log('Messages fetched successfully:', response);
                 $("#display").empty();
                 for (var key in response.messages) {
                     var rawDate = new Date(response.messages[key].date);
                     var formattedDate = rawDate.toLocaleString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-                    var temp = "<div class='darker'><b><a href='#' class='user-link'>" + response.messages[key].user + "</a></b><p>" + response.messages[key].value + "</p><span>" + formattedDate + "</span></div>";
+                    var temp = "<div class='darker'><b class='chat-user'><a href='#' class='user-link'>" + response.messages[key].user + "</a></b><p>" + response.messages[key].value + "</p><span>" + formattedDate + "</span></div>";
                     $("#display").append(temp);
                 }
                 if (isAtBottom) {
@@ -139,4 +137,94 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelector('#post-form').parentElement.style.display = 'block';
         console.log('Room left successfully:', currentRoom);
     });
+
+    document.getElementById('block-user-button').addEventListener('click', function() {
+        const username = document.getElementById('block-username').value;
+        if (username) {
+            blockUser(username);
+        } else {
+            alert('Please enter a username to block.');
+        }
+    });
+
+    // Block User
+    function blockUser(username) {
+        $.ajax({
+            type: 'POST',
+            url: '/api/blocked_users/block_user/',
+            data: {
+                blocked_user: username,
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+            },
+            success: function(response) {
+                console.log('User blocked successfully:', response);
+                fetchBlockedUsers();
+            },
+            error: function(response) {
+                console.error('An error occurred while blocking the user', response);
+            }
+        });
+    }
+
+    // Unblock User
+    function unblockUser(username) {
+        $.ajax({
+            type: 'POST',
+            url: '/api/blocked_users/unblock_user/',
+            data: {
+                blocked_user: username,
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+            },
+            success: function(response) {
+                console.log('User unblocked successfully:', response);
+                fetchBlockedUsers();
+            },
+            error: function(response) {
+                console.error('An error occurred while unblocking the user', response);
+            }
+        });
+    }
+
+    // Fetch Blocked Users
+    function fetchBlockedUsers() {
+        $.ajax({
+            type: 'GET',
+            url: '/api/blocked_users/',
+            success: function(response) {
+                console.log('Blocked users fetched successfully:', response);
+                updateBlockedUsersUI(response.blocked_users);
+            },
+            error: function(response) {
+                console.error('An error occurred while fetching blocked users', response);
+            }
+        });
+    }
+
+    // Update Blocked Users UI
+    function updateBlockedUsersUI(blockedUsers) {
+        const blockedUsersList = $('#blocked-users-list');
+        blockedUsersList.empty();
+        blockedUsers.forEach(user => {
+            blockedUsersList.append(`
+                <div class="blocked-user">
+                    <span>${user.username}</span>
+                    <button onclick="unblockUser('${user.username}')">Unblock</button>
+                </div>
+            `);
+        });
+    }
+
+    // Adding Block User UI in Chat Section
+    $(document).on('click', '.block-user-button', function() {
+        const username = $(this).data('username');
+        blockUser(username);
+    });
+
+    // Initialize Blocked Users List on Load
+    fetchBlockedUsers();
+});
+
+
+$(document).ready(function() {
+    fetchBlockedUsers();
 });
