@@ -55,6 +55,11 @@ document.addEventListener('DOMContentLoaded', function() {
             success: function(response) {
                 const chatProfil = document.getElementById('profil-chat-ami');
                 
+				const containerElement = document.createElement('div');
+				containerElement.className = 'container';
+				containerElement.display = 'block';
+				containerElement.style = 'margin-top: 20px;';
+
                 const usernameElement = document.createElement('p');
                 usernameElement.textContent = 'Username: ' + response.username;
             
@@ -64,14 +69,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 const gamesWonElement = document.createElement('p');
                 gamesWonElement.textContent = 'Games won: ' + response.games_won;
 
-                const gameAvatar = document.createElement('p');
-                gameAvatar.textContent = '<img id="avatar-img" src="{% static \'avatar/\' %}{{ ' + response.username + ' }}-avatar.png" class="avatar small-avatar" onerror="this.src=\'{% static \'avatar/ponguser.png\' %}\';">';
+                const gameAvatar = document.createElement('img');
+				gameAvatar.id = 'avatar-img';
+				gameAvatar.src = '/static/avatar/' + response.username + '-avatar.png';
+				gameAvatar.className = 'avatar small-avatar';
+				gameAvatar.onerror = "this.src='/static/avatar/ponguser.png';";
             
                 chatProfil.innerHTML = ''; // Pour effacer les éventuels anciens éléments
-                chatProfil.appendChild(usernameElement);
-                chatProfil.appendChild(totalGamesPlayedElement);
-                chatProfil.appendChild(gamesWonElement);
-                chatProfil.appendChild(gameAvatar);
+				chatProfil.appendChild(containerElement);
+                containerElement.appendChild(usernameElement);
+                containerElement.appendChild(totalGamesPlayedElement);
+                containerElement.appendChild(gamesWonElement);
+                containerElement.appendChild(gameAvatar);
                 
                 $('#section-chat').hide();
                 chatProfil.style.display = 'block';
@@ -116,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             success: function(response) {
                 console.log('Room entered successfully:', response);
-                setRoom(response.room, response.username, response.room_details.id);
+                setRoom(response.room);
             },
             error: function(response) {
                 console.error('An error occurred while entering the room', response);

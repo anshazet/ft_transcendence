@@ -25,7 +25,7 @@ html, body {
 }
 
 
-#section-home, #section-pong, #section-tournoi, #section-classement, #section-profil, #section-modif-profil, #section-historique, #section-chat {
+#section-home, #section-pong, #section-tournoi, #section-classement, #section-profil, #section-modif-profil, #section-historique, #section-chat, #profil-chat-ami {
   background-image: url('../images/background_5.jpg');
   background-attachment: fixed; /* Keeps the background fixed */
   background-size: cover; /* Ensures the background covers the entire area */
